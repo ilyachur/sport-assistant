@@ -22,6 +22,8 @@
 #include "fit_factory.hpp"
 #include "fit_mesg_listener.hpp"
 
+#include "../parser_runtime_exception.h"
+
 namespace fit
 {
 
@@ -55,7 +57,7 @@ FIT_BOOL Decode::IsFIT(std::istream &file)
             return FIT_TRUE; // File header processed successfully.
       }
    }
-   catch (RuntimeException e)
+   catch (ParserRuntimeException e)
    {
    }
 
@@ -88,7 +90,7 @@ FIT_BOOL Decode::CheckIntegrity(std::istream &file)
          }
       }
    }
-   catch (RuntimeException e)
+   catch (ParserRuntimeException e)
    {
       // Fall through and return failure.
    }
@@ -154,7 +156,7 @@ FIT_BOOL Decode::Resume(void)
       }
    }
 
-   throw RuntimeException("FIT decode error: Unexpected end of input stream.");
+   throw ParserRuntimeException("FIT decode error: Unexpected end of input stream.");
    return FIT_TRUE;
 }
 
@@ -182,7 +184,7 @@ Decode::RETURN Decode::ReadByte(FIT_UINT8 data)
       {
          if (state != STATE_RECORD)
          {
-            throw(RuntimeException("FIT decode error: Decoder not in correct state after last data byte in file. Check message definitions."));
+            throw(ParserRuntimeException("FIT decode error: Decoder not in correct state after last data byte in file. Check message definitions."));
             return RETURN_ERROR;
          }
                
@@ -192,7 +194,7 @@ Decode::RETURN Decode::ReadByte(FIT_UINT8 data)
       {
          if (crc != 0)
          {
-            throw(RuntimeException("FIT decode error: File CRC failed."));
+            throw(ParserRuntimeException("FIT decode error: File CRC failed."));
             return RETURN_ERROR;
          }
 
@@ -213,7 +215,7 @@ Decode::RETURN Decode::ReadByte(FIT_UINT8 data)
                {
                   std::ostringstream message;
                   message << "FIT decode error: Protocol version " << (data & FIT_PROTOCOL_VERSION_MAJOR_MASK) << FIT_PROTOCOL_VERSION_MAJOR_SHIFT << "." << (data & FIT_PROTOCOL_VERSION_MINOR_MASK) << " not supported.  Must be " << FIT_PROTOCOL_VERSION_MAJOR << ".15 or earlier.";
-                  throw RuntimeException(message.str());
+                  throw ParserRuntimeException(message.str());
                   return RETURN_ERROR;
                }
                break;
@@ -232,28 +234,28 @@ Decode::RETURN Decode::ReadByte(FIT_UINT8 data)
             case 8:
                if (data != '.')
                {
-                  throw(RuntimeException("FIT decode error: File header signature mismatch.  File is not FIT."));
+                  throw(ParserRuntimeException("FIT decode error: File header signature mismatch.  File is not FIT."));
                   return RETURN_ERROR;
                }
                break;
             case 9:
                if (data != 'F')
                {
-                  throw(RuntimeException("FIT decode error: File header signature mismatch.  File is not FIT."));
+                  throw(ParserRuntimeException("FIT decode error: File header signature mismatch.  File is not FIT."));
                   return RETURN_ERROR;
                }
                break;
             case 10:
                if (data != 'I')
                {
-                  throw(RuntimeException("FIT decode error: File header signature mismatch.  File is not FIT."));
+                  throw(ParserRuntimeException("FIT decode error: File header signature mismatch.  File is not FIT."));
                   return RETURN_ERROR;
                }
                break;
             case 11:
                if (data != 'T')
                {
-                  throw(RuntimeException("FIT decode error: File header signature mismatch.  File is not FIT."));
+                  throw(ParserRuntimeException("FIT decode error: File header signature mismatch.  File is not FIT."));
                   return RETURN_ERROR;
                }
                break;
@@ -287,7 +289,7 @@ Decode::RETURN Decode::ReadByte(FIT_UINT8 data)
                {
                   std::ostringstream message;
                   message << "FIT decode error: Missing FIT message definition for local message number " << ((int)localMesgIndex) << ".";
-                  throw(RuntimeException(message.str()));
+                  throw(ParserRuntimeException(message.str()));
                   return RETURN_ERROR;
                }
 
@@ -314,7 +316,7 @@ Decode::RETURN Decode::ReadByte(FIT_UINT8 data)
                   {
                      std::ostringstream message;
                      message << "FIT decode error: Missing FIT message definition for local message number " << ((int)localMesgIndex) << ".";
-                     throw(RuntimeException(message.str()));
+                     throw(ParserRuntimeException(message.str()));
                      return RETURN_ERROR;
                   }
 
@@ -362,7 +364,7 @@ Decode::RETURN Decode::ReadByte(FIT_UINT8 data)
          {
             std::ostringstream message;
             message << "FIT decode error: Architecture " << archs[localMesgIndex] << " not supported."; 	
-            throw(RuntimeException(message.str()));
+            throw(ParserRuntimeException(message.str()));
             return RETURN_ERROR;
          }
 

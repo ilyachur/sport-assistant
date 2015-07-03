@@ -15,19 +15,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#if !defined(FIT_HPP)
+#ifndef FIT_HPP
 #define FIT_HPP
 
 #include "fit_config.hpp"
-#if defined(FIT_CPP_INCLUDE_C)
+#ifdef FIT_CPP_INCLUDE_C
 	#include "fit.h"
 #endif
 
 #include <string>
 
-#if !defined(FIT_CPP_INCLUDE_C)
+#ifndef FIT_CPP_INCLUDE_C
 
-#if defined(FIT_USE_STDINT_H)
+#ifdef FIT_USE_STDINT_H
    #include <stdint.h>
 #endif
 

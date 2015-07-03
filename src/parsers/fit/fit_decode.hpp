@@ -26,7 +26,6 @@
 #include "fit_mesg_definition.hpp"
 #include "fit_mesg_definition_listener.hpp"
 #include "fit_mesg_listener.hpp"
-#include "fit_runtime_exception.hpp"
 
 namespace fit
 {

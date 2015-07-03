@@ -1,27 +1,47 @@
 #ifndef FITPARSER_H
 #define FITPARSER_H
 
-#include <QString>
-#include <fstream>
-#include <iostream>
-#include "../fit/fit_decode.hpp"
-#include "../fit/fit_mesg_broadcaster.hpp"
+#include "abstractparser.h"
+#include "fit/fit_decode.hpp"
+#include "fit/fit_mesg_broadcaster.hpp"
 
-class FitParser
+/**
+ * @brief The FitParser class: Parser for fit files
+ */
+class FitParser: public AbstractParser
 {
 
 public:
+    /**
+     * @brief Default constructor
+     * @param file - the name for raw file (default = "")
+     */
     FitParser(QString file = "");
-    int test();
+    /**
+     * @brief Open data file
+     * @param file is a variable with raw data
+     * @return PARSER_OK if all is ok, else error code
+     */
     int open(QString file = "");
+    /**
+     * @brief parse file
+     * @return PARSER_OK if all is ok, else error code
+     */
     int run();
 
 private:
-    QString file_name;
-    std::fstream ifile;
+    /**
+     * @brief fit decoder
+     */
     fit::Decode decode;
+    /**
+     * @brief Broadcaster for messages
+     */
     fit::MesgBroadcaster mesgBroadcaster;
 
+    /**
+     * @brief The FitListener class: Listener for all messages from mesgBroadcaster
+     */
     class FitListener : public fit::FileIdMesgListener,
             public fit::BloodPressureMesgListener,
             public fit::UserProfileMesgListener,
@@ -30,21 +50,52 @@ private:
             public fit::HrvMesgListener,
             public fit::MesgListener {
     public :
+        /**
+         * @brief OnMesg - function for processing messages
+         * @param message with type fit::Mesg
+         */
         void OnMesg(fit::Mesg& mesg);
 
+        /**
+         * @brief OnMesg - function for processing messages
+         * @param message with type fit::FileIdMesg
+         */
         void OnMesg(fit::FileIdMesg& mesg);
 
+        /**
+         * @brief OnMesg - function for processing messages
+         * @param message with type fit::UserProfileMesg
+         */
         void OnMesg(fit::UserProfileMesg& mesg);
 
+        /**
+         * @brief OnMesg - function for processing messages
+         * @param message with type fit::DeviceInfoMesg
+         */
         void OnMesg(fit::DeviceInfoMesg& mesg);
 
+        /**
+         * @brief OnMesg - function for processing messages
+         * @param message with type fit::MonitoringMesg
+         */
         void OnMesg(fit::MonitoringMesg& mesg);
 
+        /**
+         * @brief OnMesg - function for processing messages
+         * @param message with type fit::HrvMesg
+         */
         void OnMesg(fit::HrvMesg& mesg);
 
+        /**
+         * @brief OnMesg - function for processing messages
+         * @param message with type fit::BloodPressureMesg
+         */
         void OnMesg(fit::BloodPressureMesg& mesg);
     };
 
+    /**
+     * @brief listener object
+     */
     FitListener listener;
 };
 

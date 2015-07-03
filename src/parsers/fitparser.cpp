@@ -1,15 +1,12 @@
 #include "fitparser.h"
 
+#include "../parsers/parser_runtime_exception.h"
 #include <QDebug>
 #include <fstream>
 #include <iostream>
 
-#define FIT_PARSER_OK                   0
-#define FIT_PARSER_OPEN_FILE_ERR        1
-#define FIT_PARSER_INTEGRITY_FILE_ERR   2
-#define FIT_PARSER_EXCEPTION            3
-
-FitParser::FitParser(QString file): file_name(file) {
+FitParser::FitParser(QString file) {
+    file_name = file;
     mesgBroadcaster.AddListener((fit::FileIdMesgListener &)listener);
     mesgBroadcaster.AddListener((fit::UserProfileMesgListener &)listener);
     mesgBroadcaster.AddListener((fit::MonitoringMesgListener &)listener);
@@ -25,84 +22,82 @@ int FitParser::open(QString file) {
     ifile.open(file_name.toStdString(), std::ios::in | std::ios::binary);
     if (!ifile.is_open()) {
         qDebug() << "Error opening file " << file_name;
-        return FIT_PARSER_OPEN_FILE_ERR;
+        return PARSER_OPEN_FILE_ERR;
     }
     if (!decode.CheckIntegrity(ifile)) {
         qDebug() << "FIT file integrity failed.";
-        return FIT_PARSER_INTEGRITY_FILE_ERR;
+        return PARSER_INTEGRITY_FILE_ERR;
     }
-    return FIT_PARSER_OK;
+    return PARSER_OK;
 }
 
 int FitParser::run() {
     if (!ifile.is_open()) {
         int return_code;
         return_code = open();
-        if (return_code != FIT_PARSER_OK)
+        if (return_code != PARSER_OK)
             return return_code;
     }
 
     try {
        mesgBroadcaster.Run(ifile);
     }
-    catch (const fit::RuntimeException& e)
+    catch (const ParserRuntimeException& e)
     {
        qDebug() << "Exception decoding file: " << e.what();
-       return FIT_PARSER_EXCEPTION;
+       return PARSER_EXCEPTION;
     }
-    return FIT_PARSER_OK;
+    return PARSER_OK;
 }
 
 void FitParser::FitListener::OnMesg(fit::Mesg& mesg) {
-    printf("On Mesg:\n");
-    std::wcout << L"   New Mesg: " << mesg.GetName().c_str() << L".  It has " << mesg.GetNumFields() << L" field(s).\n";
+    qDebug() << "On Mesg:\n";
+    qDebug() << "   New Mesg: " << mesg.GetName().c_str() << ".  It has " << mesg.GetNumFields() << " field(s).";
     for (int i=0; i<mesg.GetNumFields(); i++) {
         fit::Field* field = mesg.GetFieldByIndex(i);
-        std::wcout << L"   Field" << i << " (" << field->GetName().c_str() << ") has " << field->GetNumValues() << L" value(s)\n";
+        qDebug() << "   Field" << i << " (" << field->GetName().c_str() << ") has " << field->GetNumValues() << " value(s).";
         for (int j=0; j<field->GetNumValues(); j++) {
-            std::wcout << L"       Val" << j << L": ";
+            qDebug() << "       Val" << j << ": ";
             switch (field->GetType()) {
             case FIT_BASE_TYPE_ENUM:
-                std::wcout << field->GetENUMValue(j);
+                qDebug() << "           " << field->GetENUMValue(j);
                 break;
             case FIT_BASE_TYPE_SINT8:
-                std::wcout << field->GetSINT8Value(j);
+                qDebug() << "           " << field->GetSINT8Value(j);
                 break;
             case FIT_BASE_TYPE_UINT8:
-                std::wcout << field->GetUINT8Value(j);
+                qDebug() << "           " << field->GetUINT8Value(j);
                 break;
             case FIT_BASE_TYPE_SINT16:
-                std::wcout << field->GetSINT16Value(j);
+                qDebug() << "           " << field->GetSINT16Value(j);
                 break;
             case FIT_BASE_TYPE_UINT16:
-                std::wcout << field->GetUINT16Value(j);
+                qDebug() << "           " << field->GetUINT16Value(j);
                 break;
             case FIT_BASE_TYPE_SINT32:
-                std::wcout << field->GetSINT32Value(j);
+                qDebug() << "           " << field->GetSINT32Value(j);
                 break;
             case FIT_BASE_TYPE_UINT32:
-                std::wcout << field->GetUINT32Value(j);
+                qDebug() << "           " << field->GetUINT32Value(j);
                 break;
             case FIT_BASE_TYPE_FLOAT32:
-                std::wcout << field->GetFLOAT32Value(j);
+                qDebug() << "           " << field->GetFLOAT32Value(j);
                 break;
             case FIT_BASE_TYPE_FLOAT64:
-                std::wcout << field->GetFLOAT64Value(j);
+                qDebug() << "           " << field->GetFLOAT64Value(j);
                 break;
             case FIT_BASE_TYPE_UINT8Z:
-                std::wcout << field->GetUINT8ZValue(j);
+                qDebug() << "           " << field->GetUINT8ZValue(j);
                 break;
             case FIT_BASE_TYPE_UINT16Z:
-                std::wcout << field->GetUINT16ZValue(j);
+                qDebug() << "           " << field->GetUINT16ZValue(j);
                 break;
             case FIT_BASE_TYPE_UINT32Z:
-                std::wcout << field->GetUINT32ZValue(j);
+                qDebug() << "           " << field->GetUINT32ZValue(j);
                 break;
             default:
                 break;
             }
-            //std::wcout << field->GetUnits().c_str() << L"\n";
-            std::wcout << L"\n";
         }
     }
 }

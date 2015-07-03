@@ -16,8 +16,8 @@
 
 
 #include "fit_config.hpp"
-#include "fit_runtime_exception.hpp"
 #include "fit_unicode.hpp"
+#include "../parser_runtime_exception.h"
 
 ///////////////////////////////////////////////////////////////////////
 // Private Definitions
@@ -123,11 +123,11 @@ namespace fit
 // Private Classes
 ///////////////////////////////////////////////////////////////////////
 
-class StringConversionException : public RuntimeException
+class StringConversionException : public ParserRuntimeException
 {
    public:
       StringConversionException(const FIT_STRING_CONVERSION_ERROR newErrorCode = FIT_STRING_CONVERSION_ERROR_INVALID)
-         : RuntimeException(std::string("")),
+         : ParserRuntimeException(std::string("")),
            errorCode(newErrorCode)
       {
       }
