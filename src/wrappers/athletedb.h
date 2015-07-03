@@ -3,6 +3,7 @@
 
 #include <QtSql/QSqlDatabase>
 #include <QStringList>
+#include <QSettings>
 #include <QVector>
 #include <QString>
 
@@ -24,6 +25,8 @@ public:
 private:
     QString databaseName;
     QSqlDatabase db;
+
+    void saveSettings(QSettings *athleteInfo);
 };
 
 #endif // ATHLETEDB_H
