@@ -35,9 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
     athleteDB.setNameDB(databaseName);
 
     updateAthletesInfo();
-
-    //clever_parser.open("C:\\Study\\HSE\\sport-assistant\\test_data\\Ilya\\IceSkates\\28_02_strong_activity.fit");
-    //clever_parser.run();
 }
 
 MainWindow::~MainWindow()

@@ -66,11 +66,21 @@ public:
      * @brief getInfo
      * @return Information from file
      */
-    QMap<QString, QMap<QString, QString>> getInfo() {
+    QMap<QString, QMap<QString, QString>> *getInfo() {
         if (parser == nullptr) {
-            return QMap<QString, QMap<QString, QString>>();
+            return nullptr;
         }
         return parser->getInfo();
+    }
+
+    /**
+     * @brief get type of parser
+     * @return type of file
+     */
+    inline QString fileType() {
+        if (parser == nullptr)
+            return QString();
+        return parser->fileType();
     }
 
 private:

@@ -15,12 +15,15 @@
 
 AthleteDB::AthleteDB(QString name): databaseName(name)
 {
+    /// Set db type
     db = QSqlDatabase::addDatabase("QSQLITE");
 }
 
 QVector<QStringList> AthleteDB::findAthlete(QMap<QString, QString> findMap) {
+    /// Connect to db
     connect();
     QVector<QStringList> ret;
+    /// Generate command
     QString command = "SELECT * FROM athlete";
     if (findMap.size() > 0) {
         command += " WHERE ";
@@ -32,6 +35,8 @@ QVector<QStringList> AthleteDB::findAthlete(QMap<QString, QString> findMap) {
     if (parameters.size() > 0)
         command += parameters.join(" and ");
     qDebug() << command;
+
+    /// Get athlete info
     QSqlQuery allReturn = db.exec(command);
     while (allReturn.next()) {
         QStringList needAdd;
@@ -80,15 +85,18 @@ void AthleteDB::saveSettings(QSettings *athleteInfo) {
 
 int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
     connect();
-    // Default settings
+
+    /// Open athlete info
     qDebug() << "[AthleteDB] " << "athleteName " << athleteName;
     QSettings athleteInfo(athleteDir + "/data.ini", QSettings::IniFormat);
     athleteInfo.beginGroup("athleteInfo");
     QDateTime athleteBornDateTime;
 
+    /// Create table with athletes
     db.exec("create table if not exists athlete (ID integer PRIMARY KEY, name string, sex string, bornDay integer, weight integer, height integer)");
     db.commit();
 
+    /// Generate born day
     if (athleteInfo.value("bornDay", "Unknown") != "Unknown") {
         QStringList date_mask = athleteInfo.value("bornDay", "Unknown").toString().split(" ");
         if (date_mask.length() <= 2 && date_mask.at(0) != "Unknown") {
@@ -111,19 +119,23 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
         }
     }
 
+    /// Check modification data
     if (QFileInfo(athleteDir).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong() &&
              QFileInfo(athleteDir + "/data.ini").lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong()) {
         if (db.exec("SELECT * FROM athlete WHERE ID = " + athleteInfo.value("id", "-1").toInt()).next())
             return 0;
     }
-    if (!db.exec("SELECT * FROM athlete WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt())).next()) {
 
+
+    if (!db.exec("SELECT * FROM athlete WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt())).next()) {
+        /// Create new athlete
         db.exec("INSERT INTO athlete (name, sex, bornDay, weight, height) VALUES (\"" + athleteName +
                 "\", \"" + athleteInfo.value("sex", "Unknown").toString() + "\", \"" + QString::number(athleteBornDateTime.toMSecsSinceEpoch()) +
                 "\", \"" + QString::number(athleteInfo.value("weight", "-1").toInt()) + "\", \"" +
                 QString::number(athleteInfo.value("height", "-1").toInt()) + "\")");
         db.commit();
-        qDebug() << db.lastError().text();
+
+        /// Get athlete id
         QString command = "SELECT ID FROM athlete WHERE name = \"" + athleteName +
                     "\" and sex = \"" + athleteInfo.value("sex", "Unknown").toString() +
                     "\" and bornDay = " + QString::number(athleteBornDateTime.toMSecsSinceEpoch()) +
@@ -134,6 +146,7 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
         if (athleteInfoQuery.next())
             athleteInfo.setValue("id", athleteInfoQuery.value("id").toInt());
     } else {
+        /// Update athlete info
         db.exec("UPDATE athlete SET name = \"" + athleteName + "\" WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
         db.exec("UPDATE athlete SET sex = \"" + athleteInfo.value("sex", "Unknown").toString() + "\" WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
         db.exec("UPDATE athlete SET bornDay = " + QString::number(athleteBornDateTime.toMSecsSinceEpoch()) + " WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
@@ -142,18 +155,17 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
 
         db.commit();
     }
-    athleteInfo.setValue("lastUpdate", QDateTime::currentMSecsSinceEpoch());
-    athleteInfo.endGroup();
 
-    db.exec("create table if not exists training (ID integer PRIMARY KEY, athlete_id integer, date string, filetype string, FOREIGN KEY(athlete_id) REFERENCES athlete(ID)))");
+    /// Create training table
+    db.exec("create table if not exists training (ID integer PRIMARY KEY, athlete_id integer, date string, filetype string, FOREIGN KEY(athlete_id) REFERENCES athlete(ID))");
     db.commit();
 
-    db.exec("create table if not exists activities (ID integer PRIMARY KEY, training_id integer, activity integer, data string, FOREIGN KEY(training_id) REFERENCES training(ID)))");
+    /// Create activities table
+    db.exec("create table if not exists activities (ID integer PRIMARY KEY, training_id integer, activity integer, data string, FOREIGN KEY(training_id) REFERENCES training(ID))");
     db.commit();
 
-    QMap <long long, QString> timeLine;
+    /// Get activities list
     QStringList files = QDir(athleteDir).entryList(QDir::Dirs);
-
     for (QString activityDir: files) {
         if (activityDir == "." || activityDir == "..")
             continue;
@@ -162,14 +174,62 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
             continue;
 
         QStringList listTrainings = QDir(activityPath).entryList(QDir::Files);
+        //TODO: Parallel for for it
+        /// Get trainings
         for (QString training : listTrainings) {
+            if (QFileInfo(activityPath + "/" + training).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong())
+                continue;
             CleverParser clParser(activityPath + "/" + training);
             int retRun = clParser.run();
             if (retRun != PARSER_OK) {
                 qDebug() << "Parser error code: " << retRun;
             }
+
+            QMap<QString, QMap<QString, QString>> *parserInfo = clParser.getInfo();
+            if (parserInfo == nullptr || (*parserInfo)["HrvMesg"].isEmpty()) {
+                qDebug() << "Error: parserInfo == null or HrvMesg.isEmpty()";
+                continue;
+            }
+            /// Get training map and get start time
+            QMap<QString, QString> trainingMap = (*parserInfo)["HrvMesg"];
+            unsigned long long start_time_long = (*parserInfo)["Times"]["StartTime"].toULongLong();
+            start_time_long /= 1000;
+            if (!db.exec("SELECT * FROM training WHERE date = " +
+                        QString::number(start_time_long) + " and athlete_id = " +
+                        QString::number(athleteInfo.value("id", "-1").toInt()) +
+                        " and filetype = \"" + clParser.fileType() + "\"").next()) {
+                /// Add training and activities
+                db.exec("INSERT INTO training (athlete_id, date, filetype) VALUES(" +
+                            QString::number(athleteInfo.value("id", "-1").toInt()) + ", " +
+                            QString::number(start_time_long) + ", \"" + clParser.fileType() + "\")");
+                db.commit();
+
+                /// Get training id
+                QString command = "SELECT ID FROM training WHERE date = " +
+                        QString::number(start_time_long) + " and athlete_id = " +
+                        QString::number(athleteInfo.value("id", "-1").toInt()) +
+                        " and filetype = \"" + clParser.fileType() + "\"";
+                QSqlQuery athleteInfoQuery(db);
+                athleteInfoQuery.exec(command);
+                int training_id = -1;
+                if (athleteInfoQuery.next())
+                    training_id = athleteInfoQuery.value("id").toInt();
+
+                if (training_id < 1) {
+                    qDebug() << "Error: training_id < 1";
+                    continue;
+                }
+
+                /// Add activity
+                db.exec("INSERT INTO activities (activity, training_id, data) VALUES(\"" +
+                            activityDir + "\", " + QString::number(training_id) + ", \"" +
+                        dumpQMap2QString(trainingMap) + "\")");
+                db.commit();
+            }
         }
     }
 
+    athleteInfo.endGroup();
     saveSettings(&athleteInfo);
+    return 0;
 }

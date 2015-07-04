@@ -25,6 +25,7 @@ public:
      * @return PARSER_OK if all is ok, else error code
      */
     virtual int open(QString file = "") = 0;
+
     /**
      * @brief Abstruct function in order to parse file
      * @return PARSER_OK if all is ok, else error code
@@ -32,10 +33,16 @@ public:
     virtual int run() = 0;
 
     /**
+     * @brief get type of parser
+     * @return type of file
+     */
+    inline virtual QString fileType() = 0;
+
+    /**
      * @brief getInfo
      * @return Information from file
      */
-    virtual QMap<QString, QMap<QString, QString>> getInfo() = 0;
+    virtual QMap<QString, QMap<QString, QString>> *getInfo() = 0;
 
 protected:
     /**

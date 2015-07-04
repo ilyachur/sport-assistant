@@ -6,6 +6,7 @@
 
 FitParser::FitParser(QString file) {
     file_name = file;
+    listener.setFileInfo(&fileInfo);
     mesgBroadcaster.AddListener((fit::FileIdMesgListener &)listener);
     mesgBroadcaster.AddListener((fit::UserProfileMesgListener &)listener);
     mesgBroadcaster.AddListener((fit::MonitoringMesgListener &)listener);
@@ -50,14 +51,14 @@ int FitParser::run() {
 }
 
 
-QMap<QString, QMap<QString, QString>> FitParser::getInfo() {
-    return QMap<QString, QMap<QString, QString>>();
+QMap<QString, QMap<QString, QString>> *FitParser::getInfo() {
+    return &fileInfo;
 }
 
 //////// LISTENER /////////////////////////
 
 void FitParser::FitListener::OnMesg(fit::Mesg& mesg) {
-    qDebug() << "On Mesg:\n";
+    /*qDebug() << "On Mesg:\n";
     qDebug() << "   New Mesg: " << mesg.GetName().c_str() << ".  It has " << mesg.GetNumFields() << " field(s).";
     for (int i=0; i< mesg.GetNumFields(); i++) {
         fit::Field* field = mesg.GetFieldByIndex(i);
@@ -105,7 +106,7 @@ void FitParser::FitListener::OnMesg(fit::Mesg& mesg) {
                 break;
             }
         }
-    }
+    }*/
 }
 
 void FitParser::FitListener::OnMesg(fit::FileIdMesg& mesg) {
@@ -124,7 +125,7 @@ void FitParser::FitListener::OnMesg(fit::FileIdMesg& mesg) {
 }
 
 void FitParser::FitListener::OnMesg(fit::UserProfileMesg& mesg) {
-    qDebug() << "User profile:";
+    /*qDebug() << "User profile:";
     if (mesg.GetFriendlyName() != FIT_WSTRING_INVALID)
         qDebug() << "   Friendly Name: " << mesg.GetFriendlyName().c_str();
     if (mesg.GetGender() == FIT_GENDER_MALE)
@@ -134,13 +135,20 @@ void FitParser::FitListener::OnMesg(fit::UserProfileMesg& mesg) {
     if (mesg.GetAge() != FIT_UINT8_INVALID)
         qDebug() << "   Age [years]: ", mesg.GetAge();
     if (mesg.GetWeight() != FIT_FLOAT32_INVALID)
-        qDebug() << "   Weight [kg]: " << mesg.GetWeight();
+        qDebug() << "   Weight [kg]: " << mesg.GetWeight();*/
 }
 
 void FitParser::FitListener::OnMesg(fit::DeviceInfoMesg& mesg) {
     //qDebug() << "Device info:";
-    if (mesg.GetTimestamp() != FIT_UINT32_INVALID)
-        qDebug() << "   Timestamp: " << mesg.GetTimestamp();
+    if (mesg.GetTimestamp() != FIT_UINT32_INVALID) {
+        //qDebug() << "   Timestamp: " << mesg.GetTimestamp();
+
+        QMap<QString, QString> testCalue = (*info)["Times"];
+        if (testCalue.take("StartTime") == "") {
+            testCalue.insert("StartTime", QString::number(mesg.GetTimestamp()));
+            info->insert("Times", testCalue);
+        }
+    }
 
     switch(mesg.GetBatteryStatus()) {
     case FIT_BATTERY_STATUS_CRITICAL:
@@ -165,9 +173,9 @@ void FitParser::FitListener::OnMesg(fit::DeviceInfoMesg& mesg) {
 }
 
 void FitParser::FitListener::OnMesg(fit::MonitoringMesg& mesg) {
-    qDebug() << "Monitoring: ";
+    //qDebug() << "Monitoring: ";
     if (mesg.GetTimestamp() != FIT_UINT32_INVALID) {
-        qDebug() << "   Timestamp: " << mesg.GetTimestamp();
+        //qDebug() << "   Timestamp: " << mesg.GetTimestamp();
     }
 
     if(mesg.GetActivityType() != FIT_ACTIVITY_TYPE_INVALID) {
@@ -198,17 +206,31 @@ void FitParser::FitListener::OnMesg(fit::MonitoringMesg& mesg) {
 
 void FitParser::FitListener::OnMesg(fit::HrvMesg& mesg) {
     //qDebug() << "HrvMesg: ";
-    //fileInfo.size();
+    QMap<QString, QString> testCalue = (*info)["HrvMesg"];
+    static unsigned long long time_last = 0;
+    if (!time_last) {
+        QMap<QString, QString> testTime = (*info)["Times"];
+        if (testTime["StartTime"] != "") {
+            time_last = testTime["StartTime"].toULongLong();
+            time_last *= 1000;
+        }
+    }
+    if (mesg.GetTime(0) != FIT_FLOAT32_INVALID) {
+        int ms_hrv = int(mesg.GetTime(0) * 1000.0);
+        time_last += ms_hrv;
+        testCalue.insert(QString::number(time_last),
+                         QString::number(mesg.GetTime(0)));
+        info->insert("HrvMesg", testCalue);
+        //qDebug() <<"   Time: " << mesg.GetTime(0);
+    }
     if (mesg.GetNumTime() != FIT_UINT8_INVALID) {
         //qDebug() << "   NumTime: " << mesg.GetNumTime();
-        if (mesg.GetTime(0) != FIT_FLOAT32_INVALID) {
-            //qDebug() <<"   Time: " << mesg.GetTime(0);
-        }
+
     }
 }
 
 void FitParser::FitListener::OnMesg(fit::BloodPressureMesg& mesg) {
-    qDebug() << "BloodPressureMesg:";
+/*    qDebug() << "BloodPressureMesg:";
     qDebug() << "   GetTimestamp: " << mesg.GetTimestamp();
     qDebug() << "   GetSystolicPressure: " << mesg.GetSystolicPressure();
     qDebug() << "   GetDiastolicPressure: "<< mesg.GetDiastolicPressure();
@@ -219,5 +241,5 @@ void FitParser::FitListener::OnMesg(fit::BloodPressureMesg& mesg) {
     qDebug() << "   GetHeartRate: " << mesg.GetHeartRate();
     qDebug() << "   GetHeartRateType: " << mesg.GetHeartRateType();
     qDebug() << "   GetStatus: " << mesg.GetStatus();
-    qDebug() << "   GetUserProfileIndex: " << mesg.GetUserProfileIndex();
+    qDebug() << "   GetUserProfileIndex: " << mesg.GetUserProfileIndex();*/
 }

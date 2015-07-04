@@ -33,7 +33,15 @@ public:
      * @brief getInfo
      * @return Information from file
      */
-    QMap<QString, QMap<QString, QString>> getInfo();
+    QMap<QString, QMap<QString, QString>> *getInfo();
+
+    /**
+     * @brief get type of parser
+     * @return type of file
+     */
+    inline QString fileType() {
+        return "fit";
+    }
 
 private:
     /**
@@ -97,6 +105,13 @@ private:
          * @param message with type fit::BloodPressureMesg
          */
         void OnMesg(fit::BloodPressureMesg& mesg);
+
+        inline void setFileInfo(QMap<QString, QMap<QString, QString>> *fInfo) {
+            info = fInfo;
+        }
+
+    private:
+        QMap<QString, QMap<QString, QString>> *info;
     };
 
     /**
