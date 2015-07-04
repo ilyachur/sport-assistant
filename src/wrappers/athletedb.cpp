@@ -5,8 +5,10 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QSettings>
+#include <QFileInfo>
 #include <QStringList>
 #include <QtSql/QSqlError>
+#include <QtSql/QSqlResult>
 
 AthleteDB::AthleteDB(QString name): databaseName(name)
 {
@@ -34,11 +36,11 @@ int AthleteDB::connect(QString name) {
 void AthleteDB::saveSettings(QSettings *athleteInfo) {
     athleteInfo->beginGroup("athleteInfo");
     athleteInfo->setValue("bornDay", athleteInfo->value("bornDay", "Unknown").toString());
-    athleteInfo->setValue("weight", athleteInfo->value("weight", "Unknown").toString());
-    athleteInfo->setValue("height", athleteInfo->value("height", "Unknown").toString());
-    athleteInfo->setValue("id", athleteInfo->value("id", "Unknown").toString());
+    athleteInfo->setValue("weight", athleteInfo->value("weight", "-1").toInt());
+    athleteInfo->setValue("height", athleteInfo->value("height", "-1").toInt());
+    athleteInfo->setValue("id", athleteInfo->value("id", "-1").toInt());
     athleteInfo->setValue("sex", athleteInfo->value("sex", "Unknown").toString());
-    athleteInfo->setValue("lastUpdate", athleteInfo->value("lastUpdate", "-1").toInt());
+    athleteInfo->setValue("lastUpdate", athleteInfo->value("lastUpdate", "0").toULongLong());
     athleteInfo->endGroup();
 }
 
@@ -50,6 +52,9 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
     QSettings athleteInfo(athleteDir + "/data.ini", QSettings::IniFormat);
     athleteInfo.beginGroup("athleteInfo");
     QDateTime athleteBornDateTime;
+
+    db.exec("create table if not exists athlete (ID integer PRIMARY KEY, name string, sex string, bornDay integer, weight integer, height integer)");
+    db.commit();
 
     if (athleteInfo.value("bornDay", "Unknown") != "Unknown") {
         QStringList date_mask = athleteInfo.value("bornDay", "Unknown").toString().split(" ");
@@ -73,8 +78,37 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
         }
     }
 
+    if (QFileInfo(athleteDir).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong() &&
+             QFileInfo(athleteDir + "/data.ini").lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong()) {
+        if (db.exec("SELECT * FROM athlete WHERE ID = " + athleteInfo.value("id", "-1").toInt()).next())
+            return 0;
+    }
+    if (!db.exec("SELECT * FROM athlete WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt())).next()) {
 
-    qDebug() << "[AthleteDB] " << athleteBornDateTime.toMSecsSinceEpoch();
+        db.exec("INSERT INTO athlete (name, sex, bornDay, weight, height) VALUES (\"" + athleteName +
+                "\", \"" + athleteInfo.value("sex", "Unknown").toString() + "\", \"" + QString::number(athleteBornDateTime.toMSecsSinceEpoch()) +
+                "\", \"" + QString::number(athleteInfo.value("weight", "-1").toInt()) + "\", \"" +
+                QString::number(athleteInfo.value("height", "-1").toInt()) + "\")");
+        db.commit();
+        qDebug() << db.lastError().text();
+        QString command = "SELECT ID FROM athlete WHERE name = \"" + athleteName +
+                    "\" and sex = \"" + athleteInfo.value("sex", "Unknown").toString() +
+                    "\" and bornDay = " + QString::number(athleteBornDateTime.toMSecsSinceEpoch()) +
+                    " and weight = " + QString::number(athleteInfo.value("weight", "-1").toInt()) +
+                    " and height = " + QString::number(athleteInfo.value("height", "-1").toInt());
+        QSqlQuery athleteInfoQuery(db);
+        athleteInfoQuery.next();
+        athleteInfo.setValue("id", athleteInfoQuery.value("id").toInt());
+    } else {
+        db.exec("UPDATE athlete SET name = \"" + athleteName + "\" WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
+        db.exec("UPDATE athlete SET sex = \"" + athleteInfo.value("sex", "Unknown").toString() + "\" WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
+        db.exec("UPDATE athlete SET bornDay = " + QString::number(athleteBornDateTime.toMSecsSinceEpoch()) + " WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
+        db.exec("UPDATE athlete SET weight = " + QString::number(athleteInfo.value("weight", "-1").toInt()) + " WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
+        db.exec("UPDATE athlete SET height = " + QString::number(athleteInfo.value("height", "-1").toInt()) + " WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
+
+        db.commit();
+    }
+    athleteInfo.setValue("lastUpdate", QDateTime::currentMSecsSinceEpoch());
     athleteInfo.endGroup();
     saveSettings(&athleteInfo);
 }

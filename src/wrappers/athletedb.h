@@ -2,6 +2,7 @@
 #define ATHLETEDB_H
 
 #include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
 #include <QStringList>
 #include <QSettings>
 #include <QVector>
@@ -18,6 +19,14 @@ public:
     inline void disconnect() {
         if (db.isOpen())
             db.close();
+    }
+
+    inline QSqlQuery exec(QString command) {
+        return db.exec(command);
+    }
+
+    inline bool commit() {
+        return db.commit();
     }
 
     int updateAthleteInfo(QString athleteName, QString athleteDir);
