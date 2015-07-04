@@ -1,6 +1,7 @@
 #include "athletedb.h"
 
 #include <QMap>
+#include <QDir>
 #include <QFile>
 #include <QDebug>
 #include <QDateTime>
@@ -9,6 +10,8 @@
 #include <QStringList>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlResult>
+
+#include "../parsers/cleverparser.h"
 
 AthleteDB::AthleteDB(QString name): databaseName(name)
 {
@@ -70,9 +73,10 @@ void AthleteDB::saveSettings(QSettings *athleteInfo) {
     athleteInfo->setValue("height", athleteInfo->value("height", "-1").toInt());
     athleteInfo->setValue("id", athleteInfo->value("id", "-1").toInt());
     athleteInfo->setValue("sex", athleteInfo->value("sex", "Unknown").toString());
-    athleteInfo->setValue("lastUpdate", athleteInfo->value("lastUpdate", "0").toULongLong());
+    athleteInfo->setValue("lastUpdate", QDateTime::currentMSecsSinceEpoch());
     athleteInfo->endGroup();
 }
+
 
 int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
     connect();
@@ -140,5 +144,32 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
     }
     athleteInfo.setValue("lastUpdate", QDateTime::currentMSecsSinceEpoch());
     athleteInfo.endGroup();
+
+    db.exec("create table if not exists training (ID integer PRIMARY KEY, athlete_id integer, date string, filetype string, FOREIGN KEY(athlete_id) REFERENCES athlete(ID)))");
+    db.commit();
+
+    db.exec("create table if not exists activities (ID integer PRIMARY KEY, training_id integer, activity integer, data string, FOREIGN KEY(training_id) REFERENCES training(ID)))");
+    db.commit();
+
+    QMap <long long, QString> timeLine;
+    QStringList files = QDir(athleteDir).entryList(QDir::Dirs);
+
+    for (QString activityDir: files) {
+        if (activityDir == "." || activityDir == "..")
+            continue;
+        QString activityPath = athleteDir + "/" + activityDir;
+        if (!QDir(activityPath).exists())
+            continue;
+
+        QStringList listTrainings = QDir(activityPath).entryList(QDir::Files);
+        for (QString training : listTrainings) {
+            CleverParser clParser(activityPath + "/" + training);
+            int retRun = clParser.run();
+            if (retRun != PARSER_OK) {
+                qDebug() << "Parser error code: " << retRun;
+            }
+        }
+    }
+
     saveSettings(&athleteInfo);
 }

@@ -3,7 +3,6 @@
 #include "../parsers/parser_runtime_exception.h"
 #include <QDebug>
 #include <fstream>
-#include <iostream>
 
 FitParser::FitParser(QString file) {
     file_name = file;
@@ -50,10 +49,17 @@ int FitParser::run() {
     return PARSER_OK;
 }
 
+
+QMap<QString, QMap<QString, QString>> FitParser::getInfo() {
+    return QMap<QString, QMap<QString, QString>>();
+}
+
+//////// LISTENER /////////////////////////
+
 void FitParser::FitListener::OnMesg(fit::Mesg& mesg) {
     qDebug() << "On Mesg:\n";
     qDebug() << "   New Mesg: " << mesg.GetName().c_str() << ".  It has " << mesg.GetNumFields() << " field(s).";
-    for (int i=0; i<mesg.GetNumFields(); i++) {
+    for (int i=0; i< mesg.GetNumFields(); i++) {
         fit::Field* field = mesg.GetFieldByIndex(i);
         qDebug() << "   Field" << i << " (" << field->GetName().c_str() << ") has " << field->GetNumValues() << " value(s).";
         for (int j=0; j<field->GetNumValues(); j++) {
@@ -103,68 +109,69 @@ void FitParser::FitListener::OnMesg(fit::Mesg& mesg) {
 }
 
 void FitParser::FitListener::OnMesg(fit::FileIdMesg& mesg) {
-    printf("File ID:\n");
+    /*qDebug() << "File ID:\n";
     if (mesg.GetType() != FIT_FILE_INVALID)
-        printf("   Type: %d\n", mesg.GetType());
+        qDebug() << "   Type: " << mesg.GetType();
     if (mesg.GetManufacturer() != FIT_MANUFACTURER_INVALID)
-        printf("   Manufacturer: %d\n", mesg.GetManufacturer());
+        qDebug() << "   Manufacturer: " << mesg.GetManufacturer();
     if (mesg.GetProduct() != FIT_UINT16_INVALID)
-        printf("   Product: %d\n", mesg.GetProduct());
+        qDebug() << "   Product: " << mesg.GetProduct();
     if (mesg.GetSerialNumber() != FIT_UINT32Z_INVALID)
-        printf("   Serial Number: %u\n", mesg.GetSerialNumber());
+        qDebug() << "   Serial Number: " << mesg.GetSerialNumber();
     if (mesg.GetNumber() != FIT_UINT16_INVALID)
-        printf("   Number: %d\n", mesg.GetNumber());
+        qDebug() << "   Number: " << mesg.GetNumber();*/
+    mesg.GetType();
 }
 
 void FitParser::FitListener::OnMesg(fit::UserProfileMesg& mesg) {
-    printf("User profile:\n");
+    qDebug() << "User profile:";
     if (mesg.GetFriendlyName() != FIT_WSTRING_INVALID)
-        std::wcout << L"   Friendly Name: " << mesg.GetFriendlyName().c_str() << L"\n";
+        qDebug() << "   Friendly Name: " << mesg.GetFriendlyName().c_str();
     if (mesg.GetGender() == FIT_GENDER_MALE)
-        printf("   Gender: Male\n");
+        qDebug() << "   Gender: Male";
     if (mesg.GetGender() == FIT_GENDER_FEMALE)
-        printf("   Gender: Female\n");
+        qDebug() << "   Gender: Female";
     if (mesg.GetAge() != FIT_UINT8_INVALID)
-        printf("   Age [years]: %d\n", mesg.GetAge());
+        qDebug() << "   Age [years]: ", mesg.GetAge();
     if (mesg.GetWeight() != FIT_FLOAT32_INVALID)
-        printf("   Weight [kg]: %0.2f\n", mesg.GetWeight());
+        qDebug() << "   Weight [kg]: " << mesg.GetWeight();
 }
 
 void FitParser::FitListener::OnMesg(fit::DeviceInfoMesg& mesg) {
-    printf("Device info:\n");
+    //qDebug() << "Device info:";
     if (mesg.GetTimestamp() != FIT_UINT32_INVALID)
-        printf("   Timestamp: %d\n", mesg.GetTimestamp());
+        qDebug() << "   Timestamp: " << mesg.GetTimestamp();
 
     switch(mesg.GetBatteryStatus()) {
     case FIT_BATTERY_STATUS_CRITICAL:
-        printf("   Battery status: Critical\n");
+        //qDebug() <<"   Battery status: Critical";
         break;
     case FIT_BATTERY_STATUS_GOOD:
-        printf("   Battery status: Good\n");
+        //qDebug() << "   Battery status: Good";
         break;
     case FIT_BATTERY_STATUS_LOW:
-        printf("   Battery status: Low\n");
+        //qDebug() << "   Battery status: Low";
         break;
     case FIT_BATTERY_STATUS_NEW:
-        printf("   Battery status: New\n");
+        //qDebug() << "   Battery status: New";
         break;
     case FIT_BATTERY_STATUS_OK:
-        printf("   Battery status: OK\n");
+        //qDebug() << "   Battery status: OK";
         break;
     default:
-        printf("   Battery status: Invalid\n");
+        //qDebug() << "   Battery status: Invalid";
         break;
     }
 }
 
 void FitParser::FitListener::OnMesg(fit::MonitoringMesg& mesg) {
-    printf("Monitoring:\n");
+    qDebug() << "Monitoring: ";
     if (mesg.GetTimestamp() != FIT_UINT32_INVALID) {
-        printf("   Timestamp: %d\n", mesg.GetTimestamp());
+        qDebug() << "   Timestamp: " << mesg.GetTimestamp();
     }
 
     if(mesg.GetActivityType() != FIT_ACTIVITY_TYPE_INVALID) {
-        printf("   Activity type: %d\n", mesg.GetActivityType());
+        //qDebug() << "   Activity type: " << mesg.GetActivityType();
     }
 
     switch(mesg.GetActivityType()) // The Cycling field is dynamic
@@ -172,44 +179,45 @@ void FitParser::FitListener::OnMesg(fit::MonitoringMesg& mesg) {
     case FIT_ACTIVITY_TYPE_WALKING:
     case FIT_ACTIVITY_TYPE_RUNNING: // Intentional fallthrough
         if(mesg.GetSteps() != FIT_UINT32_INVALID) {
-            printf("   Steps: %d\n", mesg.GetSteps());
+            //qDebug() << "   Steps: " << mesg.GetSteps();
         }
         break;
     case FIT_ACTIVITY_TYPE_CYCLING:
     case FIT_ACTIVITY_TYPE_SWIMMING: // Intentional fallthrough
         if(mesg.GetStrokes() != (FIT_FLOAT32)(FIT_UINT32_INVALID/2) ) {
-            printf(   "Strokes: %d\n", mesg.GetStrokes());
+            //qDebug() << "Strokes: " << mesg.GetStrokes();
         }
         break;
     default:
         if(mesg.GetCycles() != (FIT_FLOAT32)(FIT_UINT32_INVALID/2) ) {
-            printf(   "Cycles: %d\n", mesg.GetStrokes());
+            //qDebug() << "Cycles: " << mesg.GetStrokes();
         }
         break;
     }
 }
 
 void FitParser::FitListener::OnMesg(fit::HrvMesg& mesg) {
-    printf("HrvMesg:\n");
+    //qDebug() << "HrvMesg: ";
+    //fileInfo.size();
     if (mesg.GetNumTime() != FIT_UINT8_INVALID) {
-        printf("   NumTime: %d\n", mesg.GetNumTime());
+        //qDebug() << "   NumTime: " << mesg.GetNumTime();
         if (mesg.GetTime(0) != FIT_FLOAT32_INVALID) {
-            printf("   Time: %f\n", mesg.GetTime(0));
+            //qDebug() <<"   Time: " << mesg.GetTime(0);
         }
     }
 }
 
 void FitParser::FitListener::OnMesg(fit::BloodPressureMesg& mesg) {
-    printf("BloodPressureMesg:\n");
-    printf("   GetTimestamp: %d\n", mesg.GetTimestamp());
-    printf("   GetSystolicPressure: %d\n", mesg.GetSystolicPressure());
-    printf("   GetDiastolicPressure: %d\n", mesg.GetDiastolicPressure());
-    printf("   GetMeanArterialPressure: %d\n", mesg.GetMeanArterialPressure());
-    printf("   GetMap3SampleMean: %d\n", mesg.GetMap3SampleMean());
-    printf("   GetMapMorningValues: %d\n", mesg.GetMapMorningValues());
-    printf("   GetMapEveningValues: %d\n", mesg.GetMapEveningValues());
-    printf("   GetHeartRate: %d\n", mesg.GetHeartRate());
-    printf("   GetHeartRateType: %d\n", mesg.GetHeartRateType());
-    printf("   GetStatus: %d\n", mesg.GetStatus());
-    printf("   GetUserProfileIndex: %d\n", mesg.GetUserProfileIndex());
+    qDebug() << "BloodPressureMesg:";
+    qDebug() << "   GetTimestamp: " << mesg.GetTimestamp();
+    qDebug() << "   GetSystolicPressure: " << mesg.GetSystolicPressure();
+    qDebug() << "   GetDiastolicPressure: "<< mesg.GetDiastolicPressure();
+    qDebug() << "   GetMeanArterialPressure: " << mesg.GetMeanArterialPressure();
+    qDebug() << "   GetMap3SampleMean: " << mesg.GetMap3SampleMean();
+    qDebug() << "   GetMapMorningValues: " << mesg.GetMapMorningValues();
+    qDebug() << "   GetMapEveningValues: " << mesg.GetMapEveningValues();
+    qDebug() << "   GetHeartRate: " << mesg.GetHeartRate();
+    qDebug() << "   GetHeartRateType: " << mesg.GetHeartRateType();
+    qDebug() << "   GetStatus: " << mesg.GetStatus();
+    qDebug() << "   GetUserProfileIndex: " << mesg.GetUserProfileIndex();
 }

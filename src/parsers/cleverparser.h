@@ -5,6 +5,8 @@
 #include "abstractparser.h"
 #include "fitparser.h"
 
+#include <QDebug>
+
 /**
  * @brief The CleverParser class: Automatically creates necessary parser.
  * AbstractParser is a parent.
@@ -36,10 +38,14 @@ public:
         if (file_name.endsWith(".fit")) {
             parser = new FitParser(file_name);
             return parser->open();
+        } else if  (file_name.endsWith(".tcx")) {
+            qDebug() << "tcx is not yet supported";
+            return PARSER_EXCEPTION;
         } else {
-            throw(ParserRuntimeException("Unknown file type!!!"));
+            qDebug() << "Unknown file type!!! " << file_name;
             return PARSER_EXCEPTION;
         }
+        return PARSER_EXCEPTION;
     }
 
     /**
@@ -54,6 +60,17 @@ public:
                 return return_code;
         }
         return parser->run();
+    }
+
+    /**
+     * @brief getInfo
+     * @return Information from file
+     */
+    QMap<QString, QMap<QString, QString>> getInfo() {
+        if (parser == nullptr) {
+            return QMap<QString, QMap<QString, QString>>();
+        }
+        return parser->getInfo();
     }
 
 private:

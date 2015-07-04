@@ -29,6 +29,12 @@ public:
      */
     int run();
 
+    /**
+     * @brief getInfo
+     * @return Information from file
+     */
+    QMap<QString, QMap<QString, QString>> getInfo();
+
 private:
     /**
      * @brief fit decoder
