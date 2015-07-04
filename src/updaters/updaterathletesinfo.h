@@ -28,7 +28,6 @@ public:
             return;
         }
         AthleteDB athleteDB(dbName);
-        athleteDB.connect();
         QStringList files = QDir(dDir).entryList(QDir::Dirs);
         emit notifyProgressRange(0, files.length() - 2);
         int count = 0;

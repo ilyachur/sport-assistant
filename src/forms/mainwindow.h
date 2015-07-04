@@ -9,6 +9,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QProgressBar>
+#include <QTableWidgetItem>
 
 #include "../wrappers/athletedb.h"
 #include "../updaters/updater.h"
@@ -33,6 +34,8 @@ private:
     QProgressBar *additionalProdressBar = nullptr;
     QLabel *additionalProdressBarStatus = nullptr;
 
+    QVector<QTableWidgetItem*> tableItems;
+
     AthleteDB athleteDB;
 
     QVector<QPushButton*> pathButtons;
@@ -46,6 +49,7 @@ private:
     int updateAthletesInfo();
 
     void showAthleteInfo(bool);
+    void clearTableItems();
 
     inline void deleteUpdater() {
         if (updater != nullptr)
@@ -53,7 +57,7 @@ private:
         updater = nullptr;
     }
 
-    void updateTable(QVector<QStringList> table, QStringList colName, QStringList rawName = QStringList(), int sortedBy=0);
+    void updateTable(QVector<QStringList> table, QStringList colName, QStringList rowName = QStringList(), int sortedBy=0);
     void addPathButton(QString name);
 
 public slots:

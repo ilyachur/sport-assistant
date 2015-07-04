@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(this, SIGNAL(updateMainProdressBarStatus(QString)), mainProdressBarStatus, SLOT(setText(QString)));
 
-    athleteDB.connect(databaseName);
+    athleteDB.setNameDB(databaseName);
 
     updateAthletesInfo();
 
@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     deleteUpdater();
+    clearTableItems();
     if (mainProdressBar != nullptr)
         delete mainProdressBar;
     if (mainProdressBarStatus != nullptr)
@@ -53,6 +54,12 @@ MainWindow::~MainWindow()
         delete additionalProdressBarStatus;
 
     delete ui;
+}
+
+void MainWindow::clearTableItems() {
+    for (auto i(0); i < tableItems.size(); i++)
+        delete tableItems.at(i);
+    tableItems.clear();
 }
 
 int MainWindow::updateAthletesInfo() {
@@ -75,7 +82,7 @@ void MainWindow::updateMainProdressBar(int value) {
         QObject::disconnect(updater, SIGNAL(notifyProgress(int)), this, SLOT(updateMainProdressBar(int)));
         deleteUpdater();
 
-        QVector<QStringList> athletes = athleteDB.findAthletes();
+        QVector<QStringList> athletes = athleteDB.findAthlete();
         if (athletes.length() < 1) {
             updateMainProdressBarStatus("Athletes were not found");
             return;
@@ -95,7 +102,6 @@ void MainWindow::updateMainProdressBar(int value) {
         for (QStringList athleteInfo : athletes) {
             QStringList athLine;
             athLine << athleteInfo.at(0) << athleteInfo.at(1);
-            athLine.append(athleteInfo.at(1));
             ret.push_back(athLine);
         }
         updateTable(ret, QString("ID,Name").split(","));
@@ -115,13 +121,58 @@ void MainWindow::addPathButton(QString name) {
         pathButtons.at(i)->setEnabled(true);
     }
     trainingButton->clicked();
-    QObject::connect(trainingButton, SIGNAL(clicked(bool)), this, SLOT(choosePathButton(name)));
+    QObject::connect(trainingButton, SIGNAL(clicked(bool)), this, SLOT([=](){choosePathButton(name)}));
     ui->pathLayout->addWidget(trainingButton);
     pathButtons.push_back(trainingButton);
 }
 
-void MainWindow::updateTable(QVector<QStringList> table, QStringList colName, QStringList rawName, int sortedBy) {
+void MainWindow::updateTable(QVector<QStringList> table, QStringList colName, QStringList rowName, int sortedBy) {
+    if (table.size() < 1 || table.at(0).size() < 1) {
+        emit updateMainProdressBarStatus("Table is empty!");
+        return;
+    }
 
+    ui->tableWidget->clear();
+    ui->tableWidget->setColumnCount(table.at(0).size());
+    ui->tableWidget->setRowCount(table.size());
+
+    clearTableItems();
+
+    if (colName.size() > 0) {
+        auto len_table = colName.size();
+        if (len_table > table.at(0).size())
+            len_table = table.at(0).size();
+
+        for (auto i(0); i < len_table; i++) {
+            QTableWidgetItem * tbi = new QTableWidgetItem(colName.at(i));
+            ui->tableWidget->setHorizontalHeaderItem(i, tbi);
+            tableItems.push_back(tbi);
+        }
+    }
+
+    if (rowName.size() > 0) {
+        auto len_table = rowName.size();
+        if (len_table > table.size())
+            len_table = table.size();
+
+        for (auto i(0); i < len_table; i++) {
+            QTableWidgetItem * tbi = new QTableWidgetItem(rowName.at(i));
+            ui->tableWidget->setVerticalHeaderItem(i, tbi);
+            tableItems.push_back(tbi);
+        }
+    }
+
+    qSort(table.begin(), table.end(),
+          [=](const QStringList& a, const QStringList& b)
+                {return a.at(sortedBy) < b.at(sortedBy);});
+
+    for (auto i(0); i < table.size(); i++) {
+        for (auto j(0); j < table.at(i).size(); j++) {
+            QTableWidgetItem * tbi = new QTableWidgetItem(table.at(i).at(j));
+            ui->tableWidget->setItem(i, j, tbi);
+            tableItems.push_back(tbi);
+        }
+    }
 }
 
 void MainWindow::choosePathButton(QString name) {

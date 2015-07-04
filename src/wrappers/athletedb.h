@@ -7,25 +7,26 @@
 #include <QSettings>
 #include <QVector>
 #include <QString>
+#include <QMap>
 
 class AthleteDB
 {
 public:
     AthleteDB(QString name = "");
 
-    QVector<QStringList> findAthletes();
+    QVector<QStringList> findAthlete(QMap<QString, QString> findMap = QMap<QString, QString>());
 
-    int connect(QString name = "");
-    inline void disconnect() {
-        if (db.isOpen())
-            db.close();
+    inline void setNameDB(const QString name) {
+        databaseName = name;
     }
 
-    inline QSqlQuery exec(QString command) {
+    inline QSqlQuery exec(const QString command) {
+        connect();
         return db.exec(command);
     }
 
     inline bool commit() {
+        connect();
         return db.commit();
     }
 
@@ -36,6 +37,9 @@ private:
     QSqlDatabase db;
 
     void saveSettings(QSettings *athleteInfo);
+
+    int connect(QString name = "");
+    void disconnect();
 };
 
 #endif // ATHLETEDB_H

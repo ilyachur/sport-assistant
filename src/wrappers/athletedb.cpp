@@ -15,16 +15,46 @@ AthleteDB::AthleteDB(QString name): databaseName(name)
     db = QSqlDatabase::addDatabase("QSQLITE");
 }
 
-QVector<QStringList> AthleteDB::findAthletes() {
+QVector<QStringList> AthleteDB::findAthlete(QMap<QString, QString> findMap) {
+    connect();
     QVector<QStringList> ret;
+    QString command = "SELECT * FROM athlete";
+    if (findMap.size() > 0) {
+        command += " WHERE ";
+    }
+    QStringList parameters;
+    for (QString key : findMap.keys()) {
+        parameters.append(key + " = \"" + findMap[key] + "\"");
+    }
+    if (parameters.size() > 0)
+        command += parameters.join(" and ");
+    qDebug() << command;
+    QSqlQuery allReturn = db.exec(command);
+    while (allReturn.next()) {
+        QStringList needAdd;
+        needAdd.append(QString::number(allReturn.value("id").toInt()));
+        needAdd.append(allReturn.value("name").toString());
+        needAdd.append(allReturn.value("sex").toString());
+        needAdd.append(QString::number(allReturn.value("bornDay").toULongLong()));
+        needAdd.append(QString::number(allReturn.value("weight").toInt()));
+        needAdd.append(QString::number(allReturn.value("height").toInt()));
+        ret.push_back(needAdd);
+    }
     return ret;
 }
 
-int AthleteDB::connect(QString name) {
-    if (db.isOpen())
+void AthleteDB::disconnect() {
+    if (db.isOpen()){
+        db.commit();
         db.close();
+    }
+}
+
+int AthleteDB::connect(QString name) {
+    disconnect();
     if (!name.isEmpty())
         databaseName = name;
+    db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(databaseName);
     if (!db.open()) {
         qDebug() << "[AthleteDB] " << "Cannot open db: " << databaseName << " with error " << db.lastError().text();
@@ -45,8 +75,7 @@ void AthleteDB::saveSettings(QSettings *athleteInfo) {
 }
 
 int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
-    if (!db.isOpen())
-        return -1;
+    connect();
     // Default settings
     qDebug() << "[AthleteDB] " << "athleteName " << athleteName;
     QSettings athleteInfo(athleteDir + "/data.ini", QSettings::IniFormat);
@@ -97,8 +126,9 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
                     " and weight = " + QString::number(athleteInfo.value("weight", "-1").toInt()) +
                     " and height = " + QString::number(athleteInfo.value("height", "-1").toInt());
         QSqlQuery athleteInfoQuery(db);
-        athleteInfoQuery.next();
-        athleteInfo.setValue("id", athleteInfoQuery.value("id").toInt());
+        athleteInfoQuery.exec(command);
+        if (athleteInfoQuery.next())
+            athleteInfo.setValue("id", athleteInfoQuery.value("id").toInt());
     } else {
         db.exec("UPDATE athlete SET name = \"" + athleteName + "\" WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
         db.exec("UPDATE athlete SET sex = \"" + athleteInfo.value("sex", "Unknown").toString() + "\" WHERE ID = " + QString::number(athleteInfo.value("id", "-1").toInt()));
