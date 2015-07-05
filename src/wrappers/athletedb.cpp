@@ -51,6 +51,67 @@ QVector<QStringList> AthleteDB::findAthlete(QMap<QString, QString> findMap) {
     return ret;
 }
 
+QVector<QStringList> AthleteDB::findTraining(QMap<QString, QString> findMap) {
+    /// Connect to db
+    connect();
+    QVector<QStringList> ret;
+    /// Generate command
+    QString command = "SELECT * FROM training";
+    if (findMap.size() > 0) {
+        command += " WHERE ";
+    }
+    QStringList parameters;
+    for (QString key : findMap.keys()) {
+        parameters.append(key + " = \"" + findMap[key] + "\"");
+    }
+    if (parameters.size() > 0)
+        command += parameters.join(" and ");
+    qDebug() << command;
+
+    QSqlQuery allReturn = db.exec(command);
+    qDebug() << db.lastError().text();
+    while (allReturn.next()) {
+        QStringList needAdd;
+        needAdd.append(QString::number(allReturn.value("ID").toInt()));
+        needAdd.append(QString::number(allReturn.value("athlete_id").toInt()));
+        needAdd.append(QString::number(allReturn.value("date").toULongLong()));
+        needAdd.append(allReturn.value("filetype").toString());
+        ret.push_back(needAdd);
+    }
+    return ret;
+}
+
+QVector<QStringList> AthleteDB::findActivity(QMap<QString, QString> findMap) {
+    /// Connect to db
+    connect();
+    QVector<QStringList> ret;
+    /// Generate command
+    QString command = "SELECT * FROM activities";
+    if (findMap.size() > 0) {
+        command += " WHERE ";
+    }
+    QStringList parameters;
+    for (QString key : findMap.keys()) {
+        parameters.append(key + " = \"" + findMap[key] + "\"");
+    }
+    if (parameters.size() > 0)
+        command += parameters.join(" and ");
+    qDebug() << command;
+
+    QSqlQuery allReturn = db.exec(command);
+    qDebug() << db.lastError().text();
+    while (allReturn.next()) {
+        QStringList needAdd;
+        needAdd.append(QString::number(allReturn.value("ID").toInt()));
+        needAdd.append(QString::number(allReturn.value("training_id").toInt()));
+        needAdd.append(QString::number(allReturn.value("date").toULongLong()));
+        needAdd.append(allReturn.value("activity").toString());
+        needAdd.append(allReturn.value("data").toString());
+        ret.push_back(needAdd);
+    }
+    return ret;
+}
+
 void AthleteDB::disconnect() {
     if (db.isOpen()){
         db.commit();
@@ -157,11 +218,11 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
     }
 
     /// Create training table
-    db.exec("create table if not exists training (ID integer PRIMARY KEY, athlete_id integer, date string, filetype string, FOREIGN KEY(athlete_id) REFERENCES athlete(ID))");
+    db.exec("create table if not exists training (ID integer PRIMARY KEY, athlete_id integer, date integer, filetype string, FOREIGN KEY(athlete_id) REFERENCES athlete(ID))");
     db.commit();
 
     /// Create activities table
-    db.exec("create table if not exists activities (ID integer PRIMARY KEY, training_id integer, activity integer, data string, FOREIGN KEY(training_id) REFERENCES training(ID))");
+    db.exec("create table if not exists activities (ID integer PRIMARY KEY, training_id integer, date integer, activity string, data string, FOREIGN KEY(training_id) REFERENCES training(ID))");
     db.commit();
 
     /// Get activities list
@@ -221,9 +282,9 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
                 }
 
                 /// Add activity
-                db.exec("INSERT INTO activities (activity, training_id, data) VALUES(\"" +
+                db.exec("INSERT INTO activities (activity, training_id, data, date) VALUES(\"" +
                             activityDir + "\", " + QString::number(training_id) + ", \"" +
-                        dumpQMap2QString(trainingMap) + "\")");
+                        dumpQMap2QString(trainingMap) + "\", " + QString::number(start_time_long) + ")");
                 db.commit();
             }
         }

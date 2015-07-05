@@ -3,6 +3,7 @@
 
 #include <QHeaderView>
 #include <QStringList>
+#include <QDateTime>
 
 #include "../updaters/updaterathletesinfo.h"
 
@@ -54,8 +55,9 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::clearTableItems() {
-    for (auto i(0); i < tableItems.size(); i++)
+    /*for (auto i(0); i < tableItems.size(); i++) {
         delete tableItems.at(i);
+    }*/
     tableItems.clear();
 }
 
@@ -118,7 +120,10 @@ void MainWindow::addPathButton(QString name) {
         pathButtons.at(i)->setEnabled(true);
     }
     trainingButton->clicked();
-    QObject::connect(trainingButton, SIGNAL(clicked(bool)), this, SLOT([=](){choosePathButton(name)}));
+    if (tableLevel == 0)
+        QObject::connect(trainingButton, SIGNAL(clicked(bool)), this, SLOT(clickAthletePath()));
+    else
+        QObject::connect(trainingButton, SIGNAL(clicked(bool)), this, SLOT(clickLevel1Upper()));
     ui->pathLayout->addWidget(trainingButton);
     pathButtons.push_back(trainingButton);
 }
@@ -172,12 +177,75 @@ void MainWindow::updateTable(QVector<QStringList> table, QStringList colName, QS
     }
 }
 
-void MainWindow::choosePathButton(QString name) {
+void MainWindow::clickAthletePath() {
+    showAthleteInfo(false);
+    while (pathButtons.size() > 1) {
+        QPushButton *tempButton = pathButtons.at(1);
+        pathButtons.remove(1);
+        tempButton->deleteLater();
+        delete tempButton;
+    }
+    pathButtons.at(0)->setEnabled(false);
+    ui->pathLayout->update();
 
+    QVector<QStringList> athletes = athleteDB.findAthlete();
+    if (athletes.length() < 1) {
+        updateMainProdressBarStatus("Athletes were not found");
+        return;
+    }
+
+    QVector<QStringList> ret;
+    for (QStringList athleteInfo : athletes) {
+        QStringList athLine;
+        athLine << athleteInfo.at(0) << athleteInfo.at(1);
+        ret.push_back(athLine);
+    }
+    tableLevel = 0;
+    updateTable(ret, QString("ID,Name").split(","));
 }
 
-void MainWindow::clickTable(int row, int col) {
+void MainWindow::clickLevel1Upper() {}
 
+void MainWindow::clickTable(int row, int col) {
+    if (tableLevel < 0)
+        return;
+    if (tableLevel == 0) {
+        athleteID = ui->tableWidget->item(row, 0)->text().toInt();
+        QString name = ui->tableWidget->item(row, 1)->text();
+        QMap<QString, QString> findMap;
+        findMap.insert("athlete_id", QString::number(athleteID));
+        QVector<QStringList> trainings = athleteDB.findTraining(findMap);
+        if (trainings.length() < 1) {
+            updateMainProdressBarStatus("Trainings were not found");
+            return;
+        }
+
+        QVector<QStringList> ret;
+        for (QStringList trainingInfo : trainings) {
+            QMap<QString, QString> findMapActivity;
+            findMapActivity.insert("training_id", QString::number(trainingInfo.at(0).toInt()));
+            QVector<QStringList> activities = athleteDB.findActivity(findMapActivity);
+            if (activities.length() < 1) {
+                updateMainProdressBarStatus("Activities were not found");
+                return;
+            }
+            for (QStringList activityInfo : activities) {
+                QStringList athLine;
+                QDateTime date;
+                date.setMSecsSinceEpoch(activityInfo.at(2).toULongLong());
+
+                athLine << date.toString() << activityInfo.at(0) << activityInfo.at(3) << trainingInfo.at(3) << trainingInfo.at(0);
+                ret.push_back(athLine);
+            }
+        }
+
+        updateTable(ret, QString("Date,Activity ID,Activity name,File type,Training ID").split(","));
+        addPathButton("Trainings " + name);
+        showAthleteInfo(true);
+        tableLevel = 1;
+    } else if (tableLevel == 1 && !isProcess) {
+
+    }
 }
 
 void MainWindow::showAthleteInfo(bool show) {}

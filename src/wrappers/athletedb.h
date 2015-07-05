@@ -29,6 +29,20 @@ public:
     QVector<QStringList> findAthlete(QMap<QString, QString> findMap = QMap<QString, QString>());
 
     /**
+     * @brief findTrainings - need for finding trainings
+     * @param findMap - Map with information about training (default is empty)
+     * @return vector with trainings information [id, athlete_id, date, filetype]
+     */
+    QVector<QStringList> findTraining(QMap<QString, QString> findMap = QMap<QString, QString>());
+
+    /**
+     * @brief findActivity - need for finding activities
+     * @param findMap - Map with information about activity (default is empty)
+     * @return vector with activities information [id, training_id, date, activity, data]
+     */
+    QVector<QStringList> findActivity(QMap<QString, QString> findMap = QMap<QString, QString>());
+
+    /**
      * @brief Setter for DataBase name
      * @param The name of data base
      */

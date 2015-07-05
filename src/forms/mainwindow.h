@@ -40,6 +40,8 @@ private:
 
     QVector<QPushButton*> pathButtons;
     int tableLevel = -1;
+    int athleteID = -1;
+    bool isProcess = false;
 
     QString dataFolder;
     QString databaseName;
@@ -63,7 +65,8 @@ private:
 public slots:
     void clickTable(int row, int col);
     void updateMainProdressBar(int value);
-    void choosePathButton(QString name);
+    void clickAthletePath();
+    void clickLevel1Upper();
 
 signals:
     void updateMainProdressBarStatus(QString text);
