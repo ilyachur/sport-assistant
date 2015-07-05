@@ -3,16 +3,20 @@
 
 #include <QHeaderView>
 #include <QStringList>
+#include <QFileDialog>
 #include <QDateTime>
+#include <QIcon>
 
 #include "../updaters/updaterathletesinfo.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), dataFolder("..\\sport-assistant\\test_data"),
+    ui(new Ui::MainWindow), dataFolder("..\\test_data"),
     databaseName("db.sqlite3")
 {
     ui->setupUi(this);
+
+    setWindowIcon(QIcon(":/icons/heart.ico"));
 
     /// Configure status bar
     mainProdressBar = new QProgressBar(ui->statusBar);
@@ -26,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->tableWidget, SIGNAL(cellClicked(int,int)), this, SLOT(clickTable(int,int)));
 
     // TODO: Fixed all buttons
-    QObject::connect(ui->actionChoose_data_directory, SIGNAL(triggered(bool)), this, SLOT(close()));
-    QObject::connect(ui->actionOpen_data_base, SIGNAL(triggered(bool)), this, SLOT(close()));
+    QObject::connect(ui->actionChoose_data_directory, SIGNAL(triggered(bool)), this, SLOT(chooseDataDirectory()));
+    QObject::connect(ui->actionOpen_data_base, SIGNAL(triggered(bool)), this, SLOT(openDataBase()));
     QObject::connect(ui->actionExit, SIGNAL(triggered(bool)), this, SLOT(close()));
 
 
@@ -36,6 +40,29 @@ MainWindow::MainWindow(QWidget *parent) :
     athleteDB.setNameDB(databaseName);
 
     updateAthletesInfo();
+}
+
+void MainWindow::chooseDataDirectory() {
+    QString fileName = QFileDialog::getExistingDirectory(this, "Choose data directory");
+    if (fileName == "")
+        return;
+    dataFolder = fileName;
+    updateAthletesInfo();
+}
+
+void MainWindow::openDataBase() {
+    QFileDialog openDialog(this);
+    openDialog.setAcceptMode(QFileDialog::AcceptSave);
+    openDialog.setNameFilter("sqlite3(*.sqlite3)");
+    openDialog.setDefaultSuffix("sqlite3");
+    openDialog.setWindowTitle("Open or create data base");
+    openDialog.setLabelText(QFileDialog::Accept, "Open");
+    if (openDialog.exec()) {
+        QString fileName = openDialog.selectedFiles()[0];
+        databaseName = fileName;
+        athleteDB.setNameDB(databaseName);
+        updateAthletesInfo();
+    }
 }
 
 MainWindow::~MainWindow()

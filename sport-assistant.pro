@@ -165,3 +165,6 @@ HEADERS  += src/forms/mainwindow.h \
     src/updaters/updater.h
 
 FORMS    += forms/mainwindow.ui
+
+RESOURCES += \
+    mainresources.qrc

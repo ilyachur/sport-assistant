@@ -68,6 +68,9 @@ public slots:
     void clickAthletePath();
     void clickLevel1Upper();
 
+    void openDataBase();
+    void chooseDataDirectory();
+
 signals:
     void updateMainProdressBarStatus(QString text);
 

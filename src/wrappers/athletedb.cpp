@@ -179,7 +179,6 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
             }
         }
     }
-
     /// Check modification data
     if (QFileInfo(athleteDir).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong() &&
              QFileInfo(athleteDir + "/data.ini").lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong()) {
@@ -238,7 +237,8 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
         //TODO: Parallel for for it
         /// Get trainings
         for (QString training : listTrainings) {
-            if (QFileInfo(activityPath + "/" + training).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong())
+            if (athleteInfo.value("lastUpdate", "-1").toULongLong() > QFileInfo(databaseName).created().toMSecsSinceEpoch() &&
+                    QFileInfo(activityPath + "/" + training).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong())
                 continue;
             CleverParser clParser(activityPath + "/" + training);
             int retRun = clParser.run();
