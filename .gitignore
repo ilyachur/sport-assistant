@@ -28,6 +28,5 @@
 *.out
 *.app
 
-test_data
 tbb/
 build/
