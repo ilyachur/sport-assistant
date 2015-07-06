@@ -10,6 +10,7 @@
 #include <QIcon>
 
 #include "../updaters/updaterathletesinfo.h"
+#include "analysesettingsdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -312,10 +313,9 @@ void MainWindow::clickTable(int row, int col) {
             }
             for (QStringList activityInfo : activities) {
                 QStringList athLine;
-                QDateTime date;
-                date.setMSecsSinceEpoch(activityInfo.at(2).toULongLong());
 
-                athLine << date.toString() << activityInfo.at(0) << activityInfo.at(3) << trainingInfo.at(3) << trainingInfo.at(0);
+                athLine << QDateTime::fromMSecsSinceEpoch(activityInfo.at(2).toULongLong()).toString(
+                              "dd.MM.yyyy hh:mm:ss") << activityInfo.at(0) << activityInfo.at(3) << trainingInfo.at(3) << trainingInfo.at(0);
                 ret.push_back(athLine);
             }
         }
@@ -325,6 +325,16 @@ void MainWindow::clickTable(int row, int col) {
         showAthleteInfo(true);
         tableLevel = 1;
     } else if (tableLevel == 1 && !isProcess) {
+        int activityID = ui->tableWidget->item(row, 1)->text().toInt();
+        QMap<QString, QString> findMap;
+        findMap.insert("id", QString::number(activityID));
+        QVector<QStringList> activityList = athleteDB.findActivity(findMap);
+        QString athleteName = pathButtons.at(tableLevel)->text().split(" ").at(1);
+        QString date = QDateTime::fromMSecsSinceEpoch(activityList.at(0).at(2).toULongLong())
+                .toString("dd.MM.yyyy hh:mm:ss");
+        QString activityName = activityList.at(0).at(3);
 
+        AnalyseSettingsDialog settingsDialog(activityID, databaseName);
+        settingsDialog.exec();
     }
 }

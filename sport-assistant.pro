@@ -33,7 +33,8 @@ SOURCES += src/main.cpp\
     src/parsers/fit/fit_mesg_with_event_broadcaster.cpp \
     src/parsers/fit/fit_profile.cpp \
     src/parsers/fit/fit_unicode.cpp \
-    src/wrappers/athletedb.cpp
+    src/wrappers/athletedb.cpp \
+    src/forms/analysesettingsdialog.cpp
 
 HEADERS  += src/forms/mainwindow.h \
     src/parsers/fitparser.h \
@@ -162,9 +163,11 @@ HEADERS  += src/forms/mainwindow.h \
     src/parsers/fit/fit_zones_target_mesg_listener.hpp \
     src/wrappers/athletedb.h \
     src/updaters/updaterathletesinfo.h \
-    src/updaters/updater.h
+    src/updaters/updater.h \
+    src/forms/analysesettingsdialog.h
 
-FORMS    += forms/mainwindow.ui
+FORMS    += src/forms/mainwindow.ui \
+    src/forms/analysesettingsdialog.ui
 
 RESOURCES += \
     mainresources.qrc
