@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QDateTime>
 #include <QSysInfo>
+#include <QPixmap>
 #include <QIcon>
 
 #include "../updaters/updaterathletesinfo.h"
@@ -20,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     if (QSysInfo::productType() == "osx") {
         dataFolder = QApplication::applicationDirPath() + "/../../../test_data";
     } else {
-        dataFolder = QApplication::applicationDirPath() + "/../test_data";
+        dataFolder = QApplication::applicationDirPath() + "/../../test_data";
     }
 
     setWindowIcon(QIcon(":/icons/heart.ico"));
@@ -121,16 +122,7 @@ void MainWindow::updateMainProdressBar(int value) {
             return;
         }
         tableLevel = 0;
-        /*[=]()->QVector<QStringList> {
-            QVector<QStringList> ret;
-            for (QStringList athleteInfo : athletes) {
-                QStringList athLine;
-                athLine << athleteInfo.at(0) << athleteInfo.at(1);
-                athLine.append(athleteInfo.at(1));
-                ret.push_back(athLine);
-            }
-            return ret;
-        }*/
+
         QVector<QStringList> ret;
         for (QStringList athleteInfo : athletes) {
             QStringList athLine;
@@ -240,6 +232,61 @@ void MainWindow::clickAthletePath() {
 
 void MainWindow::clickLevel1Upper() {}
 
+void MainWindow::showAthleteInfo(bool show) {
+    static QVector<QWidget *> oldWidgets;
+    if (!show) {
+        for (auto i(0); i < ui->userInfoLayout->count(); i++) {
+            ui->userInfoLayout->itemAt(i)->widget()->setParent(nullptr);
+        }
+        for (auto oldWidget : oldWidgets) {
+            delete oldWidget;
+        }
+        oldWidgets.clear();
+    } else {
+        QLabel *profileImage = new QLabel();
+        QPixmap profilePixmap(":/icons/profile.png");
+        profilePixmap = profilePixmap.scaled(profilePixmap.size().width() / 2,
+                                             profilePixmap.size().height() / 2);
+        profileImage->setPixmap(profilePixmap);
+        ui->userInfoLayout->addWidget(profileImage);
+        oldWidgets.push_back(profileImage);
+        QMap<QString, QString> ret;
+        ret.insert("id", QString::number(athleteID));
+        QVector<QStringList> athleteInfo = athleteDB.findAthlete(ret);
+
+        QLabel *profileCommonInfo = new QLabel();
+        if (athleteInfo.size() != 1) {
+            showAthleteInfo(false);
+            qDebug() << "Error! We have more that one athlete with ID: " << QString::number(athleteID);
+            return;
+        }
+        QStringList profileInfoListStr;
+        profileInfoListStr << "ID: " + athleteInfo.at(0).at(0);
+        profileInfoListStr << "Name: " + athleteInfo.at(0).at(1);
+        profileInfoListStr << "Sex: " + athleteInfo.at(0).at(2);
+        if (athleteInfo.at(0).at(3).toULongLong() != 0) {
+            profileInfoListStr << "Born day: " + QDateTime::fromMSecsSinceEpoch(
+                                  athleteInfo.at(0).at(3).toULongLong()).toString("dd.MM.yyyy");
+        } else {
+            profileInfoListStr << "Born day: Unknown";
+        }
+        if (athleteInfo.at(0).at(4).toInt() != -1) {
+            profileInfoListStr << "Weight: " + athleteInfo.at(0).at(4) + " kg";
+        } else {
+            profileInfoListStr << "Weight: Unknown";
+        }
+        if (athleteInfo.at(0).at(5).toInt() != -1) {
+            profileInfoListStr << "Height: " + athleteInfo.at(0).at(5) + " cm";
+        } else {
+            profileInfoListStr << "Height: Unknown";
+        }
+
+        profileCommonInfo->setText(profileInfoListStr.join("\n"));
+        ui->userInfoLayout->addWidget(profileCommonInfo);
+        oldWidgets.push_back(profileCommonInfo);
+    }
+}
+
 void MainWindow::clickTable(int row, int col) {
     if (tableLevel < 0)
         return;
@@ -281,5 +328,3 @@ void MainWindow::clickTable(int row, int col) {
 
     }
 }
-
-void MainWindow::showAthleteInfo(bool show) {}
