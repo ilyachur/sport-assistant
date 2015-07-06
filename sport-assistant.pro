@@ -168,3 +168,5 @@ FORMS    += forms/mainwindow.ui
 
 RESOURCES += \
     mainresources.qrc
+
+CONFIG += c++11
