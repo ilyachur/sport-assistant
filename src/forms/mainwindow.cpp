@@ -5,16 +5,23 @@
 #include <QStringList>
 #include <QFileDialog>
 #include <QDateTime>
+#include <QSysInfo>
 #include <QIcon>
 
 #include "../updaters/updaterathletesinfo.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), dataFolder("..\\test_data"),
+    ui(new Ui::MainWindow),
     databaseName("db.sqlite3")
 {
     ui->setupUi(this);
+
+    if (QSysInfo::productType() == "osx") {
+        dataFolder = QApplication::applicationDirPath() + "/../../../test_data";
+    } else {
+        dataFolder = QApplication::applicationDirPath() + "/../test_data";
+    }
 
     setWindowIcon(QIcon(":/icons/heart.ico"));
 
