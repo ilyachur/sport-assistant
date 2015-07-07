@@ -17,9 +17,10 @@ public:
         doAnalyse = _doAnalyse;
     }
 
-    inline void kill() {
-        killed = true;
-    }
+private:
+    QString dbName;
+    QString dDir;
+    bool doAnalyse;
 
     void run() {
         if (dbName.isEmpty() || dDir.isEmpty() || !QDir(dDir).exists()) {
@@ -46,12 +47,6 @@ public:
             emit notifyProgress(count);
         }
     }
-
-private:
-    QString dbName;
-    QString dDir;
-    bool doAnalyse;
-    bool killed = false;
 
 signals:
     void notifyProgress(int value);

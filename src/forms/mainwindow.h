@@ -65,6 +65,7 @@ private:
 public slots:
     void clickTable(int row, int col);
     void updateMainProdressBar(int value);
+    void updateAnalyseProgress(int value);
     void clickAthletePath();
     void clickLevel1Upper();
 

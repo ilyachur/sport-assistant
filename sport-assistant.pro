@@ -34,7 +34,13 @@ SOURCES += src/main.cpp\
     src/parsers/fit/fit_profile.cpp \
     src/parsers/fit/fit_unicode.cpp \
     src/wrappers/athletedb.cpp \
-    src/forms/analysesettingsdialog.cpp
+    src/forms/analysesettingsdialog.cpp \
+    src/forms/marktrainingdialog.cpp \
+    src/forms/addparametersdialog.cpp \
+    src/forms/predictdialog.cpp \
+    src/updaters/updateranalysetraining.cpp \
+    src/algorithms/lombscargle.cpp \
+    src/wrappers/traininganalyser.cpp
 
 HEADERS  += src/forms/mainwindow.h \
     src/parsers/fitparser.h \
@@ -164,10 +170,19 @@ HEADERS  += src/forms/mainwindow.h \
     src/wrappers/athletedb.h \
     src/updaters/updaterathletesinfo.h \
     src/updaters/updater.h \
-    src/forms/analysesettingsdialog.h
+    src/forms/analysesettingsdialog.h \
+    src/forms/marktrainingdialog.h \
+    src/forms/addparametersdialog.h \
+    src/forms/predictdialog.h \
+    src/updaters/updateranalysetraining.h \
+    src/algorithms/lombscargle.h \
+    src/wrappers/traininganalyser.h
 
 FORMS    += src/forms/mainwindow.ui \
-    src/forms/analysesettingsdialog.ui
+    src/forms/analysesettingsdialog.ui \
+    src/forms/marktrainingdialog.ui \
+    src/forms/addparametersdialog.ui \
+    src/forms/predictdialog.ui
 
 RESOURCES += \
     mainresources.qrc

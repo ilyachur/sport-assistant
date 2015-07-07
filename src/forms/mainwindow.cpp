@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QIcon>
 
+#include "../updaters/updateranalysetraining.h"
 #include "../updaters/updaterathletesinfo.h"
 #include "analysesettingsdialog.h"
 
@@ -329,12 +330,43 @@ void MainWindow::clickTable(int row, int col) {
         QMap<QString, QString> findMap;
         findMap.insert("id", QString::number(activityID));
         QVector<QStringList> activityList = athleteDB.findActivity(findMap);
+        if (activityList.size() != 1) {
+            qDebug() << "Error! Dctivity list != 1 for id " << QString::number(activityID);
+            return;
+        }
         QString athleteName = pathButtons.at(tableLevel)->text().split(" ").at(1);
-        QString date = QDateTime::fromMSecsSinceEpoch(activityList.at(0).at(2).toULongLong())
-                .toString("dd.MM.yyyy hh:mm:ss");
+        QDateTime date = QDateTime::fromMSecsSinceEpoch(activityList.at(0).at(2).toULongLong());
         QString activityName = activityList.at(0).at(3);
 
         AnalyseSettingsDialog settingsDialog(activityID, databaseName);
         settingsDialog.exec();
+
+        QSettings *settings = new QSettings();
+        if (!settingsDialog.getSettings(settings)) {
+            updateMainProdressBarStatus("Training analysis canceled!");
+            return;
+        }
+        return;
+
+        QString trainingDataStr = activityList.at(0).at(4);
+
+        QMap<QString, QString> tempMap = AthleteDB::dumpQString2QMap(trainingDataStr);
+        QMap<unsigned long long, double> trainingData;
+        for(QString key : tempMap.keys()) {
+            trainingData.insert(key.toULongLong(), tempMap[key].toDouble());
+        }
+
+        deleteUpdater();
+        updater = new UpdaterAnalyseTraining(athleteName, activityID, databaseName, trainingData, date, settings, activityName);
+        QObject::connect(updater, SIGNAL(notifyProgressRange(int,int)), mainProdressBar, SLOT(setRange(int,int)));
+        QObject::connect(updater, SIGNAL(notifyProgress(int)), this, SLOT(updateAnalyseProgress(int)));
+
+        updateMainProdressBarStatus("Training analysing...");
+        isProcess = true;
+        updater->start();
     }
+}
+
+void MainWindow::updateAnalyseProgress(int value) {
+
 }

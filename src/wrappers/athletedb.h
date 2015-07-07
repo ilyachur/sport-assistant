@@ -77,6 +77,36 @@ public:
      */
     int updateAthleteInfo(QString athleteName, QString athleteDir);
 
+    /**
+     * @brief dumpQMap2QString for saving training to db
+     * @param dumpedMap - training info
+     * @return string with dump
+     */
+    static QString dumpQMap2QString(const QMap<QString, QString> dumpedMap) {
+        QString retString;
+        QStringList keyValueList;
+        for (auto &key : dumpedMap.keys()) {
+            keyValueList.append(key + ":" + dumpedMap[key]);
+        }
+        retString = keyValueList.join(",");
+        return retString;
+    }
+
+    /**
+     * @brief dumpQString2QMap for restore training data from db
+     * @param dumpedString - string from data base
+     * @return Map with training information
+     */
+    static QMap<QString, QString> dumpQString2QMap(const QString dumpedString) {
+        QMap<QString, QString> retMap;
+        QStringList keyValueList = dumpedString.split(",");
+        for (auto &keyValue : keyValueList) {
+            QStringList parts = keyValue.split(":");
+            retMap.insert(parts.at(0), parts.at(1));
+        }
+        return retMap;
+    }
+
 private:
     /**
      * @brief databaseName - data base name
@@ -92,36 +122,6 @@ private:
      * @param athleteInfo - pointer on settings
      */
     void saveSettings(QSettings *athleteInfo);
-
-    /**
-     * @brief dumpQMap2QString for saving training to db
-     * @param dumpedMap - training info
-     * @return string with dump
-     */
-    QString dumpQMap2QString(const QMap<QString, QString> dumpedMap) {
-        QString retString;
-        QStringList keyValueList;
-        for (auto &key : dumpedMap.keys()) {
-            keyValueList.append(key + ":" + dumpedMap[key]);
-        }
-        retString = keyValueList.join(",");
-        return retString;
-    }
-
-    /**
-     * @brief dumpQString2QMap for restore training data from db
-     * @param dumpedString - string from data base
-     * @return Map with training information
-     */
-    QMap<QString, QString> dumpQString2QMap(const QString dumpedString) {
-        QMap<QString, QString> retMap;
-        QStringList keyValueList = dumpedString.split(",");
-        for (auto &keyValue : keyValueList) {
-            QStringList parts = keyValue.split(":");
-            retMap.insert(parts.at(0), parts.at(1));
-        }
-        return retMap;
-    }
 
     /**
      * @brief connect to db

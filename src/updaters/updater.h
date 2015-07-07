@@ -9,7 +9,7 @@ public:
     inline void kill() {
         killed = true;
     }
-private:
+protected:
     bool killed = false;
 
 signals:
