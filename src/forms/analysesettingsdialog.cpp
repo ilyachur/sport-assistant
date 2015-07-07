@@ -1,6 +1,7 @@
 #include "analysesettingsdialog.h"
 #include "ui_analysesettingsdialog.h"
 
+#include <QDebug>
 #include "predictdialog.h"
 #include "marktrainingdialog.h"
 #include "addparametersdialog.h"
@@ -62,86 +63,51 @@ void AnalyseSettingsDialog::checkAnalysisType() {
 }
 
 void AnalyseSettingsDialog::saveSettings() {
-    settings.beginGroup("pre-processing");
     if (ui->radioFilterNo->isChecked())
-        settings.setValue("filtered", false);
+        settings.insert("pre-processing:filtered", false);
     else
-        settings.setValue("filtered", true);
-    settings.endGroup();
+        settings.insert("pre-processing:filtered", true);
 
-    settings.beginGroup("analyse");
-    settings.beginGroup("spectrum");
     if (ui->checkWavelet->isChecked())
-        settings.setValue("wavelet", true);
+        settings.insert("analyse:spectrum:wavelet", true);
+    else
+        settings.insert("analyse:spectrum:wavelet", false);
     if (ui->checkLomb->isChecked())
-        settings.setValue("lomb", true);
+        settings.insert("analyse:spectrum:lomb", true);
+    else
+        settings.insert("analyse:spectrum:lomb", false);
     if (ui->checkFFT->isChecked())
-        settings.setValue("fft", true);
-    settings.endGroup();
+        settings.insert("analyse:spectrum:fft", true);
+    else
+        settings.insert("analyse:spectrum:fft", false);
 
-    settings.beginGroup("time");
     if (ui->checkTimeAnalisys->isChecked())
-        settings.setValue("timeAnalisys", true);
-    settings.endGroup();
+        settings.insert("analyse:time:timeAnalisys", true);
+    else
+        settings.insert("analyse:time:timeAnalisys", false);
 
-    settings.endGroup();
-
-    settings.beginGroup("post-processing");
-    settings.endGroup();
+    //settings.beginGroup("post-processing");
+    //settings.endGroup();
 
     if (ui->checkSaveImage->isChecked())
-        settings.setValue("save_images", true);
+        settings.insert("save_images", true);
     else
-        settings.setValue("save_images", false);
+        settings.insert("save_images", false);
 
     if (ui->checkSaveCSV->isChecked())
-        settings.setValue("save_csv", true);
+        settings.insert("save_csv", true);
     else
-        settings.setValue("save_csv", false);
+        settings.insert("save_csv", false);
 
     savedSettings = true;
     close();
 }
 
-bool AnalyseSettingsDialog::getSettings(QSettings * newSettings) {
+QMap<QString, bool> AnalyseSettingsDialog::getSettings() {
     if (!savedSettings)
-        return false;
+        return QMap<QString, bool>();
 
-    settings.beginGroup("pre-processing");
-    newSettings->beginGroup("pre-processing");
-    newSettings->setValue("filtered", settings.value("filtered", true));
-    newSettings->endGroup();
-    settings.endGroup();
-
-    settings.beginGroup("analyse");
-    newSettings->beginGroup("analyse");
-
-    settings.beginGroup("spectrum");
-    newSettings->beginGroup("spectrum");
-    newSettings->setValue("wavelet", settings.value("wavelet", false));
-    newSettings->setValue("lomb", settings.value("lomb", false));
-    newSettings->setValue("fft", settings.value("fft", false));
-    newSettings->endGroup();
-    settings.endGroup();
-
-    settings.beginGroup("time");
-    newSettings->beginGroup("time");
-    newSettings->setValue("timeAnalisys", settings.value("timeAnalisys", false));
-    newSettings->endGroup();
-    settings.endGroup();
-
-    newSettings->endGroup();
-    settings.endGroup();
-
-    settings.beginGroup("post-processing");
-    newSettings->beginGroup("post-processing");
-    newSettings->endGroup();
-    settings.endGroup();
-
-    newSettings->setValue("save_images", settings.value("save_images", false));
-    newSettings->setValue("save_csv", settings.value("save_csv", false));
-
-    return true;
+    return settings;
 }
 
 void AnalyseSettingsDialog::markClicked() {

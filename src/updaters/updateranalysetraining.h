@@ -13,7 +13,7 @@ class UpdaterAnalyseTraining : public Updater {
 public:
     UpdaterAnalyseTraining(QString _athleteName, int _activityID, QString dbName,
                            QMap<unsigned long long, double> trainingMap, QDateTime _date,
-                           QSettings *_analyseSettings, QString activity);
+                           QMap<QString, bool> _analyseSettings, QString activity);
 private:
     void run();
 
@@ -21,13 +21,25 @@ private:
     int activityID;
     QString databaseName;
     QMap<unsigned long long, double> training;
-    QSettings *analyseSettings;
+    QMap<QString, bool> analyseSettings;
     QDateTime date;
     QString activityName;
+    bool saveImages = false;
+    bool showImages = false;
+
+public slots:
+    void notifyProgressSlot(int value) {
+        emit notifyProgress(value);
+    }
+
+    void notifyProgressRangeSlot(int from, int to) {
+        emit notifyProgressRange(from, to);
+    }
 
 signals:
     void notifyProgress(int value);
     void notifyProgressRange(int from, int to);
+    void notifyProgressStatus(QString status);
 };
 
 #endif // UPDATERANALYSETRAINING_H

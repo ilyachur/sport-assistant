@@ -120,7 +120,7 @@ void MainWindow::updateMainProdressBar(int value) {
 
         QVector<QStringList> athletes = athleteDB.findAthlete();
         if (athletes.length() < 1) {
-            updateMainProdressBarStatus("Athletes were not found");
+            emit updateMainProdressBarStatus("Athletes were not found");
             return;
         }
         tableLevel = 0;
@@ -218,7 +218,7 @@ void MainWindow::clickAthletePath() {
 
     QVector<QStringList> athletes = athleteDB.findAthlete();
     if (athletes.length() < 1) {
-        updateMainProdressBarStatus("Athletes were not found");
+        emit updateMainProdressBarStatus("Athletes were not found");
         return;
     }
 
@@ -299,7 +299,7 @@ void MainWindow::clickTable(int row, int col) {
         findMap.insert("athlete_id", QString::number(athleteID));
         QVector<QStringList> trainings = athleteDB.findTraining(findMap);
         if (trainings.length() < 1) {
-            updateMainProdressBarStatus("Trainings were not found");
+            emit updateMainProdressBarStatus("Trainings were not found");
             return;
         }
 
@@ -309,7 +309,7 @@ void MainWindow::clickTable(int row, int col) {
             findMapActivity.insert("training_id", QString::number(trainingInfo.at(0).toInt()));
             QVector<QStringList> activities = athleteDB.findActivity(findMapActivity);
             if (activities.length() < 1) {
-                updateMainProdressBarStatus("Activities were not found");
+                emit updateMainProdressBarStatus("Activities were not found");
                 return;
             }
             for (QStringList activityInfo : activities) {
@@ -341,12 +341,13 @@ void MainWindow::clickTable(int row, int col) {
         AnalyseSettingsDialog settingsDialog(activityID, databaseName);
         settingsDialog.exec();
 
-        QSettings *settings = new QSettings();
-        if (!settingsDialog.getSettings(settings)) {
-            updateMainProdressBarStatus("Training analysis canceled!");
+        QMap<QString, bool> settings;
+        settings = settingsDialog.getSettings();
+        if (settings.size() < 1) {
+            emit updateMainProdressBarStatus("Training analysis canceled!");
             return;
         }
-        return;
+        //qDebug() << settings->value("filtered", true).toBool();
 
         QString trainingDataStr = activityList.at(0).at(4);
 
@@ -360,13 +361,14 @@ void MainWindow::clickTable(int row, int col) {
         updater = new UpdaterAnalyseTraining(athleteName, activityID, databaseName, trainingData, date, settings, activityName);
         QObject::connect(updater, SIGNAL(notifyProgressRange(int,int)), mainProdressBar, SLOT(setRange(int,int)));
         QObject::connect(updater, SIGNAL(notifyProgress(int)), this, SLOT(updateAnalyseProgress(int)));
+        QObject::connect(updater, SIGNAL(notifyProgressStatus(QString)), mainProdressBarStatus, SLOT(setText(QString)));
 
-        updateMainProdressBarStatus("Training analysing...");
+        emit updateMainProdressBarStatus("Training analysing...");
         isProcess = true;
         updater->start();
     }
 }
 
 void MainWindow::updateAnalyseProgress(int value) {
-
+    emit updateMainProdressBar(value);
 }

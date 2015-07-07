@@ -1,7 +1,7 @@
 #include "lombscargle.h"
 #include <math.h>
 
-void lombscargle(double* t, double* x, double* w, double* P, int Nt, int Nw)
+void Analyse::lombscargle(double* t, double* x, double* w, double* P, int Nt, int Nw)
 {
   /**
    *  Purpose

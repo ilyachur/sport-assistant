@@ -1,6 +1,7 @@
 #ifndef ANALYSESETTINGSDIALOG_H
 #define ANALYSESETTINGSDIALOG_H
 
+#include <QMap>
 #include <QDialog>
 #include <QString>
 #include <QSettings>
@@ -17,7 +18,7 @@ public:
     AnalyseSettingsDialog(int _activityID, QString dbName, QWidget *parent = 0);
     ~AnalyseSettingsDialog();
 
-    bool getSettings(QSettings * newSettings);
+    QMap<QString, bool> getSettings();
 
 private:
     Ui::AnalyseSettingsDialog *ui;
@@ -27,7 +28,7 @@ private:
 
     QString dataBaseName;
     int activityID;
-    QSettings settings;
+    QMap<QString, bool> settings;
 
 public slots:
     void saveSettings();

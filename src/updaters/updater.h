@@ -15,6 +15,7 @@ protected:
 signals:
     virtual void notifyProgress(int value) = 0;
     virtual void notifyProgressRange(int from, int to) = 0;
+    virtual void notifyProgressStatus(QString status) = 0;
 };
 
 #endif // UPDATER_H

@@ -40,7 +40,8 @@ SOURCES += src/main.cpp\
     src/forms/predictdialog.cpp \
     src/updaters/updateranalysetraining.cpp \
     src/algorithms/lombscargle.cpp \
-    src/wrappers/traininganalyser.cpp
+    src/algorithms/filter.cpp \
+    src/algorithms/analyse.cpp
 
 HEADERS  += src/forms/mainwindow.h \
     src/parsers/fitparser.h \
@@ -176,7 +177,8 @@ HEADERS  += src/forms/mainwindow.h \
     src/forms/predictdialog.h \
     src/updaters/updateranalysetraining.h \
     src/algorithms/lombscargle.h \
-    src/wrappers/traininganalyser.h
+    src/algorithms/filter.h \
+    src/algorithms/analyse.h
 
 FORMS    += src/forms/mainwindow.ui \
     src/forms/analysesettingsdialog.ui \
