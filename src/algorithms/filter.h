@@ -2,6 +2,7 @@
 #define FILTER_H
 
 #include <QMap>
+#include <QList>
 #include <QObject>
 #include <QString>
 #include <QDateTime>
@@ -19,11 +20,48 @@ public:
 
     QMap<unsigned long long, double> simpleFilter();
 
+    /**
+     * @brief medianFilter - 1D MEDIAN FILTER wrapper
+     * @param signal - input signal
+     * @param result - output signal
+     * @param N - length of the signal
+     */
+    // link http://www.librow.com/articles/article-1/appendix-a-2
+    template <class T> void medianFilter(T *signal, T *result, int N);
+
+    /**
+     * @brief medianFilter - 2D MEDIAN FILTER wrapper
+     * @param signal - input signal
+     * @param result - output signal
+     * @param N - width of the image
+     * @param M -- height of the image
+     */
+    template <class T> void medianFilter(T* image, T* result, int N, int M);
+
 private:
     QMap<unsigned long long, double> training;
     QString athleteName, activityName;
     QDateTime date;
     bool showImages, saveImages;
+
+    /**
+     * @brief _medianFilter - 1D MEDIAN FILTER implementation
+     * @param signal - input signal
+     * @param result - output signal
+     * @param N - length of the signal
+     */
+    template <class T> void _medianFilter(const T* signal, T* result, int N);
+
+    /**
+     * @brief medianFilter - 2D MEDIAN FILTER implementation
+     * @param signal - input signal
+     * @param result - output signal
+     * @param N - width of the image
+     * @param M -- height of the image
+     */
+    template <class T> void _medianFilter(const T* image, T* result, int N, int M);
+
+
 
 signals:
     void notifyProgress(int value);
