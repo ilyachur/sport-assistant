@@ -43,7 +43,8 @@ SOURCES += src/main.cpp\
     src/algorithms/filter.cpp \
     src/algorithms/analyse.cpp \
     src/visualization/qcustomplot.cpp \
-    src/visualization/visualization.cpp
+    src/visualization/visualization.cpp \
+    src/forms/resultdialog.cpp
 
 HEADERS  += src/forms/mainwindow.h \
     src/parsers/fitparser.h \
@@ -182,13 +183,15 @@ HEADERS  += src/forms/mainwindow.h \
     src/algorithms/filter.h \
     src/algorithms/analyse.h \
     src/visualization/qcustomplot.h \
-    src/visualization/visualization.h
+    src/visualization/visualization.h \
+    src/forms/resultdialog.h
 
 FORMS    += src/forms/mainwindow.ui \
     src/forms/analysesettingsdialog.ui \
     src/forms/marktrainingdialog.ui \
     src/forms/addparametersdialog.ui \
-    src/forms/predictdialog.ui
+    src/forms/predictdialog.ui \
+    src/forms/resultdialog.ui
 
 RESOURCES += \
     mainresources.qrc

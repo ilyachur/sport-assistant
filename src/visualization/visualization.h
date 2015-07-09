@@ -1,11 +1,16 @@
 #ifndef VISUALIZATION_H
 #define VISUALIZATION_H
 
+#include <QMap>
 #include <QVector>
+
+#include "qcustomplot.h"
 
 namespace Visualization {
 
-void showFilteredData(QVector<double> timeLine, QVector<double> startData, QVector<double> filteredData);
+QCustomPlot * useShowFunctions(QString name, QMap<QString, QVector<double>> *data);
+
+QCustomPlot * showFilteredData(QMap<QString, QVector<double>> data);
 
 }
 

@@ -3,9 +3,12 @@
 
 #include <QMap>
 #include <QList>
+#include <QVector>
 #include <QObject>
 #include <QString>
 #include <QDateTime>
+
+#include "../visualization/visualization.h"
 
 namespace Analyse {
 
@@ -61,11 +64,13 @@ private:
      */
     template <class T> void _medianFilter(const T* image, T* result, int N, int M);
 
+    QMap<QString, void (*)(QMap<QString, QVector<double>>)> mapTest;
 
 
 signals:
     void notifyProgress(int value);
     void notifyProgressRange(int from, int to);
+    void buildGrapf(QString, QMap<QString, QVector<double>>*);
 };
 
 }

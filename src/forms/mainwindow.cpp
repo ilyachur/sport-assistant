@@ -12,6 +12,7 @@
 #include "../updaters/updateranalysetraining.h"
 #include "../updaters/updaterathletesinfo.h"
 #include "analysesettingsdialog.h"
+#include "resultdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,6 +50,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     athleteDB.setNameDB(databaseName);
 
+    createResultDialog();
+    resultDialod->hide();
+
+    showResultButton.setText("Show/Hide results");
+    QObject::connect(&showResultButton, SIGNAL(clicked(bool)), resultDialod, SLOT(showHide()));
+
     updateAthletesInfo();
 }
 
@@ -77,6 +84,7 @@ void MainWindow::openDataBase() {
 
 MainWindow::~MainWindow()
 {
+    removeResultDialog();
     deleteUpdater();
     clearTableItems();
     if (mainProdressBar != nullptr)
@@ -358,14 +366,19 @@ void MainWindow::clickTable(int row, int col) {
         }
 
         deleteUpdater();
+
+        ui->statusBar->addWidget(&showResultButton);
         updater = new UpdaterAnalyseTraining(athleteName, activityID, databaseName, trainingData, date, settings, activityName);
         QObject::connect(updater, SIGNAL(notifyProgressRange(int,int)), mainProdressBar, SLOT(setRange(int,int)));
         QObject::connect(updater, SIGNAL(notifyProgress(int)), this, SLOT(updateAnalyseProgress(int)));
         QObject::connect(updater, SIGNAL(notifyProgressStatus(QString)), mainProdressBarStatus, SLOT(setText(QString)));
+        QObject::connect(updater, SIGNAL(buildGraph(QString,QMap<QString,QVector<double> >*)), resultDialod, SLOT(buildGraph(QString,QMap<QString,QVector<double> >*)));
 
         emit updateMainProdressBarStatus("Training analysing...");
         isProcess = true;
         updater->start();
+
+
     }
 }
 

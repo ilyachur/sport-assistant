@@ -83,7 +83,14 @@ QMap<unsigned long long, double> Analyse::Filter::simpleFilter() {
         timeLine.append(double(timeLineLong.at(i) / 1000.0));
     }
 
-    Visualization::showFilteredData(timeLine, rrIntervalsTemp, rrIntervals);
+    QMap<QString, QVector<double>> *data = new QMap<QString, QVector<double>>;
+    data->insert("time", timeLine);
+    data->insert("startData", rrIntervalsTemp);
+    data->insert("filteredData", rrIntervals);
+
+    emit buildGrapf("showFilteredData", data);
+
+    //Visualization::showFilteredData(timeLine, rrIntervalsTemp, rrIntervals);
 
     return trainingFiltered;
 }
@@ -171,7 +178,7 @@ template <class T> void Analyse::Filter::medianFilter(T* image, T* result, int N
    delete[] extension;
 }
 
-template <class T> void _medianFilter(const T* image, T* result, int N, int M)
+template <class T> void Analyse::Filter::_medianFilter(const T* image, T* result, int N, int M)
 {
    //   Move window through all elements of the image
    for (int m = 1; m < M - 1; ++m)

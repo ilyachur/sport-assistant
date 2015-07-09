@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ResultDialog</class>
+ <widget class="QDialog" name="ResultDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>880</width>
+    <height>640</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Result of analysis</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../mainresources.qrc">
+    <normaloff>:/icons/heart.ico</normaloff>:/icons/heart.ico</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="tabWidget"/>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../mainresources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

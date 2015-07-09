@@ -52,6 +52,7 @@ signals:
     void notifyProgress(int value);
     void notifyProgressRange(int from, int to);
     void notifyProgressStatus(QString status);
+    void buildGraph(QString name, QMap<QString, QVector<double>> *data);
 };
 
 #endif // UPDATERATHLETESINFO_H

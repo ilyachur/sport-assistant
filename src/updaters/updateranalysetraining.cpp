@@ -1,6 +1,7 @@
 #include "updateranalysetraining.h"
 
 #include "../algorithms/analyse.h"
+#include "../visualization/qcustomplot.h"
 
 UpdaterAnalyseTraining::UpdaterAnalyseTraining(QString _athleteName, int _activityID, QString dbName,
                                                QMap<unsigned long long, double> trainingMap, QDateTime _date,
@@ -25,6 +26,7 @@ void UpdaterAnalyseTraining::run() {
         Analyse::Filter trainingFilter(training);
         QObject::connect(&trainingFilter, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
         QObject::connect(&trainingFilter, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
+        QObject::connect(&trainingFilter, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
         emit notifyProgressStatus("Filtering training data...");
 
         training = trainingFilter.simpleFilter();

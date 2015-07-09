@@ -14,6 +14,8 @@
 #include "../wrappers/athletedb.h"
 #include "../updaters/updater.h"
 
+#include "resultdialog.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -29,6 +31,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    ResultDialog *resultDialod = nullptr;
     QProgressBar *mainProdressBar = nullptr;
     QLabel *mainProdressBarStatus = nullptr;
     QProgressBar *additionalProdressBar = nullptr;
@@ -39,6 +42,7 @@ private:
     AthleteDB athleteDB;
 
     QVector<QPushButton*> pathButtons;
+    QPushButton showResultButton;
     int tableLevel = -1;
     int athleteID = -1;
     bool isProcess = false;
@@ -47,6 +51,19 @@ private:
     QString databaseName;
 
     Updater *updater = nullptr;
+
+    inline bool createResultDialog() {
+        if (resultDialod == nullptr) {
+            resultDialod = new ResultDialog();
+            return true;
+        }
+        return false;
+    }
+
+    inline void removeResultDialog() {
+        if (resultDialod != nullptr)
+            delete resultDialod;
+    }
 
     int updateAthletesInfo();
 
