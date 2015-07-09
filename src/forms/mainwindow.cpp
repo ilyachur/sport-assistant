@@ -49,12 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this, SIGNAL(updateMainProdressBarStatus(QString)), mainProdressBarStatus, SLOT(setText(QString)));
 
     athleteDB.setNameDB(databaseName);
-
-    createResultDialog();
-    resultDialod->hide();
-
     showResultButton.setText("Show/Hide results");
-    QObject::connect(&showResultButton, SIGNAL(clicked(bool)), resultDialod, SLOT(showHide()));
 
     updateAthletesInfo();
 }
@@ -366,6 +361,10 @@ void MainWindow::clickTable(int row, int col) {
         }
 
         deleteUpdater();
+        removeResultDialog();
+        createResultDialog();
+        resultDialod->hide();
+        QObject::connect(&showResultButton, SIGNAL(clicked(bool)), resultDialod, SLOT(showHide()));
 
         ui->statusBar->addWidget(&showResultButton);
         updater = new UpdaterAnalyseTraining(athleteName, activityID, databaseName, trainingData, date, settings, activityName);

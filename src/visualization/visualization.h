@@ -8,7 +8,7 @@
 
 namespace Visualization {
 
-QCustomPlot * useShowFunctions(QString name, QMap<QString, QVector<double>> *data);
+QCustomPlot * useShowFunctions(QString *name, QMap<QString, QVector<double>> *data);
 
 QCustomPlot * showFilteredData(QMap<QString, QVector<double>> data);
 

@@ -61,8 +61,12 @@ private:
     }
 
     inline void removeResultDialog() {
-        if (resultDialod != nullptr)
+        if (resultDialod != nullptr) {
+            resultDialod->close();
+            QObject::disconnect(&showResultButton, SIGNAL(clicked(bool)), resultDialod, SLOT(showHide()));
             delete resultDialod;
+            resultDialod = nullptr;
+        }
     }
 
     int updateAthletesInfo();

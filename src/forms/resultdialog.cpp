@@ -36,18 +36,35 @@ ResultDialog::~ResultDialog()
 }
 
 void ResultDialog::buildGraph(QString name, QMap<QString, QVector<double>> *data) {
-    QCustomPlot * plot = Visualization::useShowFunctions(name, data);
+    QCustomPlot * plot = Visualization::useShowFunctions(&name, data);
+
+    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
     delete data;
     if (plot == nullptr)
         return;
-    QWidget * newTab = new QWidget(ui->tabWidget);
-    tabs.append(newTab);
-    QVBoxLayout *mainLayout = new QVBoxLayout(newTab);
-    mainLayout->setContentsMargins(0,0,0,0);
-    layouts.append(mainLayout);
-    mainLayout->addWidget(plot);
-    newTab->setLayout(mainLayout);
-    graphics.append(plot);
+    QWidget * existTab = nullptr;
+    for(auto i(0); i < ui->tabWidget->count(); i++) {
+        if (ui->tabWidget->tabText(i) == name) {
+            existTab = ui->tabWidget->widget(i);
+            break;
+        }
+    }
+    if (existTab == nullptr) {
+        existTab = new QWidget(ui->tabWidget);
+        tabs.append(existTab);
+        QVBoxLayout *mainLayout = new QVBoxLayout(existTab);
+        mainLayout->setContentsMargins(0,0,0,0);
+        layouts.append(mainLayout);
+        mainLayout->addWidget(plot);
+        existTab->setLayout(mainLayout);
+        graphics.append(plot);
 
-    ui->tabWidget->addTab(newTab, "Test");
+        ui->tabWidget->addTab(existTab, name);
+    } else {
+        existTab->layout()->addWidget(plot);
+    }
+
+    if (saveImages) {
+        // TODO: Add code for saving images
+    }
 }
