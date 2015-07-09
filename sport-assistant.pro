@@ -6,7 +6,7 @@
 
 QT       += core gui sql
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = sport-assistant
 TEMPLATE = app
@@ -41,7 +41,9 @@ SOURCES += src/main.cpp\
     src/updaters/updateranalysetraining.cpp \
     src/algorithms/lombscargle.cpp \
     src/algorithms/filter.cpp \
-    src/algorithms/analyse.cpp
+    src/algorithms/analyse.cpp \
+    src/visualization/qcustomplot.cpp \
+    src/visualization/visualization.cpp
 
 HEADERS  += src/forms/mainwindow.h \
     src/parsers/fitparser.h \
@@ -178,7 +180,9 @@ HEADERS  += src/forms/mainwindow.h \
     src/updaters/updateranalysetraining.h \
     src/algorithms/lombscargle.h \
     src/algorithms/filter.h \
-    src/algorithms/analyse.h
+    src/algorithms/analyse.h \
+    src/visualization/qcustomplot.h \
+    src/visualization/visualization.h
 
 FORMS    += src/forms/mainwindow.ui \
     src/forms/analysesettingsdialog.ui \

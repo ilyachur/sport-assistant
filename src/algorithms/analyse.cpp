@@ -1,8 +1,8 @@
 #include "analyse.h"
 
-QList<double> Analyse::getTrainingSignal(QMap<unsigned long long, double> trainingMap,
-                                QList<unsigned long long> timeLine) {
-    QList<double> retList;
+QVector<double> Analyse::getTrainingSignal(QMap<unsigned long long, double> trainingMap,
+                                QVector<unsigned long long> timeLine) {
+    QVector<double> retList;
     for(auto& timeValue : timeLine) {
         retList.append(trainingMap[timeValue]);
     }

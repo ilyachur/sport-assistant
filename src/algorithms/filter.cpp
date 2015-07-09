@@ -1,10 +1,13 @@
 #include "filter.h"
 
 #include <QList>
+#include <QVector>
 #include <QDebug>
 #include <math.h>
 
 #include "analyse.h"
+
+#include "../visualization/visualization.h"
 
 Analyse::Filter::Filter()
 {
@@ -24,13 +27,14 @@ QMap<unsigned long long, double> Analyse::Filter::simpleFilter() {
     QMap<unsigned long long, double> trainingFiltered;
 
     double dMax = 0.3;
+    QVector<unsigned long long> timeLineLong;
+    for (auto key : training.keys()) {
+        timeLineLong.append(key);
+    }
+    qSort(timeLineLong);
 
-    QList<unsigned long long> timeLine = training.keys();
-
-    qSort(timeLine);
-
-    QList<double> rrIntervals = getTrainingSignal(training, timeLine);
-    QList<double> rrIntervalsTemp = rrIntervals;
+    QVector<double> rrIntervals = getTrainingSignal(training, timeLineLong);
+    QVector<double> rrIntervalsTemp = rrIntervals;
 
     double avrRR = 0;
     for (double value : rrIntervals)
@@ -43,7 +47,7 @@ QMap<unsigned long long, double> Analyse::Filter::simpleFilter() {
     for(auto i(0); i < rrIntervals.length() - 1; i++) {
         if (abs((rrIntervals.at(i + 1) - rrIntervals.at(i)) / avrRR) > dMax) {
             rrIntervals[i] = avrRR;
-            trainingFiltered.insert(timeLine.at(i), rrIntervals.at(i));
+            trainingFiltered.insert(timeLineLong.at(i), rrIntervals.at(i));
             if (abs((rrIntervals.at(i + 1) - rrIntervals.at(i)) / avrRR) > dMax) {
                 double *tmp;
                 int start_point = i - windowSize;
@@ -65,7 +69,7 @@ QMap<unsigned long long, double> Analyse::Filter::simpleFilter() {
 
                 for(auto j(start_point), k(0); j < finish_point; j++, k++) {
                     rrIntervals[j] = ret_arr[k];
-                    trainingFiltered.insert(timeLine.at(j), rrIntervals.at(j));
+                    trainingFiltered.insert(timeLineLong.at(j), rrIntervals.at(j));
                 }
                 delete [] tmp;
                 delete [] ret_arr;
@@ -73,6 +77,13 @@ QMap<unsigned long long, double> Analyse::Filter::simpleFilter() {
         }
         emit notifyProgress(i);
     }
+
+    QVector<double> timeLine;
+    for (auto i(0); i < timeLineLong.length(); i++) {
+        timeLine.append(double(timeLineLong.at(i) / 1000.0));
+    }
+
+    Visualization::showFilteredData(timeLine, rrIntervalsTemp, rrIntervals);
 
     return trainingFiltered;
 }
