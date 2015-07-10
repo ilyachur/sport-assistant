@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     if (QSysInfo::kernelType() == "darwin") {
-        dataFolder = QApplication::applicationDirPath() + "/../../../test_data";
+        dataFolder = QApplication::applicationDirPath() + "/../../../../test_data";
     } else if (QSysInfo::kernelType() == "linux") {
         dataFolder = QApplication::applicationDirPath() + "/../test_data";
     } else  {
