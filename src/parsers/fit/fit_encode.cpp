@@ -19,6 +19,8 @@
 #include "fit_encode.hpp"
 #include "fit_crc.hpp"
 
+#include <cstring>
+
 namespace fit
 {
 

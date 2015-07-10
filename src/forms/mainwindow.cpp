@@ -21,9 +21,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    if (QSysInfo::productType() == "osx") {
+    if (QSysInfo::kernelType() == "darwin") {
         dataFolder = QApplication::applicationDirPath() + "/../../../test_data";
-    } else {
+    } else if (QSysInfo::kernelType() == "linux") {
+        dataFolder = QApplication::applicationDirPath() + "/../test_data";
+    } else  {
         dataFolder = QApplication::applicationDirPath() + "/../../test_data";
     }
 

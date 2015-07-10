@@ -31,6 +31,12 @@ private:
         AthleteDB athleteDB(dbName);
         QStringList files = QDir(dDir).entryList(QDir::Dirs);
         emit notifyProgressRange(0, files.length() - 2);
+        if (files.length() - 2 == 0) {
+
+            emit notifyProgressRange(0, 1);
+            emit notifyProgress(1);
+            return;
+        }
         int count = 0;
         for (QString athleteDir: files) {
             if (killed)

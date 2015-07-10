@@ -20,6 +20,8 @@
 #include "fit_mesg.hpp"
 #include "fit_unicode.hpp"
 
+#include <cstring>
+
 namespace fit
 {
 
