@@ -93,6 +93,8 @@ public slots:
     void openDataBase();
     void chooseDataDirectory();
 
+    void trainingAnalyserFinished(int trID);
+
 signals:
     void updateMainProdressBarStatus(QString text);
 

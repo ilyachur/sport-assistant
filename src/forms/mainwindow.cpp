@@ -17,7 +17,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    databaseName("db.sqlite3")
+    databaseName(QApplication::applicationDirPath() + "/db.sqlite3")
 {
     ui->setupUi(this);
 
@@ -139,6 +139,13 @@ void MainWindow::updateMainProdressBar(int value) {
         updateTable(ret, QString("ID,Name").split(","));
         addPathButton("Athletes");
     }
+}
+
+void MainWindow::trainingAnalyserFinished(int trID) {
+    mainProdressBar->setValue(0);
+    isProcess = false;
+    resultDialod->show();
+    emit updateMainProdressBarStatus("Training " + QString::number(trID) + " analysed!");
 }
 
 void MainWindow::addPathButton(QString name) {
@@ -374,6 +381,7 @@ void MainWindow::clickTable(int row, int col) {
         QObject::connect(updater, SIGNAL(notifyProgress(int)), this, SLOT(updateAnalyseProgress(int)));
         QObject::connect(updater, SIGNAL(notifyProgressStatus(QString)), mainProdressBarStatus, SLOT(setText(QString)));
         QObject::connect(updater, SIGNAL(buildGraph(QString,QMap<QString,QVector<double> >*)), resultDialod, SLOT(buildGraph(QString,QMap<QString,QVector<double> >*)));
+        QObject::connect(updater, SIGNAL(updaterFinished(int)), this, SLOT(trainingAnalyserFinished(int)));
 
         emit updateMainProdressBarStatus("Training analysing...");
         isProcess = true;

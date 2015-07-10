@@ -45,6 +45,7 @@ signals:
     void notifyProgressRange(int from, int to);
     void notifyProgressStatus(QString status);
     void buildGraph(QString name, QMap<QString, QVector<double>> *data);
+    void updaterFinished(int);
 };
 
 #endif // UPDATERANALYSETRAINING_H

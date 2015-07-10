@@ -46,4 +46,6 @@ void UpdaterAnalyseTraining::run() {
     if (analyseSettings["analyse:spectrum:FFT"]) {
         // add Functions
     }
+
+    emit updaterFinished(activityID);
 }
