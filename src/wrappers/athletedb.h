@@ -1,6 +1,10 @@
 #ifndef ATHLETEDB_H
 #define ATHLETEDB_H
 
+/// @file athletedb.h
+/// @brief Contains class for work with data base
+/// @author Ilya Churaev ilyachur@gmail.com
+
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QStringList>

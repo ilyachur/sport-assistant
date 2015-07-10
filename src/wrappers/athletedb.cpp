@@ -1,5 +1,10 @@
 #include "athletedb.h"
 
+
+/// @file athletedb.h
+/// @brief Contains class realisation for work with data base
+/// @author Ilya Churaev ilyachur@gmail.com
+
 #include <QMap>
 #include <QDir>
 #include <QFile>
@@ -180,8 +185,8 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
         }
     }
     /// Check modification data
-    if (QFileInfo(athleteDir).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong() &&
-             QFileInfo(athleteDir + "/data.ini").lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong()) {
+    if (QFileInfo(athleteDir).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toLongLong() &&
+             QFileInfo(athleteDir + "/data.ini").lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toLongLong()) {
         if (db.exec("SELECT * FROM athlete WHERE ID = " + athleteInfo.value("id", "-1").toInt()).next())
             return 0;
     }
@@ -237,8 +242,8 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
         //TODO: Parallel for for it
         /// Get trainings
         for (QString training : listTrainings) {
-            if (athleteInfo.value("lastUpdate", "-1").toULongLong() > QFileInfo(databaseName).created().toMSecsSinceEpoch() &&
-                    QFileInfo(activityPath + "/" + training).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toULongLong())
+            if (athleteInfo.value("lastUpdate", "-1").toLongLong() > QFileInfo(databaseName).created().toMSecsSinceEpoch() &&
+                    QFileInfo(activityPath + "/" + training).lastModified().toMSecsSinceEpoch() < athleteInfo.value("lastUpdate", "-1").toLongLong())
                 continue;
             CleverParser clParser(activityPath + "/" + training);
             int retRun = clParser.run();

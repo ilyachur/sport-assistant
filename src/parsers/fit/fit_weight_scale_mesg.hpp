@@ -30,7 +30,7 @@ class WeightScaleMesg : public Mesg
       {
       }
 
-      WeightScaleMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit WeightScaleMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

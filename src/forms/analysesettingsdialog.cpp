@@ -12,6 +12,9 @@ AnalyseSettingsDialog::AnalyseSettingsDialog(int activityID, QString dbName, QWi
 {
     ui->setupUi(this);
 
+    this->activityID = activityID;
+    dataBaseName = dbName;
+
     setWindowIcon(QIcon(":/icons/heart.ico"));
 
     ui->checkSpectrumAnalysis->setChecked(false);

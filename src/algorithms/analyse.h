@@ -1,11 +1,25 @@
 #ifndef ANALYSE_H
 #define ANALYSE_H
 
+/// @file analyse.h
+/// @brief Contains common functions for analysis
+/// @author Ilya Churaev ilyachur@gmail.com
+
 #include <QVector>
 #include "filter.h"
 
-namespace Analyse {
+/**
+ *  @namespace Analysis
+ *  @brief The Analysis namespace contains all functions for analysis
+ */
+namespace Analysis {
 
+/**
+ * @brief getTrainingSignal
+ * @param trainingMap - source training data
+ * @param timeLine - time line
+ * @return vector with training data for timeLine
+ */
 QVector<double> getTrainingSignal(QMap<unsigned long long, double> trainingMap,
                                   QVector<unsigned long long> timeLine);
 

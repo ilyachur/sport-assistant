@@ -1,5 +1,9 @@
 #include "filter.h"
 
+/// @file filter.cpp
+/// @brief Contains class realisation for filtering raw data
+/// @author Ilya Churaev ilyachur@gmail.com
+
 #include <QList>
 #include <QVector>
 #include <QDebug>
@@ -9,12 +13,9 @@
 
 #include "../visualization/visualization.h"
 
-Analyse::Filter::Filter()
-{
+Analysis::Filter::Filter() {}
 
-}
-
-Analyse::Filter::Filter(QMap<unsigned long long, double> _training, QString _athleteName,
+Analysis::Filter::Filter(QMap<unsigned long long, double> _training, QString _athleteName,
        QDateTime _date, QString _activityName,
        bool _showImages, bool _saveImages): QObject(), training(_training),
     athleteName(_athleteName), date(_date), activityName(_activityName),
@@ -23,7 +24,7 @@ Analyse::Filter::Filter(QMap<unsigned long long, double> _training, QString _ath
 
 }
 
-QMap<unsigned long long, double> Analyse::Filter::simpleFilter() {
+QMap<unsigned long long, double> Analysis::Filter::simpleFilter() {
     QMap<unsigned long long, double> trainingFiltered;
 
     double dMax = 0.3;
@@ -95,7 +96,7 @@ QMap<unsigned long long, double> Analyse::Filter::simpleFilter() {
     return trainingFiltered;
 }
 
-template <class T> void Analyse::Filter::medianFilter(T *signal, T *result, int N) {
+template <class T> void Analysis::Filter::medianFilter(T *signal, T *result, int N) {
     // Check arguments
     if (!signal || N < 1) {
         return;
@@ -124,7 +125,7 @@ template <class T> void Analyse::Filter::medianFilter(T *signal, T *result, int 
     delete[] extension;
 }
 
-template <class T> void Analyse::Filter::_medianFilter(const T* signal, T* result, int N)
+template <class T> void Analysis::Filter::_medianFilter(const T* signal, T* result, int N)
 {
    //   Move window through all elements of the signal
    for (int i = 2; i < N - 2; ++i)
@@ -151,7 +152,7 @@ template <class T> void Analyse::Filter::_medianFilter(const T* signal, T* resul
    }
 }
 
-template <class T> void Analyse::Filter::medianFilter(T* image, T* result, int N, int M)
+template <class T> void Analysis::Filter::medianFilter(T* image, T* result, int N, int M)
 {
    //   Check arguments
    if (!image || N < 1 || M < 1)
@@ -178,7 +179,7 @@ template <class T> void Analyse::Filter::medianFilter(T* image, T* result, int N
    delete[] extension;
 }
 
-template <class T> void Analyse::Filter::_medianFilter(const T* image, T* result, int N, int M)
+template <class T> void Analysis::Filter::_medianFilter(const T* image, T* result, int N, int M)
 {
    //   Move window through all elements of the image
    for (int m = 1; m < M - 1; ++m)

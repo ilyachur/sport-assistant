@@ -1,53 +1,55 @@
 #include "lombscargle.h"
 #include <math.h>
 
-void Analyse::lombscargle(double* t, double* x, double* w, double* P, int Nt, int Nw)
-{
-  /**
-   *  Purpose
-   *  =======
-   *
-   *  Computes the Lomb-Scargle periodogram as developed by Lomb (1976)
-   *  and further extended by Scargle (1982) to find, and test the
-   *  significance of weak periodic signals with uneven temporal sampling.
-   *
-   *  This subroutine calculates the periodogram using a slightly
-   *  modified algorithm due to Townsend (2010) which allows the
-   *  periodogram to be calculated using only a single pass through
-   *  the input samples.
-   *  This requires Nw(2Nt+3) trigonometric function evaluations (where
-   *  Nw is the number of frequencies and Nt the number of input samples),
-   *  giving a factor of ~2 speed increase over the straightforward
-   *  implementation.
-   *
-   *  Arguments
-   *  =========
-   *
-   *  t   (input) double precision array, dimension (Nt)
-   *      Sample times
-   *
-   *  x   (input) double precision array, dimension (Nt)
-   *      Measurement values
-   *
-   *  w   (input) double precision array, dimension (Nt)
-   *      Angular frequencies for output periodogram
-   *
-   *  P   (output) double precision array, dimension (Nw)
-   *      Lomb-Scargle periodogram
-   *
-   *  Nt (input) integer
-   *      Dimension of input arrays
-   *
-   *  Nw (output) integer
-   *      Dimension of output array
-   *
-   *  Further details
-   *  ===============
-   *
-   *  P[i] takes a value of A^2*N/4 for a harmonic signal with
-   *  frequency w(i).
-   **/
+/// @file lombscargle.cpp
+/// @brief Contains lombscargle algorithm realisation
 
+/**
+ *  Purpose
+ *  =======
+ *
+ *  Computes the Lomb-Scargle periodogram as developed by Lomb (1976)
+ *  and further extended by Scargle (1982) to find, and test the
+ *  significance of weak periodic signals with uneven temporal sampling.
+ *
+ *  This subroutine calculates the periodogram using a slightly
+ *  modified algorithm due to Townsend (2010) which allows the
+ *  periodogram to be calculated using only a single pass through
+ *  the input samples.
+ *  This requires Nw(2Nt+3) trigonometric function evaluations (where
+ *  Nw is the number of frequencies and Nt the number of input samples),
+ *  giving a factor of ~2 speed increase over the straightforward
+ *  implementation.
+ *
+ *  Arguments
+ *  =========
+ *
+ *  t   (input) double precision array, dimension (Nt)
+ *      Sample times
+ *
+ *  x   (input) double precision array, dimension (Nt)
+ *      Measurement values
+ *
+ *  w   (input) double precision array, dimension (Nt)
+ *      Angular frequencies for output periodogram
+ *
+ *  P   (output) double precision array, dimension (Nw)
+ *      Lomb-Scargle periodogram
+ *
+ *  Nt (input) integer
+ *      Dimension of input arrays
+ *
+ *  Nw (output) integer
+ *      Dimension of output array
+ *
+ *  Further details
+ *  ===============
+ *
+ *  P[i] takes a value of A^2*N/4 for a harmonic signal with
+ *  frequency w(i).
+ **/
+void Analysis::lombscargle(double* t, double* x, double* w, double* P, int Nt, int Nw)
+{
   /* Local variables */
   int i, j;
   double c, s, xc, xs, cc, ss, cs;

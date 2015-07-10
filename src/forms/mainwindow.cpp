@@ -17,7 +17,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    databaseName(QApplication::applicationDirPath() + "/db.sqlite3")
+    databaseName("db.sqlite3")
 {
     ui->setupUi(this);
 

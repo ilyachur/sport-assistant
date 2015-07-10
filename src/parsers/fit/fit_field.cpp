@@ -166,7 +166,7 @@ FIT_UINT8 Field::GetSize(void) const
       return 0;
 
    for (FIT_UINT8 valueIndex = 0; valueIndex < values.size(); valueIndex++)
-      size += values[valueIndex].size();
+      size += (FIT_UINT8)values[valueIndex].size();
 
    return size;
 }
@@ -255,7 +255,7 @@ FIT_BYTE Field::GetValuesBYTE(FIT_UINT8 index) const
       }
       else
       {
-         index -= values[i].size();
+         index -= (FIT_UINT8)values[i].size();
       }
    }  
    return FIT_BYTE_INVALID;
@@ -277,7 +277,7 @@ FIT_UINT8 Field::GetValuesUINT8(FIT_UINT8 index) const
       }
       else
       {
-         index -= values[i].size();
+         index -= (FIT_UINT8)values[i].size();
       }
    }  
    return FIT_UINT8_INVALID;
@@ -299,7 +299,7 @@ FIT_SINT8 Field::GetValuesSINT8(FIT_UINT8 index) const
       }
       else
       {
-         index -= values[i].size();
+         index -= (FIT_UINT8)values[i].size();
       }
    }  
    return FIT_SINT8_INVALID;

@@ -23,7 +23,7 @@ void UpdaterAnalyseTraining::run() {
 
     //analyseSettings->beginGroup("pre-processing");
     if (analyseSettings["pre-processing:filtered"]) {
-        Analyse::Filter trainingFilter(training);
+        Analysis::Filter trainingFilter(training);
         QObject::connect(&trainingFilter, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
         QObject::connect(&trainingFilter, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
         QObject::connect(&trainingFilter, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
