@@ -30,7 +30,7 @@ class RecordMesg : public Mesg
       {
       }
 
-      RecordMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit RecordMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

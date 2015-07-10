@@ -30,7 +30,7 @@ class FileCreatorMesg : public Mesg
       {
       }
 
-      FileCreatorMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit FileCreatorMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

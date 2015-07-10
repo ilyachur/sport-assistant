@@ -30,7 +30,7 @@ class TotalsMesg : public Mesg
       {
       }
 
-      TotalsMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit TotalsMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

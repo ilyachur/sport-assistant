@@ -30,7 +30,7 @@ class SoftwareMesg : public Mesg
       {
       }
 
-      SoftwareMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SoftwareMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

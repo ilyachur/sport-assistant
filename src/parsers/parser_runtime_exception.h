@@ -7,7 +7,7 @@
 class ParserRuntimeException : public std::runtime_error
 {
    public:
-      ParserRuntimeException(const std::string& msg = ""): runtime_error(msg) {}
+      explicit ParserRuntimeException(const std::string& msg = ""): runtime_error(msg) {}
 };
 
 #endif // PARSERRUNTIMEEXCEPTION

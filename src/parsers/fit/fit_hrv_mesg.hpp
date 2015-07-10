@@ -30,7 +30,7 @@ class HrvMesg : public Mesg
       {
       }
 
-      HrvMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit HrvMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

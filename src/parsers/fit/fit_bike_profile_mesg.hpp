@@ -30,7 +30,7 @@ class BikeProfileMesg : public Mesg
       {
       }
 
-      BikeProfileMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit BikeProfileMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

@@ -31,7 +31,7 @@ class LapMesg : public Mesg, public MesgWithEvent
       {
       }
 
-      LapMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit LapMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

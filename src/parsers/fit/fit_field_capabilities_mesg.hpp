@@ -30,7 +30,7 @@ class FieldCapabilitiesMesg : public Mesg
       {
       }
 
-      FieldCapabilitiesMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit FieldCapabilitiesMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

@@ -31,7 +31,7 @@ class SessionMesg : public Mesg, public MesgWithEvent
       {
       }
 
-      SessionMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SessionMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

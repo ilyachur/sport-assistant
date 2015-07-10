@@ -30,7 +30,7 @@ class PowerZoneMesg : public Mesg
       {
       }
 
-      PowerZoneMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit PowerZoneMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

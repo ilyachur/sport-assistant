@@ -268,7 +268,7 @@ public:
   QCPScatterStyle(ScatterShape shape, const QColor &color, double size);
   QCPScatterStyle(ScatterShape shape, const QColor &color, const QColor &fill, double size);
   QCPScatterStyle(ScatterShape shape, const QPen &pen, const QBrush &brush, double size);
-  QCPScatterStyle(const QPixmap &pixmap);
+  explicit QCPScatterStyle(const QPixmap &pixmap);
   QCPScatterStyle(const QPainterPath &customPath, const QPen &pen, const QBrush &brush=Qt::NoBrush, double size=6);
   
   // getters:
@@ -326,7 +326,7 @@ public:
   Q_DECLARE_FLAGS(PainterModes, PainterMode)
   
   QCPPainter();
-  QCPPainter(QPaintDevice *device);
+  explicit QCPPainter(QPaintDevice *device);
   ~QCPPainter();
   
   // getters:
@@ -601,7 +601,7 @@ class QCP_LIB_DECL QCPMarginGroup : public QObject
 {
   Q_OBJECT
 public:
-  QCPMarginGroup(QCustomPlot *parentPlot);
+  explicit QCPMarginGroup(QCustomPlot *parentPlot);
   ~QCPMarginGroup();
   
   // non-virtual methods:
@@ -939,7 +939,7 @@ class QCP_LIB_DECL QCPGrid :public QCPLayerable
   Q_PROPERTY(QPen zeroLinePen READ zeroLinePen WRITE setZeroLinePen)
   /// \endcond
 public:
-  QCPGrid(QCPAxis *parentAxis);
+  explicit QCPGrid(QCPAxis *parentAxis);
   
   // getters:
   bool subGridVisible() const { return mSubGridVisible; }
@@ -1614,7 +1614,7 @@ class QCP_LIB_DECL QCPAbstractItem : public QCPLayerable
   Q_PROPERTY(bool selected READ selected WRITE setSelected NOTIFY selectionChanged)
   /// \endcond
 public:
-  QCPAbstractItem(QCustomPlot *parentPlot);
+  explicit QCPAbstractItem(QCustomPlot *parentPlot);
   virtual ~QCPAbstractItem();
   
   // getters:
@@ -2755,7 +2755,7 @@ public:
                      ,stAxisRectRatio ///< Bar spacing is given by a fraction of the axis rect size
                      ,stPlotCoords    ///< Bar spacing is in key coordinates and thus scales with the key axis range
                  };
-  QCPBarsGroup(QCustomPlot *parentPlot);
+  explicit QCPBarsGroup(QCustomPlot *parentPlot);
   ~QCPBarsGroup();
   
   // getters:
@@ -3242,7 +3242,7 @@ class QCP_LIB_DECL QCPItemStraightLine : public QCPAbstractItem
   Q_PROPERTY(QPen selectedPen READ selectedPen WRITE setSelectedPen)
   /// \endcond
 public:
-  QCPItemStraightLine(QCustomPlot *parentPlot);
+  explicit QCPItemStraightLine(QCustomPlot *parentPlot);
   virtual ~QCPItemStraightLine();
   
   // getters:
@@ -3283,7 +3283,7 @@ class QCP_LIB_DECL QCPItemLine : public QCPAbstractItem
   Q_PROPERTY(QCPLineEnding tail READ tail WRITE setTail)
   /// \endcond
 public:
-  QCPItemLine(QCustomPlot *parentPlot);
+  explicit QCPItemLine(QCustomPlot *parentPlot);
   virtual ~QCPItemLine();
   
   // getters:
@@ -3328,7 +3328,7 @@ class QCP_LIB_DECL QCPItemCurve : public QCPAbstractItem
   Q_PROPERTY(QCPLineEnding tail READ tail WRITE setTail)
   /// \endcond
 public:
-  QCPItemCurve(QCustomPlot *parentPlot);
+  explicit QCPItemCurve(QCustomPlot *parentPlot);
   virtual ~QCPItemCurve();
   
   // getters:
@@ -3374,7 +3374,7 @@ class QCP_LIB_DECL QCPItemRect : public QCPAbstractItem
   Q_PROPERTY(QBrush selectedBrush READ selectedBrush WRITE setSelectedBrush)
   /// \endcond
 public:
-  QCPItemRect(QCustomPlot *parentPlot);
+  explicit QCPItemRect(QCustomPlot *parentPlot);
   virtual ~QCPItemRect();
   
   // getters:
@@ -3437,7 +3437,7 @@ class QCP_LIB_DECL QCPItemText : public QCPAbstractItem
   Q_PROPERTY(QMargins padding READ padding WRITE setPadding)
   /// \endcond
 public:
-  QCPItemText(QCustomPlot *parentPlot);
+  explicit QCPItemText(QCustomPlot *parentPlot);
   virtual ~QCPItemText();
   
   // getters:
@@ -3520,7 +3520,7 @@ class QCP_LIB_DECL QCPItemEllipse : public QCPAbstractItem
   Q_PROPERTY(QBrush selectedBrush READ selectedBrush WRITE setSelectedBrush)
   /// \endcond
 public:
-  QCPItemEllipse(QCustomPlot *parentPlot);
+  explicit QCPItemEllipse(QCustomPlot *parentPlot);
   virtual ~QCPItemEllipse();
   
   // getters:
@@ -3579,7 +3579,7 @@ class QCP_LIB_DECL QCPItemPixmap : public QCPAbstractItem
   Q_PROPERTY(QPen selectedPen READ selectedPen WRITE setSelectedPen)
   /// \endcond
 public:
-  QCPItemPixmap(QCustomPlot *parentPlot);
+  explicit QCPItemPixmap(QCustomPlot *parentPlot);
   virtual ~QCPItemPixmap();
   
   // getters:
@@ -3726,7 +3726,7 @@ public:
                       ,bsCalligraphic ///< A curly brace with varying stroke width giving a calligraphic impression
   };
 
-  QCPItemBracket(QCustomPlot *parentPlot);
+  explicit QCPItemBracket(QCustomPlot *parentPlot);
   virtual ~QCPItemBracket();
   
   // getters:

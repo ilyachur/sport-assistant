@@ -30,7 +30,7 @@ class CapabilitiesMesg : public Mesg
       {
       }
 
-      CapabilitiesMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit CapabilitiesMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

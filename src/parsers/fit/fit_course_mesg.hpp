@@ -30,7 +30,7 @@ class CourseMesg : public Mesg
       {
       }
 
-      CourseMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit CourseMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

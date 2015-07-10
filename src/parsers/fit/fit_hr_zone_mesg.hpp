@@ -30,7 +30,7 @@ class HrZoneMesg : public Mesg
       {
       }
 
-      HrZoneMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit HrZoneMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

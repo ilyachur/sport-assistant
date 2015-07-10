@@ -30,7 +30,7 @@ class MetZoneMesg : public Mesg
       {
       }
 
-      MetZoneMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit MetZoneMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

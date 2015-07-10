@@ -30,7 +30,7 @@ class HrmProfileMesg : public Mesg
       {
       }
 
-      HrmProfileMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit HrmProfileMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

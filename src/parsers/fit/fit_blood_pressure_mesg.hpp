@@ -30,7 +30,7 @@ class BloodPressureMesg : public Mesg
       {
       }
 
-      BloodPressureMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit BloodPressureMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

@@ -30,7 +30,7 @@ class CadenceZoneMesg : public Mesg
       {
       }
 
-      CadenceZoneMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit CadenceZoneMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

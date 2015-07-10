@@ -29,8 +29,8 @@ class FieldDefinition
 {
    public:
       FieldDefinition();
-      FieldDefinition(const Field& field);
-      FieldDefinition(const Field* field);
+      explicit FieldDefinition(const Field& field);
+      explicit FieldDefinition(const Field* field);
       FIT_UINT8 GetNum() const;
       FIT_UINT8 GetSize() const;
       FIT_UINT8 GetType() const;

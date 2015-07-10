@@ -30,7 +30,7 @@ class ScheduleMesg : public Mesg
       {
       }
 
-      ScheduleMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit ScheduleMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

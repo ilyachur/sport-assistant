@@ -30,7 +30,7 @@ class MemoGlobMesg : public Mesg
       {
       }
 
-      MemoGlobMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit MemoGlobMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

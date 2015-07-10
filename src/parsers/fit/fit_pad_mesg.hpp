@@ -30,7 +30,7 @@ class PadMesg : public Mesg
       {
       }
 
-      PadMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit PadMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

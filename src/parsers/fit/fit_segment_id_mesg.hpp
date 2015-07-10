@@ -30,7 +30,7 @@ class SegmentIdMesg : public Mesg
       {
       }
 
-      SegmentIdMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SegmentIdMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

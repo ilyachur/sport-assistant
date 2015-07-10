@@ -17,7 +17,7 @@ public:
      * @brief Default constructor
      * @param file - the name for raw file (default = "")
      */
-    CleverParser(QString file = "") {
+    explicit CleverParser(QString file = "") {
         file_name = file;
     }
 

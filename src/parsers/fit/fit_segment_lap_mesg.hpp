@@ -31,7 +31,7 @@ class SegmentLapMesg : public Mesg, public MesgWithEvent
       {
       }
 
-      SegmentLapMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SegmentLapMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

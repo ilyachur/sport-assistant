@@ -30,7 +30,7 @@ class DeviceSettingsMesg : public Mesg
       {
       }
 
-      DeviceSettingsMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit DeviceSettingsMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

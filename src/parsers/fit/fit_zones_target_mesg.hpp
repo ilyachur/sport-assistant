@@ -30,7 +30,7 @@ class ZonesTargetMesg : public Mesg
       {
       }
 
-      ZonesTargetMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit ZonesTargetMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

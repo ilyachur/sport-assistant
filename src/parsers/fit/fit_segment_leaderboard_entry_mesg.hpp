@@ -30,7 +30,7 @@ class SegmentLeaderboardEntryMesg : public Mesg
       {
       }
 
-      SegmentLeaderboardEntryMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SegmentLeaderboardEntryMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

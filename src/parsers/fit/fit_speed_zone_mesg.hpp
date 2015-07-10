@@ -30,7 +30,7 @@ class SpeedZoneMesg : public Mesg
       {
       }
 
-      SpeedZoneMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SpeedZoneMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

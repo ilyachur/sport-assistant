@@ -30,7 +30,7 @@ class FileIdMesg : public Mesg
       {
       }
 
-      FileIdMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit FileIdMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

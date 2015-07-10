@@ -30,7 +30,7 @@ class MonitoringMesg : public Mesg
       {
       }
 
-      MonitoringMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit MonitoringMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

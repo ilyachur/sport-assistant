@@ -30,7 +30,7 @@ class WorkoutStepMesg : public Mesg
       {
       }
 
-      WorkoutStepMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit WorkoutStepMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

@@ -30,7 +30,7 @@ class SlaveDeviceMesg : public Mesg
       {
       }
 
-      SlaveDeviceMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SlaveDeviceMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

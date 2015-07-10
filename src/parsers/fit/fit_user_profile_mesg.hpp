@@ -30,7 +30,7 @@ class UserProfileMesg : public Mesg
       {
       }
 
-      UserProfileMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit UserProfileMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

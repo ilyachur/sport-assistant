@@ -31,7 +31,7 @@ class MesgDefinition
 {
    public:
       MesgDefinition();
-      MesgDefinition(const Mesg& mesg);
+      explicit MesgDefinition(const Mesg& mesg);
       FIT_UINT16 GetNum() const;
       FIT_UINT8 GetLocalNum() const;
       void SetNum(const FIT_UINT16 newNum);

@@ -30,7 +30,7 @@ class FileCapabilitiesMesg : public Mesg
       {
       }
 
-      FileCapabilitiesMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit FileCapabilitiesMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

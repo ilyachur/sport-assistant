@@ -30,7 +30,7 @@ class DeviceInfoMesg : public Mesg
       {
       }
 
-      DeviceInfoMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit DeviceInfoMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

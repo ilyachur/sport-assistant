@@ -30,7 +30,7 @@ class GoalMesg : public Mesg
       {
       }
 
-      GoalMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit GoalMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

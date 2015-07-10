@@ -30,7 +30,7 @@ class SegmentFileMesg : public Mesg
       {
       }
 
-      SegmentFileMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SegmentFileMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

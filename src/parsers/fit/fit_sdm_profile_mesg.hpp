@@ -30,7 +30,7 @@ class SdmProfileMesg : public Mesg
       {
       }
 
-      SdmProfileMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SdmProfileMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

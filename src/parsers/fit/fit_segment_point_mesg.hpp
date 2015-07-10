@@ -30,7 +30,7 @@ class SegmentPointMesg : public Mesg
       {
       }
 
-      SegmentPointMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SegmentPointMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

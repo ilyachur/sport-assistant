@@ -30,7 +30,7 @@ class SportMesg : public Mesg
       {
       }
 
-      SportMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit SportMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

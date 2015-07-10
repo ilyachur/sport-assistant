@@ -31,7 +31,7 @@ class ActivityMesg : public Mesg, public MesgWithEvent
       {
       }
 
-      ActivityMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit ActivityMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

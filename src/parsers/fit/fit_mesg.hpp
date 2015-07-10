@@ -33,9 +33,9 @@ class Mesg
    public:
       Mesg(void);
       Mesg(const Mesg &mesg);
-      Mesg(const Profile::MESG_INDEX index);
-      Mesg(const std::string& name);
-      Mesg(const FIT_UINT16 num);
+      explicit Mesg(const Profile::MESG_INDEX index);
+      explicit Mesg(const std::string& name);
+      explicit Mesg(const FIT_UINT16 num);
       FIT_BOOL IsValid(void) const;
       int Write(std::ostream& file, const MesgDefinition* mesgDef = FIT_NULL) const;
       std::string GetName() const;

@@ -30,7 +30,7 @@ class TrainingFileMesg : public Mesg
       {
       }
 
-      TrainingFileMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit TrainingFileMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

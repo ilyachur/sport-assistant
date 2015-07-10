@@ -31,7 +31,7 @@ class LengthMesg : public Mesg, public MesgWithEvent
       {
       }
 
-      LengthMesg(const Mesg &mesg) : Mesg(mesg)
+      explicit LengthMesg(const Mesg &mesg) : Mesg(mesg)
       {
       }
 

@@ -16,7 +16,7 @@ public:
      * @brief Default constructor
      * @param file - the name for raw file (default = "")
      */
-    FitParser(QString file = "");
+    explicit FitParser(QString file = "");
     /**
      * @brief Open data file
      * @param file is a variable with raw data
@@ -64,6 +64,9 @@ private:
             public fit::HrvMesgListener,
             public fit::MesgListener {
     public :
+
+        FitListener() {}
+
         /**
          * @brief OnMesg - function for processing messages
          * @param message with type fit::Mesg
