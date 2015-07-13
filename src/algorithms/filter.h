@@ -48,15 +48,15 @@ public:
      * @brief setter for training data
      * @param training data
      */
-    inline setTrainingData(const QMap<unsigned long long, double> training) {
-        training = training;
+    inline void setTrainingData(const QMap<unsigned long long, double> training) {
+        this->training = training;
     }
 
     /**
      * @brief seter for athlete name
      * @param athlete name
      */
-    inline setAthleteName(const QString name) {
+    inline void setAthleteName(const QString name) {
         athleteName = name;
     }
 
@@ -64,7 +64,7 @@ public:
      * @brief Setter for training date
      * @param training date
      */
-    inline setDate(const QDateTime date) {
+    inline void setDate(const QDateTime date) {
         this->date = date;
     }
 
@@ -72,7 +72,7 @@ public:
      * @brief Setter for activity name
      * @param activity name
      */
-    inline setActivityName(const QString name) {
+    inline void setActivityName(const QString name) {
         activityName = name;
     }
 
@@ -80,7 +80,7 @@ public:
      * @brief Flag setter for saving images
      * @param save
      */
-    inline needSaveImages(const bool save) {
+    inline void needSaveImages(const bool save) {
         saveImages = save;
     }
 
@@ -88,7 +88,7 @@ public:
      * @brief Flag setter for showing images
      * @param save
      */
-    inline needShowImages(const bool show) {
+    inline void needShowImages(const bool show) {
         showImages = show;
     }
 

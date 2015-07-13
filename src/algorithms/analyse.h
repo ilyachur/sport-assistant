@@ -23,6 +23,10 @@ namespace Analysis {
 QVector<double> getTrainingSignal(QMap<unsigned long long, double> trainingMap,
                                   QVector<unsigned long long> timeLine);
 
+int findStartPoint(QVector<unsigned long long> timeLine, int startPoint, int findFrom = 0);
+
+int hrv2hb(double hrv);
+
 }
 
 #endif // ALGORITHMS

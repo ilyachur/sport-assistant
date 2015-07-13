@@ -13,3 +13,11 @@ QVector<double> Analysis::getTrainingSignal(QMap<unsigned long long, double> tra
     }
     return retList;
 }
+
+int Analysis::findStartPoint(QVector<unsigned long long> timeLine, int startPoint, int findFrom) {
+    return 0;
+}
+
+int Analysis::hrv2hb(double hrv) {
+    return 0;
+}
