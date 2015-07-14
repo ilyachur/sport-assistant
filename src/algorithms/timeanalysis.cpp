@@ -25,25 +25,26 @@ QMap<unsigned long long, double> Analysis::TimeAnalysis::simpleTimeAnalysis() {
     }
     qSort(timeLineLong);
 
+    unsigned long long startTime = timeLineLong.at(0);
+    unsigned long long finishTime = timeLineLong.at(timeLineLong.length() - 1) - startTime;
+
     int secChangeStep = 60;
     secChangeStep *= 1000;
-
-    emit notifyProgressRange(0, timeLineLong.at(timeLineLong.length() - 1) + 1);
 
     int lastStartPoint = 0;
     int lastEndPoint = 0;
 
-    unsigned long long startTime = timeLineLong.at(0);
-    unsigned long long finishTime = timeLineLong.at(timeLineLong.length() - 1) - startTime;
-
     QVector<double> tirednessValue;
     QVector<double> tirednessLine;
     double previousValue = 0;
+    int lastValue = (int)((finishTime / secChangeStep) + 1) ;
 
-    for(auto i(0); i < timeLineLong.at(timeLineLong.length() - 1) + 1; i++) {
-        int startPoint =  findStartPoint(timeLineLong, i * secChangeStep, lastStartPoint);
+    emit notifyProgressRange(0, lastValue);
+
+    for(auto i(0); i < lastValue; i++) {
+        int startPoint =  findStartPoint(timeLineLong, startTime + i * secChangeStep, lastStartPoint);
         lastStartPoint = startPoint;
-        int endPoint = findStartPoint(timeLineLong, (i + 1) * secChangeStep, lastStartPoint);
+        int endPoint = findStartPoint(timeLineLong, startTime + (i + 1) * secChangeStep, lastEndPoint);
         lastEndPoint = endPoint;
         QVector<unsigned long long> timeRange;
         for (auto j(startPoint); j < endPoint; j++)
@@ -63,19 +64,19 @@ QMap<unsigned long long, double> Analysis::TimeAnalysis::simpleTimeAnalysis() {
         int effective = getTrainingLoadValue(middleHb);
         switch(effective) {
         case 0:
-            value -= (double)((secChangeStep / 10) / (60 * 60));
+            value -= (double)((secChangeStep / 10) / (double)(60 * 60));
             break;
         case 1:
-            value += (double)((secChangeStep / 10) / (80 * 60));
+            value += (double)((secChangeStep / 10) / (double)(80 * 60));
             break;
         case 2:
-            value += (double)((secChangeStep / 10) / (60 * 60));
+            value += (double)((secChangeStep / 10) / (double)(60 * 60));
             break;
         case 3:
-            value += (double)((secChangeStep / 10) / (40 * 60));
+            value += (double)((secChangeStep / 10) / (double)(40 * 60));
             break;
         case 4:
-            value += (double)((secChangeStep / 10) / (10 * 60));
+            value += (double)((secChangeStep / 10) / (double)(10 * 60));
             break;
         case 5:
             value += (double)((secChangeStep / 10) / (5 * 60));
@@ -94,11 +95,11 @@ QMap<unsigned long long, double> Analysis::TimeAnalysis::simpleTimeAnalysis() {
     QVector<double> hbValues;
     QVector<double> hbLine;
     for (auto i(0); i < timeLineLong.length(); i++) {
-        hbLine.append((double)(((timeLineLong.at(i) - startTime) * 100) / finishTime));
+        hbLine.append((double)(((timeLineLong.at(i) - startTime) * 100) / (double)finishTime));
         hbValues.append((double)hrv2hb(training[timeLineLong.at(i)]));
     }
 
-    data->insert("hbTime", hbValues);
+    data->insert("hbTime", hbLine);
     data->insert("hbData", hbValues);
     data->insert("tirednessData", tirednessValue);
     data->insert("tirednessTime", tirednessLine);
@@ -108,5 +109,15 @@ QMap<unsigned long long, double> Analysis::TimeAnalysis::simpleTimeAnalysis() {
 }
 
 int Analysis::TimeAnalysis::getTrainingLoadValue(double middleHb) {
-    return 0;
+    if (middleHb < 104)
+        return 0;
+    else if (middleHb < 114)
+        return 1;
+    else if (middleHb < 134)
+        return 2;
+    else if (middleHb < 152)
+        return 3;
+    else if (middleHb < 171)
+        return 4;
+    return 5;
 }

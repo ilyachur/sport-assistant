@@ -12,6 +12,8 @@ QCustomPlot * useShowFunctions(QString *name, QMap<QString, QVector<double>> *da
 
 QCustomPlot * showFilteredData(QMap<QString, QVector<double>> data);
 
+QCustomPlot * showSimpleTimeAnalysis(QMap<QString, QVector<double>> data);
+
 }
 
 #endif // VISUALIZATION_H

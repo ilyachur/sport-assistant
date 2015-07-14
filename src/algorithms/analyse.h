@@ -7,6 +7,7 @@
 
 #include <QVector>
 #include "filter.h"
+#include "timeanalysis.h"
 
 /**
  *  @namespace Analysis
@@ -23,10 +24,10 @@ namespace Analysis {
 QVector<double> getTrainingSignal(QMap<unsigned long long, double> trainingMap,
                                   QVector<unsigned long long> timeLine);
 
-int findStartPoint(QVector<unsigned long long> timeLine, int startPoint, int findFrom = 0);
+int findStartPoint(QVector<unsigned long long> timeLine, unsigned long long startPoint, int findFrom = 0);
 
 int hrv2hb(double hrv);
-
+double hb2hrv(int hb);
 }
 
 #endif // ALGORITHMS

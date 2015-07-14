@@ -87,6 +87,7 @@ public:
     }
 
     QMap<unsigned long long, double> simpleTimeAnalysis();
+
 private:
     QMap<unsigned long long, double> training;
     QString athleteName, activityName;

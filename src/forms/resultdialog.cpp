@@ -38,10 +38,11 @@ ResultDialog::~ResultDialog()
 void ResultDialog::buildGraph(QString name, QMap<QString, QVector<double>> *data) {
     QCustomPlot * plot = Visualization::useShowFunctions(&name, data);
 
-    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
     delete data;
     if (plot == nullptr)
         return;
+
+    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
     QWidget * existTab = nullptr;
     for(auto i(0); i < ui->tabWidget->count(); i++) {
         if (ui->tabWidget->tabText(i) == name) {

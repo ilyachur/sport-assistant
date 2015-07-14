@@ -1,5 +1,6 @@
 #include "forms/mainwindow.h"
 #include <QApplication>
+#include <QDebug>
 
 /**
  * @mainpage Sport assistant: main page
@@ -8,6 +9,7 @@
 
 int main(int argc, char *argv[])
 {
+    qSetMessagePattern("%{file}(%{line}): %{message}");
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
