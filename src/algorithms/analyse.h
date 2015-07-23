@@ -8,6 +8,7 @@
 #include <QVector>
 #include "filter.h"
 #include "timeanalysis.h"
+#include "spectrumanalysis.h"
 
 /**
  *  @namespace Analysis

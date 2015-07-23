@@ -42,7 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     QObject::connect(ui->tableWidget, SIGNAL(cellClicked(int,int)), this, SLOT(clickTable(int,int)));
 
-    // TODO: Fixed all buttons
     QObject::connect(ui->actionChoose_data_directory, SIGNAL(triggered(bool)), this, SLOT(chooseDataDirectory()));
     QObject::connect(ui->actionOpen_data_base, SIGNAL(triggered(bool)), this, SLOT(openDataBase()));
     QObject::connect(ui->actionExit, SIGNAL(triggered(bool)), this, SLOT(close()));
@@ -155,7 +154,7 @@ void MainWindow::addPathButton(QString name) {
     }
     QPushButton *trainingButton = new QPushButton(name);
     trainingButton->setEnabled(false);
-    // TODO: Fix it
+
     for (auto i(0); i < pathButtons.size(); i++) {
         pathButtons.at(i)->setEnabled(true);
     }

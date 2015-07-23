@@ -47,11 +47,22 @@ void UpdaterAnalyseTraining::run() {
         QObject::disconnect(&timeAnalyser, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
     }
 
+
+    if (analyseSettings["analyse:spectrum:lomb"]) {
+        Analysis::SpectrumAnalysis spectrumAnalyser(training);
+        QObject::connect(&spectrumAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
+        QObject::connect(&spectrumAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
+        QObject::connect(&spectrumAnalyser, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
+        emit notifyProgressStatus("Time analysis...");
+
+        spectrumAnalyser.simpleTimeAnalysis();
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
+    }
+
     // TODO: Implemented it
     if (analyseSettings["analyse:spectrum:wavelet"]) {
-        // add Functions
-    }
-    if (analyseSettings["analyse:spectrum:lomb"]) {
         // add Functions
     }
     if (analyseSettings["analyse:spectrum:FFT"]) {

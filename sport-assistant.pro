@@ -45,7 +45,8 @@ SOURCES += src/main.cpp\
     src/visualization/qcustomplot.cpp \
     src/visualization/visualization.cpp \
     src/forms/resultdialog.cpp \
-    src/algorithms/timeanalysis.cpp
+    src/algorithms/timeanalysis.cpp \
+    src/algorithms/spectrumanalysis.cpp
 
 HEADERS  += src/forms/mainwindow.h \
     src/parsers/fitparser.h \
@@ -186,7 +187,8 @@ HEADERS  += src/forms/mainwindow.h \
     src/visualization/qcustomplot.h \
     src/visualization/visualization.h \
     src/forms/resultdialog.h \
-    src/algorithms/timeanalysis.h
+    src/algorithms/timeanalysis.h \
+    src/algorithms/spectrumanalysis.h
 
 FORMS    += src/forms/mainwindow.ui \
     src/forms/analysesettingsdialog.ui \

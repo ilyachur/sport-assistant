@@ -27,7 +27,6 @@ Analysis::Filter::Filter(QMap<unsigned long long, double> _training, QString _at
 QMap<unsigned long long, double> Analysis::Filter::simpleFilter() {
     QMap<unsigned long long, double> trainingFiltered;
 
-    // FIXME: training time len
     double dMax = 0.3;
     QVector<unsigned long long> timeLineLong;
     for (auto key : training.keys()) {
@@ -46,8 +45,10 @@ QMap<unsigned long long, double> Analysis::Filter::simpleFilter() {
     emit notifyProgressRange(0, rrIntervals.length());
 
     int windowSize = 2;
-    for(auto i(0); i < rrIntervals.length() - 1; i++) {
-        if (abs((rrIntervals.at(i + 1) - rrIntervals.at(i)) / avrRR) > dMax) {
+    for(auto i(0); i < rrIntervals.length(); i++) {
+        if (i == rrIntervals.length() - 1) {
+            trainingFiltered.insert(timeLineLong.at(i), rrIntervals.at(i));
+        } else if (abs((rrIntervals.at(i + 1) - rrIntervals.at(i)) / avrRR) > dMax) {
             rrIntervals[i] = avrRR;
             trainingFiltered.insert(timeLineLong.at(i), rrIntervals.at(i));
             if (abs((rrIntervals.at(i + 1) - rrIntervals.at(i)) / avrRR) > dMax) {

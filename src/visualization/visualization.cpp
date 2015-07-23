@@ -8,8 +8,6 @@
 
 #include "../algorithms/timeanalysis.h"
 
-// TODO: set graphs scale
-
 QCustomPlot * Visualization::useShowFunctions(QString *name, QMap<QString, QVector<double>> *data) {
     if ((*name) == "showFilteredData") {
         (*name) = "Training data";
