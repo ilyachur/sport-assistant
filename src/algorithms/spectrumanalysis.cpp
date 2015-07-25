@@ -11,8 +11,6 @@ Analysis::SpectrumAnalysis::SpectrumAnalysis(
 
 
 QMap<unsigned long long, double> Analysis::SpectrumAnalysis::searchStressPoints(SpectrumType analyseType) {
-    qDebug() << analyseType;
-
     int secChangeStep = 60;
 
     if (analyseType == Analysis::SpectrumType::FFT) {
@@ -34,6 +32,22 @@ QMap<unsigned long long, double> Analysis::SpectrumAnalysis::searchStressPoints(
         QVector<double> trainingHrv = getTrainingSignal(training, timeLineLong);
         QVector<double> freq = getFreqForHt(trainingHrv.size());
         QVector<double> periodogram = lombscargle(timeLineDouble,trainingHrv, freq);
+
+        QMap<QString, QVector<double>> *data = new QMap<QString, QVector<double>>;
+
+
+        QVector<double> hbValues;
+        QVector<double> hbLine;
+        for (auto i(0); i < timeLineLong.length(); i++) {
+            hbLine.append((double)(((timeLineLong.at(i) - startTime) * 100) / (double)finishTime));
+            hbValues.append(training[timeLineLong.at(i)]);
+        }
+
+        data->insert("signalTime", hbLine);
+        data->insert("signalData", hbValues);
+        data->insert("spectrumData", periodogram);
+        data->insert("spectrumFreq", freq);
+        emit buildGraph("showSpectrumAnalysisLomb", "SpectrumLombAll.png", data, true);
     } else if (analyseType == Analysis::SpectrumType::WAVELET) {
     }
 

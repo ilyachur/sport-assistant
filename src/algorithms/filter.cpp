@@ -88,8 +88,6 @@ QMap<unsigned long long, double> Analysis::Filter::simpleFilter() {
 
     emit buildGraph("showFilteredData", "filtered_data.png", data, true);
 
-    //Visualization::showFilteredData(timeLine, rrIntervalsTemp, rrIntervals);
-
     return trainingFiltered;
 }
 

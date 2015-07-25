@@ -14,6 +14,8 @@ QCustomPlot * showFilteredData(QMap<QString, QVector<double>> data);
 
 QCustomPlot * showSimpleTimeAnalysis(QMap<QString, QVector<double>> data);
 
+QCustomPlot * showSpectrumAnalysis(QMap<QString, QVector<double>> data);
+
 }
 
 #endif // VISUALIZATION_H

@@ -17,6 +17,10 @@ QCustomPlot * Visualization::useShowFunctions(QString *name, QMap<QString, QVect
         (*name) = "Time analysis";
         return showSimpleTimeAnalysis(*data);
     }
+    if ((*name) == "showSpectrumAnalysisLomb") {
+        (*name) = "Spectrum lomb analysis";
+        return showSpectrumAnalysis(*data);
+    }
     return nullptr;
 }
 
@@ -162,6 +166,46 @@ QCustomPlot * Visualization::showSimpleTimeAnalysis(QMap<QString, QVector<double
                                                 tirednessAxisRect->axis(QCPAxis::atLeft));
     mainGraph2->setData(tirednessTimeLine, tirednessData);
     mainGraph2->setPen(QPen(QColor(colors[5]), 2));
+
+    mainGraph2->rescaleAxes();
+
+    return customPlot;
+}
+
+QCustomPlot * Visualization::showSpectrumAnalysis(QMap<QString, QVector<double>> data) {
+    QVector<double> hbTimeLine = data.take("signalTime");
+    QVector<double> hbData = data.take("signalData");
+    QVector<double> tirednessTimeLine = data.take("spectrumFreq");
+    QVector<double> tirednessData = data.take("spectrumData");
+    if (hbTimeLine.size() != hbData.size() || tirednessTimeLine.size() != tirednessData.size())
+        return nullptr;
+
+    QCustomPlot *customPlot = new QCustomPlot;
+    customPlot->legend->setVisible(true);
+
+    customPlot->plotLayout()->clear();
+
+    QCPAxisRect *hbAxisRect = new QCPAxisRect(customPlot);
+    hbAxisRect->setupFullAxesBox(true);
+    hbAxisRect->axis(QCPAxis::atRight, 0)->setTickLabels(true);
+
+    QCPAxisRect *tirednessAxisRect = new QCPAxisRect(customPlot);
+    tirednessAxisRect->setupFullAxesBox(true);
+    tirednessAxisRect->axis(QCPAxis::atRight, 0)->setTickLabels(true);
+
+    customPlot->plotLayout()->addElement(0, 0, hbAxisRect);
+    customPlot->plotLayout()->addElement(1, 0, tirednessAxisRect);
+
+    QCPGraph *mainGraph1 = customPlot->addGraph(hbAxisRect->axis(QCPAxis::atBottom), hbAxisRect->axis(QCPAxis::atLeft));
+    mainGraph1->setData(hbTimeLine, hbData);
+    mainGraph1->setPen(QPen(QColor(0, 0, 0), 2));
+
+    mainGraph1->rescaleAxes();
+
+    QCPGraph *mainGraph2 = customPlot->addGraph(tirednessAxisRect->axis(QCPAxis::atBottom),
+                                                tirednessAxisRect->axis(QCPAxis::atLeft));
+    mainGraph2->setData(tirednessTimeLine, tirednessData);
+    mainGraph2->setPen(QPen(QColor("#6666ff"), 2));
 
     mainGraph2->rescaleAxes();
 
