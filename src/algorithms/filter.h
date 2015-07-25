@@ -12,8 +12,6 @@
 #include <QString>
 #include <QDateTime>
 
-#include "../visualization/visualization.h"
-
 /**
  *  @namespace Analysis
  *  @brief The Analysis namespace contains all functions for analysis
@@ -34,15 +32,8 @@ public:
     /**
      * @brief Constructor for Filter class
      * @param _training - source training data
-     * @param _athleteName - the name of athlete
-     * @param _date - training date
-     * @param _activityName - the name of training activity
-     * @param _showImages - show images (default true)
-     * @param _saveImages - save images (default false)
      */
-    Filter(QMap<unsigned long long, double> _training, QString _athleteName = QString(),
-           QDateTime _date = QDateTime(), QString _activityName = QString(),
-           bool _showImages = true, bool _saveImages = false);
+    Filter(QMap<unsigned long long, double> _training);
 
     /**
      * @brief setter for training data
@@ -50,46 +41,6 @@ public:
      */
     inline void setTrainingData(const QMap<unsigned long long, double> training) {
         this->training = training;
-    }
-
-    /**
-     * @brief seter for athlete name
-     * @param athlete name
-     */
-    inline void setAthleteName(const QString name) {
-        athleteName = name;
-    }
-
-    /**
-     * @brief Setter for training date
-     * @param training date
-     */
-    inline void setDate(const QDateTime date) {
-        this->date = date;
-    }
-
-    /**
-     * @brief Setter for activity name
-     * @param activity name
-     */
-    inline void setActivityName(const QString name) {
-        activityName = name;
-    }
-
-    /**
-     * @brief Flag setter for saving images
-     * @param save
-     */
-    inline void needSaveImages(const bool save) {
-        saveImages = save;
-    }
-
-    /**
-     * @brief Flag setter for showing images
-     * @param save
-     */
-    inline void needShowImages(const bool show) {
-        showImages = show;
     }
 
     /**
@@ -118,9 +69,6 @@ public:
 
 private:
     QMap<unsigned long long, double> training;
-    QString athleteName, activityName;
-    QDateTime date;
-    bool showImages, saveImages;
 
     /**
      * @brief _medianFilter - 1D MEDIAN FILTER implementation
@@ -157,7 +105,7 @@ signals:
      * @param name of function
      * @param data map
      */
-    void buildGrapf(QString, QMap<QString, QVector<double>>*);
+    void buildGraph(QString name, QString imageName, QMap<QString, QVector<double>> *data, bool showGraph);
 };
 
 }

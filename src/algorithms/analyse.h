@@ -7,6 +7,7 @@
 
 #include <QVector>
 #include "filter.h"
+#include "lombscargle.h"
 #include "timeanalysis.h"
 #include "spectrumanalysis.h"
 

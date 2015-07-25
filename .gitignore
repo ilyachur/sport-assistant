@@ -31,3 +31,5 @@
 tbb/
 build/
 doc/
+
+output/

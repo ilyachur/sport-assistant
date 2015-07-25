@@ -15,14 +15,7 @@
 
 Analysis::Filter::Filter() {}
 
-Analysis::Filter::Filter(QMap<unsigned long long, double> _training, QString _athleteName,
-       QDateTime _date, QString _activityName,
-       bool _showImages, bool _saveImages): QObject(), training(_training),
-    athleteName(_athleteName), date(_date), activityName(_activityName),
-    showImages(_showImages), saveImages(_saveImages)
-{
-
-}
+Analysis::Filter::Filter(QMap<unsigned long long, double> _training): training(_training) {}
 
 QMap<unsigned long long, double> Analysis::Filter::simpleFilter() {
     QMap<unsigned long long, double> trainingFiltered;
@@ -93,7 +86,7 @@ QMap<unsigned long long, double> Analysis::Filter::simpleFilter() {
     data->insert("startData", rrIntervalsTemp);
     data->insert("filteredData", rrIntervals);
 
-    emit buildGrapf("showFilteredData", data);
+    emit buildGraph("showFilteredData", "filtered_data.png", data, true);
 
     //Visualization::showFilteredData(timeLine, rrIntervalsTemp, rrIntervals);
 

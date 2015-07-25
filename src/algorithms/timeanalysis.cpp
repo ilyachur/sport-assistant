@@ -10,11 +10,7 @@
 
 Analysis::TimeAnalysis::TimeAnalysis() {}
 
-Analysis::TimeAnalysis::TimeAnalysis(QMap<unsigned long long, double> _training, QString _athleteName,
-       QDateTime _date, QString _activityName,
-       bool _showImages, bool _saveImages): QObject(), training(_training),
-    athleteName(_athleteName), date(_date), activityName(_activityName),
-    showImages(_showImages), saveImages(_saveImages) {}
+Analysis::TimeAnalysis::TimeAnalysis(QMap<unsigned long long, double> _training): training(_training) {}
 
 QMap<unsigned long long, double> Analysis::TimeAnalysis::simpleTimeAnalysis() {
     QMap<unsigned long long, double> timeResult;
@@ -103,7 +99,7 @@ QMap<unsigned long long, double> Analysis::TimeAnalysis::simpleTimeAnalysis() {
     data->insert("hbData", hbValues);
     data->insert("tirednessData", tirednessValue);
     data->insert("tirednessTime", tirednessLine);
-    emit buildGrapf("showSimpleTimeAnalysis", data);
+    emit buildGraph("showSimpleTimeAnalysis", "timeAnalysis.png", data, true);
 
     return timeResult;
 }

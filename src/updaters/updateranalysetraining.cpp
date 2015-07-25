@@ -26,25 +26,26 @@ void UpdaterAnalyseTraining::run() {
         Analysis::Filter trainingFilter(training);
         QObject::connect(&trainingFilter, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
         QObject::connect(&trainingFilter, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
-        QObject::connect(&trainingFilter, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
+        QObject::connect(&trainingFilter, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
         emit notifyProgressStatus("Filtering training data...");
+
         training = trainingFilter.simpleFilter();
         QObject::disconnect(&trainingFilter, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
         QObject::disconnect(&trainingFilter, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
-        QObject::disconnect(&trainingFilter, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
+        QObject::disconnect(&trainingFilter, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
     }
 
     if (analyseSettings["analyse:time:timeAnalisys"]) {
         Analysis::TimeAnalysis timeAnalyser(training);
         QObject::connect(&timeAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
         QObject::connect(&timeAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
-        QObject::connect(&timeAnalyser, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
+        QObject::connect(&timeAnalyser, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
         emit notifyProgressStatus("Time analysis...");
 
         timeAnalyser.simpleTimeAnalysis();
         QObject::disconnect(&timeAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
         QObject::disconnect(&timeAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
-        QObject::disconnect(&timeAnalyser, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
+        QObject::disconnect(&timeAnalyser, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
     }
 
 
@@ -52,21 +53,39 @@ void UpdaterAnalyseTraining::run() {
         Analysis::SpectrumAnalysis spectrumAnalyser(training);
         QObject::connect(&spectrumAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
         QObject::connect(&spectrumAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
-        QObject::connect(&spectrumAnalyser, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
-        emit notifyProgressStatus("Time analysis...");
+        QObject::connect(&spectrumAnalyser, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
+        emit notifyProgressStatus("Spectrum Lomb analysis...");
 
-        spectrumAnalyser.simpleTimeAnalysis();
+        spectrumAnalyser.searchStressPoints(Analysis::SpectrumType::LOMB);
         QObject::disconnect(&spectrumAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
         QObject::disconnect(&spectrumAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
-        QObject::disconnect(&spectrumAnalyser, SIGNAL(buildGrapf(QString, QMap<QString, QVector<double>>*)), this, SLOT(buildGraphSlot(QString,QMap<QString,QVector<double>>*)));
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
     }
 
     // TODO: Implemented it
     if (analyseSettings["analyse:spectrum:wavelet"]) {
-        // add Functions
+        Analysis::SpectrumAnalysis spectrumAnalyser(training);
+        QObject::connect(&spectrumAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
+        QObject::connect(&spectrumAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
+        QObject::connect(&spectrumAnalyser, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
+        emit notifyProgressStatus("Spectrum Wavelet analysis...");
+
+        spectrumAnalyser.searchStressPoints(Analysis::SpectrumType::WAVELET);
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
     }
-    if (analyseSettings["analyse:spectrum:FFT"]) {
-        // add Functions
+    if (analyseSettings["analyse:spectrum:fft"]) {
+        Analysis::SpectrumAnalysis spectrumAnalyser(training);
+        QObject::connect(&spectrumAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
+        QObject::connect(&spectrumAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
+        QObject::connect(&spectrumAnalyser, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
+        emit notifyProgressStatus("Spectrum FFT analysis...");
+
+        spectrumAnalyser.searchStressPoints(Analysis::SpectrumType::FFT);
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(notifyProgress(int)), this, SLOT(notifyProgressSlot(int)));
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(notifyProgressRange(int, int)), this, SLOT(notifyProgressRangeSlot(int,int)));
+        QObject::disconnect(&spectrumAnalyser, SIGNAL(buildGraph(QString, QString, QMap<QString, QVector<double>>*, bool)), this, SLOT(buildGraphSlot(QString, QString, QMap<QString, QVector<double>>*, bool)));
     }
 
     emit updaterFinished(activityID);

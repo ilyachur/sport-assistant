@@ -36,15 +36,15 @@ public slots:
         emit notifyProgressRange(from, to);
     }
 
-    void buildGraphSlot(QString name, QMap<QString, QVector<double>> *data) {
-        emit buildGraph(name, data);
+    void buildGraphSlot(QString name, QString imageName, QMap<QString, QVector<double>> *data, bool showGraph) {
+        emit buildGraph(name, imageName, data, showGraph);
     }
 
 signals:
     void notifyProgress(int value);
     void notifyProgressRange(int from, int to);
     void notifyProgressStatus(QString status);
-    void buildGraph(QString name, QMap<QString, QVector<double>> *data);
+    void buildGraph(QString name, QString imageName, QMap<QString, QVector<double>> *data, bool showGraph);
     void updaterFinished(int);
 };
 

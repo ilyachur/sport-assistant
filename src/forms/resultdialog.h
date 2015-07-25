@@ -9,6 +9,7 @@
 #include <QString>
 #include <QDebug>
 #include <QMap>
+#include <QDir>
 
 #include "../visualization/visualization.h"
 
@@ -26,6 +27,10 @@ public:
 
     inline void setAthleteName(QString athleteName) {
         this->athleteName = athleteName;
+    }
+
+    inline void setDataFolder(QString dataFolder) {
+        this->dataFolder = dataFolder;
     }
 
     inline void setDate(QDateTime date) {
@@ -49,19 +54,22 @@ public slots:
         }
     }
 
-    void buildGraph(QString name, QMap<QString, QVector<double>> *data);
+    void buildGraph(QString name, QString imageName, QMap<QString, QVector<double>> *data, bool showGraph);
 
 private:
     Ui::ResultDialog *ui;
 
     QString athleteName;
+    QString dataFolder;
     QString activity;
-    QDateTime date;
     bool saveImages;
+    QDateTime date;
 
     QVector<QCustomPlot *> graphics;
     QVector<QWidget *> tabs;
     QVector<QLayout *> layouts;
+
+    QDir createOutputDirectory(QString dirName);
 };
 
 #endif // RESULTDIALOG_H

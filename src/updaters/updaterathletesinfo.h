@@ -58,7 +58,7 @@ signals:
     void notifyProgress(int value);
     void notifyProgressRange(int from, int to);
     void notifyProgressStatus(QString status);
-    void buildGraph(QString name, QMap<QString, QVector<double>> *data);
+    void buildGraph(QString name, QString imageName, QMap<QString, QVector<double>> *data, bool showGraph);
     void updaterFinished(int);
 };
 

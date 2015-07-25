@@ -35,7 +35,7 @@ ResultDialog::~ResultDialog()
     delete ui;
 }
 
-void ResultDialog::buildGraph(QString name, QMap<QString, QVector<double>> *data) {
+void ResultDialog::buildGraph(QString name, QString imageName, QMap<QString, QVector<double>> *data, bool showGraph) {
     QCustomPlot * plot = Visualization::useShowFunctions(&name, data);
 
     delete data;
@@ -43,6 +43,13 @@ void ResultDialog::buildGraph(QString name, QMap<QString, QVector<double>> *data
         return;
 
     plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+
+    if (saveImages) {
+        QDir imageFolder = createOutputDirectory("images");
+        plot->savePng(imageFolder.absolutePath() + "/" + imageName);
+    }
+    if (!showGraph) return;
+
     QWidget * existTab = nullptr;
     for(auto i(0); i < ui->tabWidget->count(); i++) {
         if (ui->tabWidget->tabText(i) == name) {
@@ -64,8 +71,31 @@ void ResultDialog::buildGraph(QString name, QMap<QString, QVector<double>> *data
     } else {
         existTab->layout()->addWidget(plot);
     }
+}
 
-    if (saveImages) {
-        // TODO: Add code for saving images
+
+QDir ResultDialog::createOutputDirectory(QString dirName) {
+    QDir outputDir;
+
+    if (athleteName == "") {
+        athleteName = "Unknown";
     }
+    if (activity == "") {
+        activity = "Unknown";
+    }
+    if (dataFolder != "") {
+        outputDir.setPath(dataFolder + "/../output/");
+    } else {
+        outputDir.setPath(QApplication::applicationDirPath() + "/output/");
+    }
+
+    outputDir.setPath(outputDir.absolutePath() + "/" + dirName +
+                       "/" + athleteName + "/" + date.toString("dd.MM.yyyy") +
+                      "/" + activity);
+
+    if (!outputDir.exists()) {
+        outputDir.makeAbsolute();
+        outputDir.mkpath(outputDir.absolutePath());
+    }
+    return outputDir;
 }

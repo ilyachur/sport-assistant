@@ -16,7 +16,7 @@ signals:
     virtual void notifyProgress(int value) = 0;
     virtual void notifyProgressRange(int from, int to) = 0;
     virtual void notifyProgressStatus(QString status) = 0;
-    virtual void buildGraph(QString name, QMap<QString, QVector<double>> *data) = 0;
+    virtual void buildGraph(QString name, QString imageName, QMap<QString, QVector<double>> *data, bool showGraph) = 0;
     virtual void updaterFinished(int) = 0;
 };
 

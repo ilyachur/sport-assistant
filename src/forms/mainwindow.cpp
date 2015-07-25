@@ -371,6 +371,12 @@ void MainWindow::clickTable(int row, int col) {
         deleteUpdater();
         removeResultDialog();
         createResultDialog();
+        resultDialod->setAthleteName(athleteName);
+        resultDialod->setDate(date);
+        resultDialod->setActivity(activityName);
+        resultDialod->setSettings(settings);
+        resultDialod->setDataFolder(dataFolder);
+
         resultDialod->hide();
         QObject::connect(&showResultButton, SIGNAL(clicked(bool)), resultDialod, SLOT(showHide()));
 
@@ -379,7 +385,7 @@ void MainWindow::clickTable(int row, int col) {
         QObject::connect(updater, SIGNAL(notifyProgressRange(int,int)), mainProdressBar, SLOT(setRange(int,int)));
         QObject::connect(updater, SIGNAL(notifyProgress(int)), this, SLOT(updateAnalyseProgress(int)));
         QObject::connect(updater, SIGNAL(notifyProgressStatus(QString)), mainProdressBarStatus, SLOT(setText(QString)));
-        QObject::connect(updater, SIGNAL(buildGraph(QString,QMap<QString,QVector<double> >*)), resultDialod, SLOT(buildGraph(QString,QMap<QString,QVector<double> >*)));
+        QObject::connect(updater, SIGNAL(buildGraph(QString,QString,QMap<QString,QVector<double> >*,bool)), resultDialod, SLOT(buildGraph(QString,QString,QMap<QString,QVector<double> >*,bool)));
         QObject::connect(updater, SIGNAL(updaterFinished(int)), this, SLOT(trainingAnalyserFinished(int)));
 
         emit updateMainProdressBarStatus("Training analysing...");
