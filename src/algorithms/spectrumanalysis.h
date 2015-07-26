@@ -46,6 +46,12 @@ private:
 
     QVector<double> getFreqForHt(int length);
 
+    void getSpectrumPower(QVector<double> signal, QVector<double> freq, double *vlf, double *lf,
+                          double *hf, double *vhf, double *tp);
+
+    const int milisecInterval = 100 * 1000;
+    const int milisecChangeInterval = 1 * 1000;
+
 signals:
     void notifyProgress(int value);
     void notifyProgressRange(int from, int to);

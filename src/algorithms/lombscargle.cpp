@@ -28,7 +28,6 @@ QVector<double> Analysis::lombscargle(QVector<double> signal_time,
 
     if (output_len < 1) {
         output_len = training_signal.size();
-        qDebug() << output_len;
     }
 
     /* Local variables */

@@ -52,3 +52,41 @@ double Analysis::hb2hrv(int hb) {
     }
     return (double)(60 / (double)hb);
 }
+
+
+QVector<double> Analysis::findTrend(QVector<double> sourceLine, int rangeNum) {
+    int firstRange = rangeNum / 2;
+    int secondRange = rangeNum - firstRange;
+    QVector<double> trendRange;
+    for(auto i(0); i < sourceLine.size(); i++) {
+        int firstPart = firstRange;
+        int secondPart = secondRange;
+        if (i - firstPart < 0) {
+            firstPart = i;
+            secondPart = rangeNum - firstPart;
+        }
+        if (i + secondPart > sourceLine.size() - 1) {
+            secondPart = sourceLine.size() - 1 - i;
+            firstPart = rangeNum - secondPart;
+        }
+        if (i - firstPart < 0)
+            firstPart = i;
+        double middleRange = 0;
+        for (auto j(i - firstPart); j < i + secondPart; j++) {
+            middleRange += sourceLine.at(j);
+        }
+        middleRange /= rangeNum + 1;
+        trendRange.append(middleRange);
+    }
+    return trendRange;
+}
+
+
+QVector<int> Analysis::findStressPoints(QVector<double> lf2hf, QVector<double> tp) {
+    QVector<int> stressPoints;
+    if (lf2hf.size() != tp.size()) {
+        qDebug() << "lf2hf.size() != tp.size()";
+        return stressPoints;
+    }
+    return stressPoints;
+}

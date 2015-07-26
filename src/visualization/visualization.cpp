@@ -6,6 +6,8 @@
 #include <QObject>
 #include <QApplication>
 
+#include <time.h>
+
 #include "../algorithms/timeanalysis.h"
 
 QCustomPlot * Visualization::useShowFunctions(QString *name, QMap<QString, QVector<double>> *data) {
@@ -21,7 +23,58 @@ QCustomPlot * Visualization::useShowFunctions(QString *name, QMap<QString, QVect
         (*name) = "Spectrum lomb analysis";
         return showSpectrumAnalysis(*data);
     }
+    if ((*name) == "showGraphs") {
+        (*name) = "Spectrum lomb analysis";
+        return showGraphs(*data);
+    }
+    if ((*name) == "showTpLf2HfGraphLomb") {
+        (*name) = "Spectrum lomb analysis";
+        return showTpLf2HfGraph(*data);
+    }
     return nullptr;
+}
+
+QCustomPlot * Visualization::showTpLf2HfGraph(QMap<QString, QVector<double>> data) {
+    QVector<double> timeLine = data.take("time");
+    QVector<double> tpData = data.take("tpData");
+    QVector<double> lf2hfData = data.take("lf2hfData");
+    if (timeLine.size() != tpData.size())
+        return nullptr;
+    QCustomPlot *customPlot = new QCustomPlot;
+    customPlot->addGraph();
+    customPlot->graph(0)->setPen(QPen(Qt::blue));
+    customPlot->graph(0)->setName("Total Power");
+    customPlot->graph(0)->setData(timeLine, tpData);
+
+    customPlot->graph(0)->setLineStyle((QCPGraph::LineStyle)(1));
+    customPlot->graph(0)->setScatterStyle(QCPScatterStyle((QCPScatterStyle::ScatterShape)(1)));
+    if (lf2hfData.size() > 0 && lf2hfData.size() == timeLine.size()) {
+        customPlot->addGraph(customPlot->xAxis, customPlot->yAxis2);
+
+        customPlot->graph(1)->setPen(QPen(Qt::red));
+        customPlot->graph(1)->setName("LF / HF");
+        customPlot->graph(1)->setData(timeLine, lf2hfData);
+        // same thing for graph 1, but only enlarge ranges (in case graph 1 is smaller than graph 0):
+        customPlot->graph(1)->rescaleAxes(true);
+        customPlot->graph(1)->setLineStyle((QCPGraph::LineStyle)(1));
+        customPlot->graph(1)->setScatterStyle(QCPScatterStyle((QCPScatterStyle::ScatterShape)(1)));
+    }
+
+
+    customPlot->yAxis2->setVisible(true);
+    customPlot->yAxis->setLabel("Total Power");
+    customPlot->yAxis2->setLabel("LF / HF");
+
+
+
+    customPlot->legend->setVisible(true);
+
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+
+    // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
+    customPlot->graph(0)->rescaleAxes();
+
+    return customPlot;
 }
 
 QCustomPlot * Visualization::showFilteredData(QMap<QString, QVector<double>> data) {
@@ -33,7 +86,6 @@ QCustomPlot * Visualization::showFilteredData(QMap<QString, QVector<double>> dat
     QCustomPlot *customPlot = new QCustomPlot;
     customPlot->addGraph();
     customPlot->graph(0)->setPen(QPen(Qt::blue));
-    //customPlot->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20)));
     customPlot->graph(0)->setName("Raw data");
     customPlot->graph(0)->setData(timeLine, startData);
 
@@ -43,7 +95,6 @@ QCustomPlot * Visualization::showFilteredData(QMap<QString, QVector<double>> dat
         customPlot->addGraph();
 
         customPlot->graph(1)->setPen(QPen(Qt::red));
-        //customPlot->graph(1)->setBrush(QBrush(QColor(255, 0, 0, 20)));
         customPlot->graph(1)->setName("Filtered data");
         customPlot->graph(1)->setData(timeLine, filteredData);
         // same thing for graph 1, but only enlarge ranges (in case graph 1 is smaller than graph 0):
@@ -208,6 +259,64 @@ QCustomPlot * Visualization::showSpectrumAnalysis(QMap<QString, QVector<double>>
     mainGraph2->setPen(QPen(QColor("#6666ff"), 2));
 
     mainGraph2->rescaleAxes();
+
+    return customPlot;
+}
+
+QColor Visualization::generateRundomColor() {
+    static bool srandNotNeed = false;
+    if (!srandNotNeed) {
+        srandNotNeed = true;
+        srand(time(nullptr));
+    }
+    QString color = "#";
+    for(auto i(0); i < 3; i++) {
+        QString partColor;
+        partColor.sprintf("%02X", rand() % 256);
+        color += partColor;
+    }
+    qDebug() << color;
+    return QColor(color);
+}
+
+QCustomPlot * Visualization::showGraphs(QMap<QString, QVector<double>> data) {
+    QVector<double> timeLine = data.take("time");
+
+    QList<QString> graphs = data.keys();
+    if (graphs.size() < 1) {
+        qDebug() << "Cannot find graphs.";
+        return nullptr;
+    }
+
+    QCustomPlot *customPlot = new QCustomPlot;
+    for (QString graphName : graphs) {
+        QVector<double> graphData = data.take(graphName);
+        if (timeLine.size() != graphData.size()) {
+            delete customPlot;
+            qDebug() << "timeLine.size() != graphData.size()";
+            return nullptr;
+        }
+
+        QCPGraph *newGraph = customPlot->addGraph();
+        newGraph->setPen(QPen(generateRundomColor()));
+        newGraph->setName(graphName);
+        newGraph->setData(timeLine, graphData);
+
+        newGraph->setLineStyle((QCPGraph::LineStyle)(1));
+        newGraph->setScatterStyle(QCPScatterStyle((QCPScatterStyle::ScatterShape)(1)));
+    }
+
+    customPlot->xAxis2->setVisible(true);
+    customPlot->xAxis2->setTickLabels(false);
+    customPlot->yAxis2->setVisible(true);
+    customPlot->yAxis2->setTickLabels(false);
+    customPlot->legend->setVisible(true);
+
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+
+    // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
+    //customPlot->graph(0)->rescaleAxes();
+    customPlot->rescaleAxes();
 
     return customPlot;
 }

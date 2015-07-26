@@ -33,7 +33,7 @@ QMap<unsigned long long, double> Analysis::TimeAnalysis::simpleTimeAnalysis() {
     QVector<double> tirednessValue;
     QVector<double> tirednessLine;
     double previousValue = 0;
-    int lastValue = (int)((finishTime / secChangeStep) + 1) ;
+    int lastValue = (int)((finishTime / secChangeStep) + 1);
 
     emit notifyProgressRange(0, lastValue);
 

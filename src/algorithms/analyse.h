@@ -30,6 +30,9 @@ int findStartPoint(QVector<unsigned long long> timeLine, unsigned long long star
 
 int hrv2hb(double hrv);
 double hb2hrv(int hb);
+
+QVector<double> findTrend(QVector<double> sourceLine, int rangeNum = 30);
+QVector<int> findStressPoints(QVector<double> lf2hf, QVector<double> tp);
 }
 
 #endif // ALGORITHMS
