@@ -3,17 +3,65 @@
 #include "../parsers/parser_runtime_exception.h"
 #include <QDebug>
 #include <fstream>
+#include <QDateTime>
 
 FitParser::FitParser(QString file) {
     file_name = file;
     listener.setFileInfo(&fileInfo);
+
     mesgBroadcaster.AddListener((fit::FileIdMesgListener &)listener);
-    mesgBroadcaster.AddListener((fit::UserProfileMesgListener &)listener);
-    mesgBroadcaster.AddListener((fit::MonitoringMesgListener &)listener);
-    mesgBroadcaster.AddListener((fit::DeviceInfoMesgListener &)listener);
-    mesgBroadcaster.AddListener((fit::RecordMesgListener &)listener);
     mesgBroadcaster.AddListener((fit::HrvMesgListener &)listener);
+
+    /*
+    mesgBroadcaster.AddListener((fit::MesgDefinitionListener &)listener);
+    mesgBroadcaster.AddListener((fit::MesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::MesgWithEventListener &)listener);
+    mesgBroadcaster.AddListener((fit::BufferedRecordMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::FileCreatorMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SoftwareMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SlaveDeviceMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::CapabilitiesMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::FileCapabilitiesMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::MesgCapabilitiesMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::FieldCapabilitiesMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::DeviceSettingsMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::UserProfileMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::HrmProfileMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SdmProfileMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::BikeProfileMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::ZonesTargetMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SportMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::HrZoneMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SpeedZoneMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::CadenceZoneMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::PowerZoneMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::GoalMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::ActivityMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SessionMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::LapMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::LengthMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::RecordMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::EventMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::DeviceInfoMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::TrainingFileMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::CourseMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::CoursePointMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SegmentIdMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SegmentLeaderboardEntryMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SegmentPointMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SegmentLapMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::SegmentFileMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::WorkoutMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::WorkoutStepMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::ScheduleMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::TotalsMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::WeightScaleMesgListener &)listener);
     mesgBroadcaster.AddListener((fit::BloodPressureMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::MonitoringInfoMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::MonitoringMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::MemoGlobMesgListener &)listener);
+    mesgBroadcaster.AddListener((fit::PadMesgListener &)listener);
+    */
 }
 
 int FitParser::open(QString file) {
@@ -47,6 +95,7 @@ int FitParser::run() {
        qDebug() << "Exception decoding file: " << e.what();
        return PARSER_EXCEPTION;
     }
+
     return PARSER_OK;
 }
 
@@ -55,152 +104,27 @@ QMap<QString, QMap<QString, QString>> *FitParser::getInfo() {
     return &fileInfo;
 }
 
+QDateTime FitParser::getRealTimeFromFit(FIT_DATE_TIME dateTime) {
+    QDateTime realTime;
+    QDate shiftDate;
+    shiftDate.setDate(1989, 12, 31);
+
+    qint64 qDateTimeSec = dateTime;
+    realTime.setDate(shiftDate);
+
+    realTime.setMSecsSinceEpoch(realTime.toMSecsSinceEpoch() + (qDateTimeSec * 1000));
+
+    return realTime;
+}
+
 //////// LISTENER /////////////////////////
 
-void FitParser::FitListener::OnMesg(fit::Mesg& mesg) {
-    /*qDebug() << "On Mesg:\n";
-    qDebug() << "   New Mesg: " << mesg.GetName().c_str() << ".  It has " << mesg.GetNumFields() << " field(s).";
-    for (int i=0; i< mesg.GetNumFields(); i++) {
-        fit::Field* field = mesg.GetFieldByIndex(i);
-        qDebug() << "   Field" << i << " (" << field->GetName().c_str() << ") has " << field->GetNumValues() << " value(s).";
-        for (int j=0; j<field->GetNumValues(); j++) {
-            qDebug() << "       Val" << j << ": ";
-            switch (field->GetType()) {
-            case FIT_BASE_TYPE_ENUM:
-                qDebug() << "           " << field->GetENUMValue(j);
-                break;
-            case FIT_BASE_TYPE_SINT8:
-                qDebug() << "           " << field->GetSINT8Value(j);
-                break;
-            case FIT_BASE_TYPE_UINT8:
-                qDebug() << "           " << field->GetUINT8Value(j);
-                break;
-            case FIT_BASE_TYPE_SINT16:
-                qDebug() << "           " << field->GetSINT16Value(j);
-                break;
-            case FIT_BASE_TYPE_UINT16:
-                qDebug() << "           " << field->GetUINT16Value(j);
-                break;
-            case FIT_BASE_TYPE_SINT32:
-                qDebug() << "           " << field->GetSINT32Value(j);
-                break;
-            case FIT_BASE_TYPE_UINT32:
-                qDebug() << "           " << field->GetUINT32Value(j);
-                break;
-            case FIT_BASE_TYPE_FLOAT32:
-                qDebug() << "           " << field->GetFLOAT32Value(j);
-                break;
-            case FIT_BASE_TYPE_FLOAT64:
-                qDebug() << "           " << field->GetFLOAT64Value(j);
-                break;
-            case FIT_BASE_TYPE_UINT8Z:
-                qDebug() << "           " << field->GetUINT8ZValue(j);
-                break;
-            case FIT_BASE_TYPE_UINT16Z:
-                qDebug() << "           " << field->GetUINT16ZValue(j);
-                break;
-            case FIT_BASE_TYPE_UINT32Z:
-                qDebug() << "           " << field->GetUINT32ZValue(j);
-                break;
-            default:
-                break;
-            }
-        }
-    }*/
-}
-
 void FitParser::FitListener::OnMesg(fit::FileIdMesg& mesg) {
-    /*qDebug() << "File ID:\n";
-    if (mesg.GetType() != FIT_FILE_INVALID)
-        qDebug() << "   Type: " << mesg.GetType();
-    if (mesg.GetManufacturer() != FIT_MANUFACTURER_INVALID)
-        qDebug() << "   Manufacturer: " << mesg.GetManufacturer();
-    if (mesg.GetProduct() != FIT_UINT16_INVALID)
-        qDebug() << "   Product: " << mesg.GetProduct();
-    if (mesg.GetSerialNumber() != FIT_UINT32Z_INVALID)
-        qDebug() << "   Serial Number: " << mesg.GetSerialNumber();
-    if (mesg.GetNumber() != FIT_UINT16_INVALID)
-        qDebug() << "   Number: " << mesg.GetNumber();*/
-    mesg.GetType();
-}
-
-void FitParser::FitListener::OnMesg(fit::UserProfileMesg& mesg) {
-    /*qDebug() << "User profile:";
-    if (mesg.GetFriendlyName() != FIT_WSTRING_INVALID)
-        qDebug() << "   Friendly Name: " << mesg.GetFriendlyName().c_str();
-    if (mesg.GetGender() == FIT_GENDER_MALE)
-        qDebug() << "   Gender: Male";
-    if (mesg.GetGender() == FIT_GENDER_FEMALE)
-        qDebug() << "   Gender: Female";
-    if (mesg.GetAge() != FIT_UINT8_INVALID)
-        qDebug() << "   Age [years]: ", mesg.GetAge();
-    if (mesg.GetWeight() != FIT_FLOAT32_INVALID)
-        qDebug() << "   Weight [kg]: " << mesg.GetWeight();*/
-}
-
-void FitParser::FitListener::OnMesg(fit::DeviceInfoMesg& mesg) {
-    //qDebug() << "Device info:";
-    if (mesg.GetTimestamp() != FIT_UINT32_INVALID) {
-        //qDebug() << "   Timestamp: " << mesg.GetTimestamp();
-
-        QMap<QString, QString> testCalue = (*info)["Times"];
-        if (testCalue.take("StartTime") == "") {
-            testCalue.insert("StartTime", QString::number(mesg.GetTimestamp()));
-            info->insert("Times", testCalue);
-        }
-    }
-
-    switch(mesg.GetBatteryStatus()) {
-    case FIT_BATTERY_STATUS_CRITICAL:
-        //qDebug() <<"   Battery status: Critical";
-        break;
-    case FIT_BATTERY_STATUS_GOOD:
-        //qDebug() << "   Battery status: Good";
-        break;
-    case FIT_BATTERY_STATUS_LOW:
-        //qDebug() << "   Battery status: Low";
-        break;
-    case FIT_BATTERY_STATUS_NEW:
-        //qDebug() << "   Battery status: New";
-        break;
-    case FIT_BATTERY_STATUS_OK:
-        //qDebug() << "   Battery status: OK";
-        break;
-    default:
-        //qDebug() << "   Battery status: Invalid";
-        break;
-    }
-}
-
-void FitParser::FitListener::OnMesg(fit::MonitoringMesg& mesg) {
-    //qDebug() << "Monitoring: ";
-    if (mesg.GetTimestamp() != FIT_UINT32_INVALID) {
-        //qDebug() << "   Timestamp: " << mesg.GetTimestamp();
-    }
-
-    if(mesg.GetActivityType() != FIT_ACTIVITY_TYPE_INVALID) {
-        //qDebug() << "   Activity type: " << mesg.GetActivityType();
-    }
-
-    switch(mesg.GetActivityType()) // The Cycling field is dynamic
-    {
-    case FIT_ACTIVITY_TYPE_WALKING:
-    case FIT_ACTIVITY_TYPE_RUNNING: // Intentional fallthrough
-        if(mesg.GetSteps() != FIT_UINT32_INVALID) {
-            //qDebug() << "   Steps: " << mesg.GetSteps();
-        }
-        break;
-    case FIT_ACTIVITY_TYPE_CYCLING:
-    case FIT_ACTIVITY_TYPE_SWIMMING: // Intentional fallthrough
-        if(mesg.GetStrokes() != (FIT_FLOAT32)(FIT_UINT32_INVALID/2) ) {
-            //qDebug() << "Strokes: " << mesg.GetStrokes();
-        }
-        break;
-    default:
-        if(mesg.GetCycles() != (FIT_FLOAT32)(FIT_UINT32_INVALID/2) ) {
-            //qDebug() << "Cycles: " << mesg.GetStrokes();
-        }
-        break;
+    QDateTime startTime = getRealTimeFromFit(mesg.GetTimeCreated());
+    QMap<QString, QString> testCalue = (*info)["Times"];
+    if (testCalue.take("StartTime") == "") {
+        testCalue.insert("StartTime", QString::number(startTime.toMSecsSinceEpoch()));
+        info->insert("Times", testCalue);
     }
 }
 
@@ -212,7 +136,6 @@ void FitParser::FitListener::OnMesg(fit::HrvMesg& mesg) {
         QMap<QString, QString> testTime = (*info)["Times"];
         if (testTime["StartTime"] != "") {
             time_last = testTime["StartTime"].toULongLong();
-            time_last *= 1000;
         }
     }
     if (mesg.GetTime(0) != FIT_FLOAT32_INVALID) {
@@ -228,18 +151,100 @@ void FitParser::FitListener::OnMesg(fit::HrvMesg& mesg) {
 
     }
 }
+/*
+void FitParser::FitListener::OnMesg(fit::BloodPressureMesg& mesg) {}
 
-void FitParser::FitListener::OnMesg(fit::BloodPressureMesg& mesg) {
-/*    qDebug() << "BloodPressureMesg:";
-    qDebug() << "   GetTimestamp: " << mesg.GetTimestamp();
-    qDebug() << "   GetSystolicPressure: " << mesg.GetSystolicPressure();
-    qDebug() << "   GetDiastolicPressure: "<< mesg.GetDiastolicPressure();
-    qDebug() << "   GetMeanArterialPressure: " << mesg.GetMeanArterialPressure();
-    qDebug() << "   GetMap3SampleMean: " << mesg.GetMap3SampleMean();
-    qDebug() << "   GetMapMorningValues: " << mesg.GetMapMorningValues();
-    qDebug() << "   GetMapEveningValues: " << mesg.GetMapEveningValues();
-    qDebug() << "   GetHeartRate: " << mesg.GetHeartRate();
-    qDebug() << "   GetHeartRateType: " << mesg.GetHeartRateType();
-    qDebug() << "   GetStatus: " << mesg.GetStatus();
-    qDebug() << "   GetUserProfileIndex: " << mesg.GetUserProfileIndex();*/
-}
+void FitParser::FitListener::OnMesg(fit::UserProfileMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::DeviceInfoMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::MonitoringMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::PadMesg& mesg) {}
+
+void FitParser::FitListener::OnMesgDefinition(fit::MesgDefinition& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::MemoGlobMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::MonitoringInfoMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::WeightScaleMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::TotalsMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::WorkoutStepMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::WorkoutMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SegmentPointMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SegmentLeaderboardEntryMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SegmentIdMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::CoursePointMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::CourseMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::EventMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::LapMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::ActivityMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::GoalMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::PowerZoneMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::CadenceZoneMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SpeedZoneMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::HrZoneMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SportMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::ZonesTargetMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::BikeProfileMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SdmProfileMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::HrmProfileMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::DeviceSettingsMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::FieldCapabilitiesMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::FileCapabilitiesMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::MesgCapabilitiesMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::CapabilitiesMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SlaveDeviceMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SoftwareMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::FileCreatorMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::BufferedRecordMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::MesgWithEvent& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::TrainingFileMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SegmentFileMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SegmentLapMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::ScheduleMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::RecordMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::LengthMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::SessionMesg& mesg) {}
+
+void FitParser::FitListener::OnMesg(fit::Mesg& mesg) {}
+*/

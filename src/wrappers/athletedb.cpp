@@ -259,7 +259,6 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
             /// Get training map and get start time
             QMap<QString, QString> trainingMap = (*parserInfo)["HrvMesg"];
             unsigned long long start_time_long = (*parserInfo)["Times"]["StartTime"].toULongLong();
-            start_time_long /= 1000;
             if (!db.exec("SELECT * FROM training WHERE date = " +
                         QString::number(start_time_long) + " and athlete_id = " +
                         QString::number(athleteInfo.value("id", "-1").toInt()) +
