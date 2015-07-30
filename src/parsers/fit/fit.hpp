@@ -264,7 +264,10 @@ typedef std::wstring FIT_WSTRING;   // Returned by message/field "Get" APIs and 
 typedef const FIT_WSTRING * FIT_CONST_WSTRING_PTR;
 #define FIT_WSTRING_INVALID   (FIT_WSTRING())
 
-
+/**
+ *  @namespace fit
+ *  @brief The fit namespace contains all functions for work with fit files
+ */
 namespace fit
 {
 

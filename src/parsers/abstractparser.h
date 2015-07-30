@@ -5,6 +5,10 @@
 #include <QString>
 #include <fstream>
 
+/// @file abstractparser.h
+/// @brief Contains definition of abstract parser class
+/// @author Ilya Churaev ilyachur@gmail.com
+
 /**
   * Some parser error codes
   */

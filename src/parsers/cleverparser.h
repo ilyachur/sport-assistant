@@ -1,6 +1,10 @@
 #ifndef CLEVERPARSER_H
 #define CLEVERPARSER_H
 
+/// @file cleverparser.h
+/// @brief Contains definition of clever parser class
+/// @author Ilya Churaev ilyachur@gmail.com
+
 #include "parser_runtime_exception.h"
 #include "abstractparser.h"
 #include "fitparser.h"

@@ -12,9 +12,7 @@ Analysis::TimeAnalysis::TimeAnalysis() {}
 
 Analysis::TimeAnalysis::TimeAnalysis(QMap<unsigned long long, double> _training): training(_training) {}
 
-QMap<unsigned long long, double> Analysis::TimeAnalysis::simpleTimeAnalysis() {
-    QMap<unsigned long long, double> timeResult;
-
+void Analysis::TimeAnalysis::simpleTimeAnalysis() {
     QVector<unsigned long long> timeLineLong;
     for (auto key : training.keys()) {
         timeLineLong.append(key);
@@ -100,8 +98,6 @@ QMap<unsigned long long, double> Analysis::TimeAnalysis::simpleTimeAnalysis() {
     data->insert("tirednessData", tirednessValue);
     data->insert("tirednessTime", tirednessLine);
     emit buildGraph("showSimpleTimeAnalysis", "timeAnalysis.png", data, true);
-
-    return timeResult;
 }
 
 int Analysis::TimeAnalysis::getTrainingLoadValue(double middleHb) {

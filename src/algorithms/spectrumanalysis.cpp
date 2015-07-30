@@ -3,6 +3,10 @@
 
 #include <QDebug>
 
+/// @file spectrumanalysis.cpp
+/// @brief Contains classes, functions and enums for spectrum analysis
+/// @author Ilya Churaev ilyachur@gmail.com
+
 Analysis::SpectrumAnalysis::SpectrumAnalysis() {}
 
 Analysis::SpectrumAnalysis::SpectrumAnalysis(
@@ -10,7 +14,7 @@ Analysis::SpectrumAnalysis::SpectrumAnalysis(
     training(_training) {}
 
 
-QMap<unsigned long long, double> Analysis::SpectrumAnalysis::searchStressPoints(SpectrumType analyseType) {
+void Analysis::SpectrumAnalysis::searchStressPoints(SpectrumType analyseType) {
     emit notifyProgress(0);
 
     if (analyseType == Analysis::SpectrumType::FFT) {
@@ -158,8 +162,6 @@ QMap<unsigned long long, double> Analysis::SpectrumAnalysis::searchStressPoints(
         emit buildGraph("showTpLf2HfGraphLomb", "SpectrumLomb_StressPoints.png", data, true);
     } else if (analyseType == Analysis::SpectrumType::WAVELET) {
     }
-
-    return QMap<unsigned long long, double>();
 }
 
 

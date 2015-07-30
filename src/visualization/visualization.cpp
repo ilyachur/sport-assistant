@@ -10,10 +10,14 @@
 
 #include "../algorithms/timeanalysis.h"
 
+/// @file visualization.cpp
+/// @brief Contains all function which are necessary for visualization results of analysis
+/// @author Ilya Churaev ilyachur@gmail.com
+
 QCustomPlot * Visualization::useShowFunctions(QString *name, QMap<QString, QVector<double>> *data) {
     if ((*name) == "showFilteredData") {
         (*name) = "Training data";
-        return showFilteredData(*data);
+        return showGraphs(*data);
     }
     if ((*name) == "showSimpleTimeAnalysis") {
         (*name) = "Time analysis";
@@ -64,49 +68,6 @@ QCustomPlot * Visualization::showTpLf2HfGraph(QMap<QString, QVector<double>> dat
     customPlot->yAxis2->setVisible(true);
     customPlot->yAxis->setLabel("Total Power");
     customPlot->yAxis2->setLabel("LF / HF");
-
-
-
-    customPlot->legend->setVisible(true);
-
-    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
-
-    // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
-    customPlot->graph(0)->rescaleAxes();
-
-    return customPlot;
-}
-
-QCustomPlot * Visualization::showFilteredData(QMap<QString, QVector<double>> data) {
-    QVector<double> timeLine = data.take("time");
-    QVector<double> startData = data.take("startData");
-    QVector<double> filteredData = data.take("filteredData");
-    if (timeLine.size() != startData.size())
-        return nullptr;
-    QCustomPlot *customPlot = new QCustomPlot;
-    customPlot->addGraph();
-    customPlot->graph(0)->setPen(QPen(Qt::blue));
-    customPlot->graph(0)->setName("Raw data");
-    customPlot->graph(0)->setData(timeLine, startData);
-
-    customPlot->graph(0)->setLineStyle((QCPGraph::LineStyle)(1));
-    customPlot->graph(0)->setScatterStyle(QCPScatterStyle((QCPScatterStyle::ScatterShape)(1)));
-    if (filteredData.size() > 0 && filteredData.size() == timeLine.size()) {
-        customPlot->addGraph();
-
-        customPlot->graph(1)->setPen(QPen(Qt::red));
-        customPlot->graph(1)->setName("Filtered data");
-        customPlot->graph(1)->setData(timeLine, filteredData);
-        // same thing for graph 1, but only enlarge ranges (in case graph 1 is smaller than graph 0):
-        customPlot->graph(1)->rescaleAxes(true);
-        customPlot->graph(1)->setLineStyle((QCPGraph::LineStyle)(1));
-        customPlot->graph(1)->setScatterStyle(QCPScatterStyle((QCPScatterStyle::ScatterShape)(1)));
-    }
-
-    customPlot->xAxis2->setVisible(true);
-    customPlot->xAxis2->setTickLabels(false);
-    customPlot->yAxis2->setVisible(true);
-    customPlot->yAxis2->setTickLabels(false);
 
 
 
@@ -263,7 +224,7 @@ QCustomPlot * Visualization::showSpectrumAnalysis(QMap<QString, QVector<double>>
     return customPlot;
 }
 
-QColor Visualization::generateRundomColor() {
+QColor Visualization::generateRandomColor() {
     static bool srandNotNeed = false;
     if (!srandNotNeed) {
         srandNotNeed = true;
@@ -289,6 +250,9 @@ QCustomPlot * Visualization::showGraphs(QMap<QString, QVector<double>> data) {
     }
 
     QCustomPlot *customPlot = new QCustomPlot;
+    QColor standartColors[5] = {QColor(Qt::red), QColor(Qt::blue), QColor(Qt::yellow), QColor(Qt::green), QColor(Qt::gray)};
+
+    int countColor = 0;
     for (QString graphName : graphs) {
         QVector<double> graphData = data.take(graphName);
         if (timeLine.size() != graphData.size()) {
@@ -298,7 +262,12 @@ QCustomPlot * Visualization::showGraphs(QMap<QString, QVector<double>> data) {
         }
 
         QCPGraph *newGraph = customPlot->addGraph();
-        newGraph->setPen(QPen(generateRundomColor()));
+        if (countColor < 5) {
+            newGraph->setPen(QPen(standartColors[countColor]));
+        } else {
+            newGraph->setPen(QPen(generateRandomColor()));
+        }
+        countColor++;
         newGraph->setName(graphName);
         newGraph->setData(timeLine, graphData);
 

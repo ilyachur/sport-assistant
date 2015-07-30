@@ -1,6 +1,10 @@
 #ifndef FITPARSER_H
 #define FITPARSER_H
 
+/// @file fitparser.h
+/// @brief Contains definition of fit parser class
+/// @author Ilya Churaev ilyachur@gmail.com
+
 #include "abstractparser.h"
 #include "fit/fit_decode.hpp"
 #include "fit/fit_mesg_broadcaster.hpp"
@@ -55,6 +59,11 @@ private:
      */
     fit::MesgBroadcaster mesgBroadcaster;
 
+    /**
+     * @brief Get date and time for training from fit
+     * @param dateTime - date and time in Msec from fit file
+     * @return real date and time
+     */
     static QDateTime getRealTimeFromFit(FIT_DATE_TIME dateTime);
 
     /**

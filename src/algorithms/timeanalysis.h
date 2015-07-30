@@ -39,7 +39,10 @@ public:
         this->training = training;
     }
 
-    QMap<unsigned long long, double> simpleTimeAnalysis();
+    /**
+     * @brief simpleTimeAnalysis - main function for time analysis
+     */
+    void simpleTimeAnalysis();
 
 private:
     QMap<unsigned long long, double> training;
@@ -47,8 +50,26 @@ private:
     int getTrainingLoadValue(double middleHb);
 
 signals:
+    /**
+     * @brief Signal for changing progress bar value
+     * @param value - current value
+     */
     void notifyProgress(int value);
+
+    /**
+     * @brief Signal for setting progress bar range
+     * @param from - start value
+     * @param to - end value
+     */
     void notifyProgressRange(int from, int to);
+
+    /**
+     * @brief Signal for creating graph by output data
+     * @param name of function
+     * @param name for saving image
+     * @param data map
+     * @param flag for showing graph
+     */
     void buildGraph(QString name, QString imageName, QMap<QString, QVector<double>> *data, bool showGraph);
 };
 

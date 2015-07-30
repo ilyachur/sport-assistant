@@ -1,7 +1,6 @@
 #include "athletedb.h"
 
-
-/// @file athletedb.h
+/// @file athletedb.cpp
 /// @brief Contains class realisation for work with data base
 /// @author Ilya Churaev ilyachur@gmail.com
 

@@ -3,6 +3,10 @@
 #include "../algorithms/analyse.h"
 #include "../visualization/qcustomplot.h"
 
+/// @file updateranalysetraining.cpp
+/// @brief Contains definition of updater for training analysis class methods
+/// @author Ilya Churaev ilyachur@gmail.com
+
 UpdaterAnalyseTraining::UpdaterAnalyseTraining(QString _athleteName, int _activityID, QString dbName,
                                                QMap<unsigned long long, double> trainingMap, QDateTime _date,
                                                QMap<QString, bool> _analyseSettings, QString activity):

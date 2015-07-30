@@ -83,8 +83,8 @@ QMap<unsigned long long, double> Analysis::Filter::simpleFilter() {
 
     QMap<QString, QVector<double>> *data = new QMap<QString, QVector<double>>;
     data->insert("time", timeLine);
-    data->insert("startData", rrIntervalsTemp);
-    data->insert("filteredData", rrIntervals);
+    data->insert("Raw data", rrIntervalsTemp);
+    data->insert("Filtered data", rrIntervals);
 
     emit buildGraph("showFilteredData", "filtered_data.png", data, true);
 

@@ -5,10 +5,16 @@
 #include <fstream>
 #include <QDateTime>
 
+
+/// @file fitparser.cpp
+/// @brief Contains definition of fit parser class
+/// @author Ilya Churaev ilyachur@gmail.com
+
 FitParser::FitParser(QString file) {
     file_name = file;
     listener.setFileInfo(&fileInfo);
 
+    // Add listeners
     mesgBroadcaster.AddListener((fit::FileIdMesgListener &)listener);
     mesgBroadcaster.AddListener((fit::HrvMesgListener &)listener);
 
@@ -129,7 +135,6 @@ void FitParser::FitListener::OnMesg(fit::FileIdMesg& mesg) {
 }
 
 void FitParser::FitListener::OnMesg(fit::HrvMesg& mesg) {
-    //qDebug() << "HrvMesg: ";
     QMap<QString, QString> testCalue = (*info)["HrvMesg"];
     static unsigned long long time_last = 0;
     if (!time_last) {
@@ -139,16 +144,11 @@ void FitParser::FitListener::OnMesg(fit::HrvMesg& mesg) {
         }
     }
     if (mesg.GetTime(0) != FIT_FLOAT32_INVALID) {
-        int ms_hrv = int(mesg.GetTime(0) * 1000.0);
+        int ms_hrv = (int)(mesg.GetTime(0) * 1000);
         time_last += ms_hrv;
         testCalue.insert(QString::number(time_last),
                          QString::number(mesg.GetTime(0)));
         info->insert("HrvMesg", testCalue);
-        //qDebug() <<"   Time: " << mesg.GetTime(0);
-    }
-    if (mesg.GetNumTime() != FIT_UINT8_INVALID) {
-        //qDebug() << "   NumTime: " << mesg.GetNumTime();
-
     }
 }
 /*

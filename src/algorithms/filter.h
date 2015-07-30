@@ -103,7 +103,9 @@ signals:
     /**
      * @brief Signal for creating graph by output data
      * @param name of function
+     * @param name for saving image
      * @param data map
+     * @param flag for showing graph
      */
     void buildGraph(QString name, QString imageName, QMap<QString, QVector<double>> *data, bool showGraph);
 };

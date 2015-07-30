@@ -1,6 +1,9 @@
 #include "forms/mainwindow.h"
 #include <QApplication>
-#include <QDebug>
+
+/// @file main.cpp
+/// @brief Contains entry point to application
+/// @author Ilya Churaev ilyachur@gmail.com
 
 /**
  * @mainpage Sport assistant: main page
@@ -9,6 +12,7 @@
 
 int main(int argc, char *argv[])
 {
+    // Set format qDebug output
     qSetMessagePattern("%{file}(%{line}): %{message}");
     QApplication a(argc, argv);
     MainWindow w;
