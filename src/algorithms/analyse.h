@@ -63,7 +63,7 @@ QVector<double> findTrend(QVector<double> sourceLine, int rangeNum = 30);
  * @param tp - vector with tp data
  * @return vector with stress points
  */
-QVector<int> findStressPoints(QVector<double> lf2hf, QVector<double> tp);
+QVector<int> findStressPoints(QVector<double> lf2hf, QVector<double> tp, int stepSize = 5);
 
 }
 

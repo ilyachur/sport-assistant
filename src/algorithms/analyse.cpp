@@ -81,12 +81,62 @@ QVector<double> Analysis::findTrend(QVector<double> sourceLine, int rangeNum) {
     return trendRange;
 }
 
+enum LineTypes {
+    INCREASES,
+    DECREASES,
+    LOCAL_MAX,
+    LOCAL_MIN,
+    CONST
+};
 
-QVector<int> Analysis::findStressPoints(QVector<double> lf2hf, QVector<double> tp) {
+LineTypes findLineBehavior(QVector<double> line, double errorLevel, int *minIndex = nullptr) {
+    LineTypes returnType;
+    double startPoint = line.at(0);
+    double endPoint = line.at(line.size() - 1);
+
+    std::pair<double *, double *> localMinMax = std::minmax_element(line.begin(), line.end());
+    if (minIndex != nullptr) {
+        *minIndex = line.indexOf(*localMinMax.first);
+    }
+
+    returnType = LineTypes::CONST;
+
+    if (startPoint < endPoint && (*localMinMax.second == endPoint || *localMinMax.second <= endPoint + errorLevel) &&
+            (*localMinMax.first == startPoint || *localMinMax.first >= startPoint - errorLevel)) {
+        returnType = LineTypes::INCREASES;
+    } else if (startPoint > endPoint && (*localMinMax.second == startPoint || *localMinMax.second <= startPoint + errorLevel) &&
+               (*localMinMax.first == endPoint || *localMinMax.first >= endPoint - errorLevel)) {
+        returnType = LineTypes::DECREASES;
+    } else if (*localMinMax.second >= startPoint + errorLevel && *localMinMax.second >= endPoint + errorLevel) {
+        returnType = LineTypes::LOCAL_MAX;
+    } else if (*localMinMax.first <= startPoint - errorLevel && *localMinMax.first <= endPoint - errorLevel) {
+        returnType = LineTypes::LOCAL_MIN;
+    }
+
+    if (returnType == LineTypes::LOCAL_MAX &&
+            *localMinMax.second - std::max(startPoint, endPoint) < std::min(startPoint, endPoint) - *localMinMax.first)
+        returnType = LineTypes::LOCAL_MIN;
+
+    return returnType;
+}
+
+QVector<int> Analysis::findStressPoints(QVector<double> lf2hf, QVector<double> tp, int stepSize) {
     QVector<int> stressPoints;
     if (lf2hf.size() != tp.size()) {
         qDebug() << "lf2hf.size() != tp.size()";
         return stressPoints;
+    }
+
+    for (auto i(0); i < (int)(tp.size() / stepSize) + 1; i++) {
+        if (tp.size() - i*stepSize < 1) {
+            break;
+        }
+        LineTypes tpBehavior = findLineBehavior(tp.mid(i*stepSize, 2*stepSize), 10000);
+        int minIndex;
+        LineTypes lf2hfBehavior = findLineBehavior(lf2hf.mid(i*stepSize, 2*stepSize), 0.004, &minIndex);
+        if (tpBehavior != lf2hfBehavior && lf2hfBehavior == LineTypes::LOCAL_MIN && tpBehavior != LineTypes::INCREASES) {
+            stressPoints.append(i*stepSize + minIndex);
+        }
     }
     return stressPoints;
 }

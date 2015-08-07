@@ -139,6 +139,7 @@ void Analysis::SpectrumAnalysis::searchStressPoints(SpectrumType analyseType) {
         QVector<double> lf2hfTrend = findTrend(lf2hf);
         QVector<double> tpTrend = findTrend(tpv);
         QVector<int> stressPoints = findStressPoints(lf2hfTrend, tpTrend);
+        qDebug() << "StressPoints size: " << QString::number(stressPoints.size());
         qDebug() << stressPoints;
         data = new QMap<QString, QVector<double>>;
 
@@ -163,7 +164,6 @@ void Analysis::SpectrumAnalysis::searchStressPoints(SpectrumType analyseType) {
     } else if (analyseType == Analysis::SpectrumType::WAVELET) {
     }
 }
-
 
 QVector<double> Analysis::SpectrumAnalysis::getFreqForHt(int length) {
     QVector<double> returnVector;

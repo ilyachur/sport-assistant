@@ -42,6 +42,8 @@ QCustomPlot * Visualization::showTpLf2HfGraph(QMap<QString, QVector<double>> dat
     QVector<double> timeLine = data.take("time");
     QVector<double> tpData = data.take("tpData");
     QVector<double> lf2hfData = data.take("lf2hfData");
+
+    QVector<double> stressPoints = data.take("StressPoints");
     if (timeLine.size() != tpData.size())
         return nullptr;
     QCustomPlot *customPlot = new QCustomPlot;
@@ -62,6 +64,21 @@ QCustomPlot * Visualization::showTpLf2HfGraph(QMap<QString, QVector<double>> dat
         customPlot->graph(1)->rescaleAxes(true);
         customPlot->graph(1)->setLineStyle((QCPGraph::LineStyle)(1));
         customPlot->graph(1)->setScatterStyle(QCPScatterStyle((QCPScatterStyle::ScatterShape)(1)));
+    }
+    QVector<double> maxMinPoint;
+    std::pair<double*, double*> elementMaxMin = std::minmax_element(tpData.begin(), tpData.end());
+    maxMinPoint.append(*elementMaxMin.first);
+    maxMinPoint.append(*elementMaxMin.second);
+    for (auto i(0); i < stressPoints.size(); i++) {
+        QCPGraph * stressPointLine = customPlot->addGraph();
+        stressPointLine->setName("StressPoint " + QString::number(i));
+        stressPointLine->setPen(QPen(Qt::black));
+        QVector<double> timePoint;
+        timePoint.append(stressPoints.at(i));
+        timePoint.append(stressPoints.at(i));
+        stressPointLine->setData(timePoint, maxMinPoint);
+        stressPointLine->setLineStyle((QCPGraph::LineStyle)(1));
+        stressPointLine->setScatterStyle(QCPScatterStyle((QCPScatterStyle::ScatterShape)(1)));
     }
 
 
