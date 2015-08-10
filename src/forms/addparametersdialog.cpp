@@ -96,12 +96,14 @@ void AddParametersDialog::submit() {
                 }
             }
 
+
+            fields.insert(i, fields.at(i) + "(" + currentType + ")");
             if (i == fields.size() - 1) {
-                paramsTypes += "\"" + fields.at(i) + "(" + currentType + ")\" " + currentType;
-                paramsList += "\"" + fields.at(i) + "(" + currentType + ")\"";
+                paramsTypes += "\"" + fields.at(i) + "\" " + currentType;
+                paramsList += "\"" + fields.at(i) + "\"";
             } else {
-                paramsTypes += "\"" + fields.at(i) + "(" + currentType + ")\" " + currentType + ", ";
-                paramsList += "\"" + fields.at(i) + "(" + currentType + ")\",";
+                paramsTypes += "\"" + fields.at(i) + "\" " + currentType + ", ";
+                paramsList += "\"" + fields.at(i) + "\",";
             }
         }
         QString withoutQuotesParamsList = paramsList;
@@ -130,9 +132,21 @@ void AddParametersDialog::submit() {
     }
 
     QStringList commands;
-    commands.append("INSERT INTO " + currentScheme + " (activityID, " + paramsList + ") VALUES (\"" +
-                    QString::number(activityID) + "\", " + valuesStr + ")");
-    athleteDB.execCommands(commands, true);
+    commands.append("SELECT * FROM " + currentScheme + " WHERE activityID = " + QString::number(activityID));
+    QSqlQuery existQuery = athleteDB.execCommands(commands, false).at(0);
+    if (!existQuery.next()) {
+        commands.clear();
+        commands.append("INSERT INTO " + currentScheme + " (activityID, " + paramsList + ") VALUES (\"" +
+                        QString::number(activityID) + "\", " + valuesStr + ")");
+        athleteDB.execCommands(commands, true);
+    } else {
+        commands.clear();
+        for (auto i(0); i < fields.size(); i++) {
+            commands.append("UPDATE " + currentScheme + " SET \"" + fields.at(i) +
+                            "\" = \"" + values.at(i) + "\" WHERE activityID = " + QString::number(activityID));
+        }
+        athleteDB.execCommands(commands, true);
+    }
     close();
 }
 
@@ -180,16 +194,10 @@ void AddParametersDialog::setParams(int row) {
     QSqlQuery query = athleteDB.execCommands(commands, false).at(0);
     QStringList values;
     while(query.next()) {
-        QMap<QString, QVariant> test = query.boundValues();
         for (auto i(2); ; i++) {
             if (!query.value(i).isValid())
                 break;
             values.append(query.value(i).toString());
-            qDebug() << query.value(2);
-            qDebug() << query.value(i);
-        }
-        for(QString key : test.keys()) {
-            qDebug() << key << " " << test[key];
         }
     }
 
