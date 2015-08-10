@@ -97,7 +97,7 @@ void AddParametersDialog::submit() {
             }
 
 
-            fields.insert(i, fields.at(i) + "(" + currentType + ")");
+            fields.replace(i, fields.at(i) + "(" + currentType + ")");
             if (i == fields.size() - 1) {
                 paramsTypes += "\"" + fields.at(i) + "\" " + currentType;
                 paramsList += "\"" + fields.at(i) + "\"";

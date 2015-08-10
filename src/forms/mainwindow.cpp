@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if (QSysInfo::kernelType() == "darwin") {
         dataFolder = QApplication::applicationDirPath() + "/../../../../../test_data";
+        databaseName = QApplication::applicationDirPath() + "/../../../db.sqlite3";
     } else if (QSysInfo::kernelType() == "linux") {
         dataFolder = QApplication::applicationDirPath() + "/../../test_data";
     } else  {

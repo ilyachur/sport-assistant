@@ -334,8 +334,9 @@ QVector<QSqlQuery> AthleteDB::execCommands(const QStringList commands, bool need
     for(QString command : commands)
         returnVector.append(db.exec(command));
 
-    //for(auto i(0); i < returnVector.size(); i++)
-    //    qDebug() << returnVector.at(i).lastError().text();
+    /*for(auto i(0); i < returnVector.size(); i++) {
+        qDebug() << commands.at(i) << " : " << returnVector.at(i).lastError().text();
+    }*/
 
     if (needCommit) {
         bool ok = db.commit();
