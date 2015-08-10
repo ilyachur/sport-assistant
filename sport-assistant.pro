@@ -203,7 +203,9 @@ FORMS    += src/forms/mainwindow.ui \
 RESOURCES += \
     mainresources.qrc
 
-RC_ICON = icons/heart.ico
+RC_ICONS = icons/heart.ico
 ICON = icons/heart.icns
+
+VERSION = 0.2
 
 CONFIG += c++11
