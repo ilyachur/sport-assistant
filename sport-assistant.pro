@@ -46,7 +46,8 @@ SOURCES += src/main.cpp\
     src/visualization/visualization.cpp \
     src/forms/resultdialog.cpp \
     src/algorithms/timeanalysis.cpp \
-    src/algorithms/spectrumanalysis.cpp
+    src/algorithms/spectrumanalysis.cpp \
+    src/forms/addactivity.cpp
 
 HEADERS  += src/forms/mainwindow.h \
     src/parsers/fitparser.h \
@@ -188,14 +189,16 @@ HEADERS  += src/forms/mainwindow.h \
     src/visualization/visualization.h \
     src/forms/resultdialog.h \
     src/algorithms/timeanalysis.h \
-    src/algorithms/spectrumanalysis.h
+    src/algorithms/spectrumanalysis.h \
+    src/forms/addactivity.h
 
 FORMS    += src/forms/mainwindow.ui \
     src/forms/analysesettingsdialog.ui \
     src/forms/marktrainingdialog.ui \
     src/forms/addparametersdialog.ui \
     src/forms/predictdialog.ui \
-    src/forms/resultdialog.ui
+    src/forms/resultdialog.ui \
+    src/forms/addactivity.ui
 
 RESOURCES += \
     mainresources.qrc

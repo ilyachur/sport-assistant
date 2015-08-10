@@ -55,23 +55,11 @@ public:
     }
 
     /**
-     * @brief exec function
+     * @brief execCommands function
      * @param command for execution
      * @return QSqlQuery
      */
-    inline QSqlQuery exec(const QString command) {
-        connect();
-        return db.exec(command);
-    }
-
-    /**
-     * @brief commit function
-     * @return true if all good else false
-     */
-    inline bool commit() {
-        connect();
-        return db.commit();
-    }
+    QVector<QSqlQuery> execCommands(const QStringList commands, bool needCommit, bool* commitOk = nullptr);
 
     /**
      * @brief updateAthleteInfo - function for updating athlete information
@@ -110,6 +98,9 @@ public:
         }
         return retMap;
     }
+
+    QVector<QStringList> getActivityTypes();
+    QStringList getTablesList();
 
 private:
     /**

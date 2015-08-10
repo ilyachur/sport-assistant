@@ -297,3 +297,50 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
     saveSettings(&athleteInfo);
     return 0;
 }
+
+QVector<QStringList> AthleteDB::getActivityTypes() {
+    QVector<QStringList> ret;
+
+    connect();
+    db.exec("create table if not exists activityTypes (id integer PRIMARY KEY, activityType string, paramsList string)");
+    db.commit();
+
+    QSqlQuery allReturn = db.exec("SELECT activityType, paramsList FROM activityTypes");
+    while (allReturn.next()) {
+        QStringList needAdd;
+        needAdd.append(allReturn.value("activityType").toString());
+        needAdd.append(allReturn.value("paramsList").toString());
+        ret.push_back(needAdd);
+    }
+
+    return ret;
+}
+
+QStringList AthleteDB::getTablesList() {
+    QStringList returnList;
+
+    connect();
+
+    QSqlQuery allReturn = db.exec("SELECT name FROM sqlite_master WHERE type='table'");
+    while (allReturn.next()) {
+        returnList.append(allReturn.value("name").toString());
+    }
+    return returnList;
+}
+
+QVector<QSqlQuery> AthleteDB::execCommands(const QStringList commands, bool needCommit, bool* commitOk) {
+    connect();
+    QVector<QSqlQuery> returnVector;
+    for(QString command : commands)
+        returnVector.append(db.exec(command));
+
+    //for(auto i(0); i < returnVector.size(); i++)
+    //    qDebug() << returnVector.at(i).lastError().text();
+
+    if (needCommit) {
+        bool ok = db.commit();
+        if (commitOk != nullptr)
+            *commitOk = ok;
+    }
+    return returnVector;
+}
