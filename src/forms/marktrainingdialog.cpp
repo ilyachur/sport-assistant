@@ -6,6 +6,12 @@ MarkTrainingDialog::MarkTrainingDialog(int _activityID, QString dbName, QWidget 
     ui(new Ui::MarkTrainingDialog)
 {
     ui->setupUi(this);
+
+    setWindowIcon(QIcon(":/icons/heart.ico"));
+
+    this->parent = parent;
+
+    //QObject::connect(ui->)
 }
 
 MarkTrainingDialog::~MarkTrainingDialog()

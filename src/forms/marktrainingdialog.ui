@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MarkTrainingDialog</class>
- <widget name="MarkTrainingDialog" class="QDialog">
+ <widget class="QDialog" name="MarkTrainingDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,9 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Mark training</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="btnAdd">
    <property name="geometry">
     <rect>
      <x>310</x>
