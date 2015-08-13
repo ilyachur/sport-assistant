@@ -48,7 +48,13 @@ SOURCES += src/main.cpp\
     src/algorithms/timeanalysis.cpp \
     src/algorithms/spectrumanalysis.cpp \
     src/forms/addactivity.cpp \
-    src/forms/addmarkdialog.cpp
+    src/forms/addmarkdialog.cpp #\
+    #src/widgets/qrangeslider.cpp \
+    #src/widgets/qvspinboxrangeslider.cpp \
+    #src/widgets/qspinboxrangeslider.cpp \
+    #src/widgets/qhrangeslider.cpp \
+    #src/widgets/qhspinboxrangeslider.cpp \
+    #src/widgets/qvrangeslider.cpp
 
 HEADERS  += src/forms/mainwindow.h \
     src/parsers/fitparser.h \
@@ -192,7 +198,13 @@ HEADERS  += src/forms/mainwindow.h \
     src/algorithms/timeanalysis.h \
     src/algorithms/spectrumanalysis.h \
     src/forms/addactivity.h \
-    src/forms/addmarkdialog.h
+    src/forms/addmarkdialog.h #\
+    #src/widgets/qrangeslider.h \
+    #src/widgets/qvspinboxrangeslider.h \
+    #src/widgets/qspinboxrangeslider.h \
+    #src/widgets/qhrangeslider.h \
+    #src/widgets/qhspinboxrangeslider.h \
+    #src/widgets/qvrangeslider.h
 
 FORMS    += src/forms/mainwindow.ui \
     src/forms/analysesettingsdialog.ui \
