@@ -126,7 +126,7 @@ void AnalyseSettingsDialog::addInfo() {
 }
 
 void AnalyseSettingsDialog::regressionClicked() {
-    PredictDialog predictDialog("RUN");
+    PredictDialog predictDialog(activityID, dataBaseName);
     predictDialog.exec();
 }
 

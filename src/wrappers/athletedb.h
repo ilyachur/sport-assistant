@@ -131,6 +131,8 @@ private:
      * @brief db disconnect
      */
     void disconnect();
+
+    void addTrainingTemplates();
 };
 
 #endif // ATHLETEDB_H

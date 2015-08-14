@@ -295,6 +295,8 @@ int AthleteDB::updateAthleteInfo(QString athleteName, QString athleteDir) {
 
     athleteInfo.endGroup();
     saveSettings(&athleteInfo);
+
+    addTrainingTemplates();
     return 0;
 }
 
@@ -370,4 +372,16 @@ void AthleteDB::addActivity(int activityID, int trainingID, QString activityName
 
         db.commit();
     }
+}
+
+void AthleteDB::addTrainingTemplates() {
+    connect();
+    db.exec("create table if not exists activityTypes (id integer PRIMARY KEY, activityType string, paramsList string)");
+    db.commit();
+
+    // Run configuration
+    QString runParams = "lf_before,hf_before,tp_before,lfhf_before,lf_during,hf_during,tp_during,"
+                        "lfhf_during,lf_after,hf_after,tp_after,lfhf_after";
+    qDebug()<< db.exec("INSERT INTO activityTypes (activityType, paramsList) VALUES (\"Run\", \"" + runParams + "\")").lastError();
+    db.commit();
 }
