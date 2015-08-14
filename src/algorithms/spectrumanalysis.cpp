@@ -56,7 +56,8 @@ void Analysis::SpectrumAnalysis::searchStressPoints(SpectrumType analyseType) {
         int lastStartPoint = 0;
         int lastEndPoint = 0;
 
-        int lastValue = (int)(((finishTime - milisecInterval) / milisecChangeInterval) + 1);
+        int lastValue = (int)((((int)finishTime - milisecInterval) / milisecChangeInterval) + 1);
+
         if (lastValue < 1)
             lastValue = 1;
         emit notifyProgressRange(0, lastValue);

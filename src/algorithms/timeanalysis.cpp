@@ -81,6 +81,8 @@ void Analysis::TimeAnalysis::simpleTimeAnalysis() {
             value = 0;
         previousValue = value;
         tirednessValue.append(value);
+        if (!finishTime)
+            finishTime = 1;
         tirednessLine.append((double)((timeLineLong.at(endPoint) - startTime) * 100 / finishTime));
         emit notifyProgress(i);
     }
