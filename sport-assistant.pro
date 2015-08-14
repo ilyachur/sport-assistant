@@ -204,7 +204,8 @@ HEADERS  += src/forms/mainwindow.h \
     src/widgets/qspinboxrangeslider.h \
     src/widgets/qhrangeslider.h \
     src/widgets/qhspinboxrangeslider.h \
-    src/widgets/qvrangeslider.h
+    src/widgets/qvrangeslider.h \
+    src/wrappers/functionwrapper.h
 
 FORMS    += src/forms/mainwindow.ui \
     src/forms/analysesettingsdialog.ui \

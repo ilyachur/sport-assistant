@@ -21,23 +21,26 @@ void QVRangeSlider::paintEvent(QPaintEvent *event) {
 
     int w = width();
     int h = height();
+    int middle = w / 2;
+    w = 20;
+    middle -= w / 2;
 
     // background
     painter.setPen(Qt::gray);
     painter.setBrush(Qt::lightGray);
-    painter.drawRect(2, 2, w - 4, h - 4);
+    painter.drawRect(middle + 2, 2, w - 4, h - 4);
 
     // Range bar
     painter.setPen(Qt::darkGray);
     painter.setBrush(Qt::darkGray);
-    painter.drawRect(5, displayMax - 1, w - 10, displayMax - displayMin + 1);
+    painter.drawRect(middle + 5, displayMax - 1, w - 10, displayMax - displayMin + 1);
 
     // min & max tabs
     painter.setPen(Qt::black);
     painter.setBrush(Qt::gray);
-    painter.drawRect(1, h - displayMax - barWidth - 1, w - 2, barWidth);
+    painter.drawRect(middle + 1, h - displayMax - barWidth - 1, w - 2, barWidth);
 
     painter.setPen(Qt::black);
     painter.setBrush(Qt::gray);
-    painter.drawRect(1, displayMin-1, w - 2, barWidth);
+    painter.drawRect(middle + 1, displayMin-1, w - 2, barWidth);
 }
