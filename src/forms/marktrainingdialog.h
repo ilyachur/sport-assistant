@@ -1,6 +1,7 @@
 #ifndef MARKTRAININGDIALOG_H
 #define MARKTRAININGDIALOG_H
 
+#include <QMap>
 #include <QDialog>
 #include <QString>
 #include <QVector>
@@ -26,7 +27,10 @@ public:
 private:
     Ui::MarkTrainingDialog *ui;
     QWidget *parent;
-    int activityID;
+    int activityID, trainingID;
+    QString activityName;
+    QMap<unsigned long long, double> trainingData;
+    QVector<unsigned long long> timeLineLong;
     AthleteDB athleteDB;
     QString dataBaseName;
     QVector<QHSpinBoxRangeSlider *> slidersList;
@@ -34,10 +38,12 @@ private:
     QVector<QPushButton *> buttonsList;
     QVector<QHBoxLayout *> layoutsList;
     QVector<FunctionWrapper *> functionsWrappersList;
-    QVector<bool> savedList;
+    QVector<int> activitiesIdList;
+
+    void addSubActivities();
 
 public slots:
-    void addMarkSlider(bool saved = false);
+    void addMarkSlider(int activityId = -1, QString activityNameStr = "", int from = 0, int to = 0);
     void updateButtonState(int index);
     void addRemoveUpdateMark(int index);
 };

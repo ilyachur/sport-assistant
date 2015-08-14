@@ -21,7 +21,7 @@ QSpinBoxRangeSlider::QSpinBoxRangeSlider(QWidget *parent): QWidget(parent) {
     maxSpinBox.setMaximum(0);
     maxSpinBox.setSingleStep(0);
     maxSpinBox.setValue(0);
-    QObject::connect(&minSpinBox, SIGNAL(valueChanged(double)), this, SLOT(handleMaxSpinBox(double)));
+    QObject::connect(&maxSpinBox, SIGNAL(valueChanged(double)), this, SLOT(handleMaxSpinBox(double)));
 }
 
 QSpinBoxRangeSlider::QSpinBoxRangeSlider(double minValue, double maxValue, double stepSize, double downSliderPos, double upSliderPos, QWidget *parent):
@@ -58,6 +58,11 @@ void QSpinBoxRangeSlider::addRangeSlider(QRangeSlider *slider) {
 void QSpinBoxRangeSlider::getValues(double *min, double *max) {
     *min = minSpinBox.value();
     *max = maxSpinBox.value();
+}
+
+void QSpinBoxRangeSlider::setValues(double min, double max) {
+    minSpinBox.setValue(min);
+     maxSpinBox.setValue(max);
 }
 
 void QSpinBoxRangeSlider::handleDoubleClick(bool b) {

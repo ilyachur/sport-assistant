@@ -24,6 +24,7 @@ public:
     void addRangeSlider(QRangeSlider *slider);
 
     void getValues(double *min, double *max);
+    void setValues(double min, double max);
     void setEmitWhileMoving(bool flag);
 
 protected:

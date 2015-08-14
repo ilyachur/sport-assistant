@@ -69,6 +69,9 @@ public:
      */
     int updateAthleteInfo(QString athleteName, QString athleteDir);
 
+    void removeActivity(int activityID);
+    void addActivity(int activityID, int trainingID, QString activityName, unsigned long long date, QString data);
+
     /**
      * @brief dumpQMap2QString for saving training to db
      * @param dumpedMap - training info

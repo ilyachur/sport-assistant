@@ -345,3 +345,27 @@ QVector<QSqlQuery> AthleteDB::execCommands(const QStringList commands, bool need
     }
     return returnVector;
 }
+
+void AthleteDB::removeActivity(int activityID) {
+    connect();
+}
+
+void AthleteDB::addActivity(int activityID, int trainingID, QString activityName, unsigned long long date, QString data) {
+    connect();
+
+    if (activityID < 0) {
+        // add new activity
+        db.exec("INSERT INTO activities (activity, training_id, data, date) VALUES(\"" +
+                    activityName + "\", " + QString::number(trainingID) + ", \"" +
+                data + "\", " + QString::number(date) + ")");
+        db.commit();
+    } else {
+        // update current activity
+        db.exec("UPDATE activities SET training_id = \"" + QString::number(trainingID) + "\" WHERE ID = " + QString::number(activityID));
+        db.exec("UPDATE activities SET activity = \"" + activityName + "\" WHERE ID = " + QString::number(activityID));
+        db.exec("UPDATE activities SET date = \"" + QString::number(date) + "\" WHERE ID = " + QString::number(activityID));
+        db.exec("UPDATE activities SET data = \"" + data + "\" WHERE ID = " + QString::number(activityID));
+
+        db.commit();
+    }
+}
