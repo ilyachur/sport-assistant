@@ -15,15 +15,23 @@ public:
     explicit QSpinBoxRangeSlider(double minValue = 0, double maxValue = 0, double stepSize = 0,
                           double downSliderPos = 0, double upSliderPos = 0, QWidget *parent = 0);
 
-    void addRangeSlider(QRangeSlider slider);
+    ~QSpinBoxRangeSlider() {
+        if (rangeSlider != nullptr)
+            delete rangeSlider;
+        rangeSlider = nullptr;
+    }
+
+    void addRangeSlider(QRangeSlider *slider);
 
     void getValues(double *min, double *max);
     void setEmitWhileMoving(bool flag);
 
+protected:
+    QRangeSlider *rangeSlider = nullptr;
+    QDoubleSpinBox minSpinBox, maxSpinBox;
+
 private:
     double maxVal, minVal;
-    QRangeSlider rangeSlider;
-    QDoubleSpinBox minSpinBox, maxSpinBox;
 
     double adjustValue(double newValue);
     void emitRangeChange();

@@ -6,12 +6,14 @@ QHRangeSlider::QHRangeSlider(double minValue, double maxValue, double stepSize, 
 QRangeSlider(minValue, maxValue, stepSize, downSliderPos, upSliderPos, parent){
     if (!parent)
         setGeometry(200, 200, 200, 100);
+    setValues(downSliderPos, upSliderPos);
 }
 
 QHRangeSlider::QHRangeSlider(QWidget *parent):
 QRangeSlider(parent){
     if (!parent)
         setGeometry(200, 200, 200, 100);
+    setValues(0, 0);
 }
 
 void QHRangeSlider::paintEvent(QPaintEvent *event) {

@@ -11,12 +11,12 @@ public:
                   double downSliderPos = 0, double upSliderPos = 0, QWidget *parent = 0);
 
 
-    inline rangeSliderSize() {
+    virtual int rangeSliderSize() {
         return height();
     }
 
 protected:
-    inline int getPos(QMouseEvent *event) {
+    virtual int getPos(QMouseEvent *event) {
         return height() - event->y();
     }
 

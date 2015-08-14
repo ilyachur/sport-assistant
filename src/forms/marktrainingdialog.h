@@ -19,8 +19,8 @@ private:
     Ui::MarkTrainingDialog *ui;
     QWidget *parent;
 
-public slots:
-    void add();
+//public slots:
+//    void add();
 };
 
 #endif // MARKTRAININGDIALOG_H

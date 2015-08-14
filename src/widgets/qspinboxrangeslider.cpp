@@ -44,15 +44,15 @@ QWidget(parent) {
     maxSpinBox.setMaximum(maxValue);
     maxSpinBox.setSingleStep(stepSize);
     maxSpinBox.setValue(upSliderPos);
-    QObject::connect(&minSpinBox, SIGNAL(valueChanged(double)), this, SLOT(handleMaxSpinBox(double)));
+    QObject::connect(&maxSpinBox, SIGNAL(valueChanged(double)), this, SLOT(handleMaxSpinBox(double)));
 }
 
-void QSpinBoxRangeSlider::addRangeSlider(QRangeSlider slider) {
+void QSpinBoxRangeSlider::addRangeSlider(QRangeSlider *slider) {
     rangeSlider = slider;
 
-    rangeSlider.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-    QObject::connect(&rangeSlider, SIGNAL(doubleClick(bool)), this, SLOT(handleDoubleClick(bool)));
-    QObject::connect(&rangeSlider, SIGNAL(rangeChanged(double,double)), this, SLOT(handleRangeChange(double,double)));
+    rangeSlider->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    QObject::connect(rangeSlider, SIGNAL(doubleClick(bool)), this, SLOT(handleDoubleClick(bool)));
+    QObject::connect(rangeSlider, SIGNAL(rangeChanged(double,double)), this, SLOT(handleRangeChange(double,double)));
 }
 
 void QSpinBoxRangeSlider::getValues(double *min, double *max) {
@@ -65,8 +65,8 @@ void QSpinBoxRangeSlider::handleDoubleClick(bool b) {
 }
 
 double QSpinBoxRangeSlider::adjustValue(double newValue) {
-    double adj = round(newValue / rangeSlider.singleStep);
-    adj = adj * rangeSlider.singleStep;
+    double adj = round(newValue / rangeSlider->getSingleStep());
+    adj = adj * rangeSlider->getSingleStep();
     return adj;
 }
 
@@ -81,7 +81,7 @@ void QSpinBoxRangeSlider::emitRangeChange() {
         shouldEmit = true;
     }
     if (shouldEmit) {
-        rangeSlider.setValues(minVal, maxVal);
+        rangeSlider->setValues(minVal, maxVal);
         emit rangeChanged(minVal, maxVal);
     }
 }
@@ -104,5 +104,5 @@ void QSpinBoxRangeSlider::handleRangeChange(double min, double max) {
 }
 
 void QSpinBoxRangeSlider::setEmitWhileMoving(bool flag) {
-    rangeSlider.setEmitWhileMoving(flag);
+    rangeSlider->setEmitWhileMoving(flag);
 }

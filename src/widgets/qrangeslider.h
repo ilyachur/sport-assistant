@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QVector>
+#include <QKeyEvent>
 #include <QMouseEvent>
 
 class QRangeSlider : public QWidget
@@ -14,13 +15,12 @@ public:
     explicit QRangeSlider(double minValue = 0, double maxValue = 0, double stepSize = 0,
                           double downSliderPos = 0, double upSliderPos = 0, QWidget *parent = 0);
 
-    QVector<double> getValues();
     void setRange(double minValue, double maxValue, double stepSize);
 
     inline void getValues(double *startSlider, double *finishSlider);
-    inline void setValues(double startSlider, double finishSlider);
+    virtual void setValues(double startSlider, double finishSlider);
 
-    inline int rangeSliderSize() {
+    virtual int rangeSliderSize() {
         return height();
     }
 
@@ -28,9 +28,24 @@ public:
         emitWhileMoving = flag;
     }
 
+    inline double getSingleStep() {
+        return singleStep;
+    }
+
+    inline void setSingleStep(double value) {
+        singleStep = value;
+    }
+
 protected:
-    int barWidth;
-    inline int getPos(QMouseEvent * event);
+    int barWidth, displayMin, displayMax;
+    double singleStep;
+    virtual int getPos(QMouseEvent * event);
+    void keyPressEvent(QKeyEvent * event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void resizeEvent(QResizeEvent * event);
 
 private:
     void emitRange();
@@ -41,10 +56,10 @@ private:
         Max,
         Bar
     } moving;
-    double oldScaleMax, oldScaleMin, singleStep;
+    double oldScaleMax, oldScaleMin;
     double scaleMin, scaleMax;
     double scale;
-    int displayMin, displayMax, startDisplayMin, startDisplayMax;
+    int startDisplayMin, startDisplayMax;
 
     double start;
 
@@ -56,8 +71,6 @@ private:
 signals:
     void doubleClick(bool);
     void rangeChanged(double, double);
-
-public slots:
 };
 
 #endif // QRANGESLIDER_H

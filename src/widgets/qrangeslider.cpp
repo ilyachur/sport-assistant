@@ -106,7 +106,7 @@ void QRangeSlider::mousePressEvent(QMouseEvent * event) {
     int pos = getPos(event);
     if (abs(displayMin - 0.5 * barWidth - pos) < 0.5 * barWidth) {
         moving = MovingSlider::Min;
-    } else if (abs(displayMin + 0.5 * barWidth - pos) < 0.5 * barWidth) {
+    } else if (abs(displayMax + 0.5 * barWidth - pos) < 0.5 * barWidth) {
         moving = MovingSlider::Max;
     } else if (pos > displayMin && pos < displayMax) {
         moving = MovingSlider::Bar;
