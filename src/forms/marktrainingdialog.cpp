@@ -117,6 +117,8 @@ void MarkTrainingDialog::addSubActivities() {
             continue;
         int subActivityID = subActivities.at(i).at(0).toInt();
         QString subActivityName = subActivities.at(i).at(3);
+        if (!subActivityName.endsWith("_" + activityName))
+            continue;
         subActivityName.replace("_" + activityName, "");
 
 
@@ -150,7 +152,30 @@ void MarkTrainingDialog::updateButtonState(int index) {
 
 void MarkTrainingDialog::addRemoveUpdateMark(int index) {
     if (buttonsList.at(index)->text() == "Remove") {
-        athleteDB.removeActivity(activityID);
+        athleteDB.removeActivity(activitiesIdList.at(index));
+        layoutsList.at(index)->removeWidget(slidersList.at(index));
+        layoutsList.at(index)->removeWidget(lineEditList.at(index));
+        layoutsList.at(index)->removeWidget(buttonsList.at(index));
+        ui->slidersLayout->removeItem(layoutsList.at(index));
+        delete slidersList.at(index);
+        delete lineEditList.at(index);
+        delete buttonsList.at(index);
+        delete functionsWrappersList.at(index);
+        delete layoutsList.at(index);
+        activitiesIdList.removeAt(index);
+        slidersList.removeAt(index);
+        lineEditList.removeAt(index);
+        buttonsList.removeAt(index);
+        functionsWrappersList.removeAt(index);
+        layoutsList.removeAt(index);
+
+        for(auto i(0); i < functionsWrappersList.size(); i++) {
+            functionsWrappersList.at(i)->changeIndex(i);
+        }
+
+        if (!slidersList.size()) {
+            addMarkSlider();
+        }
     } else {
         if (lineEditList.at(index)->text() == "") {
             QMessageBox::warning(this, "Warning! Activity name is empty!", "Please, input activity name.");
@@ -172,4 +197,6 @@ void MarkTrainingDialog::addRemoveUpdateMark(int index) {
 
         buttonsList.at(index)->setText("Remove");
     }
+
+    emit updateTable();
 }

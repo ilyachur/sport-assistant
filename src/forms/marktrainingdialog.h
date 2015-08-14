@@ -46,6 +46,9 @@ public slots:
     void addMarkSlider(int activityId = -1, QString activityNameStr = "", int from = 0, int to = 0);
     void updateButtonState(int index);
     void addRemoveUpdateMark(int index);
+
+signals:
+    void updateTable();
 };
 
 #endif // MARKTRAININGDIALOG_H

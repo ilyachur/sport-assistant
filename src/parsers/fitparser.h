@@ -189,6 +189,8 @@ private:
 
     private:
         QMap<QString, QMap<QString, QString>> *info;
+
+        unsigned long long time_last = 0;
     };
 
     /**

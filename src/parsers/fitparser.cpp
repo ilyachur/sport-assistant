@@ -136,7 +136,6 @@ void FitParser::FitListener::OnMesg(fit::FileIdMesg& mesg) {
 
 void FitParser::FitListener::OnMesg(fit::HrvMesg& mesg) {
     QMap<QString, QString> testCalue = (*info)["HrvMesg"];
-    static unsigned long long time_last = 0;
     if (!time_last) {
         QMap<QString, QString> testTime = (*info)["Times"];
         if (testTime["StartTime"] != "") {
@@ -145,9 +144,9 @@ void FitParser::FitListener::OnMesg(fit::HrvMesg& mesg) {
     }
     if (mesg.GetTime(0) != FIT_FLOAT32_INVALID) {
         int ms_hrv = (int)(mesg.GetTime(0) * 1000);
-        time_last += ms_hrv;
         testCalue.insert(QString::number(time_last),
                          QString::number(mesg.GetTime(0)));
+        time_last += ms_hrv;
         info->insert("HrvMesg", testCalue);
     }
 }

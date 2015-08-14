@@ -348,6 +348,8 @@ QVector<QSqlQuery> AthleteDB::execCommands(const QStringList commands, bool need
 
 void AthleteDB::removeActivity(int activityID) {
     connect();
+    db.exec("DELETE FROM activities WHERE ID = " + QString::number(activityID));
+    db.commit();
 }
 
 void AthleteDB::addActivity(int activityID, int trainingID, QString activityName, unsigned long long date, QString data) {

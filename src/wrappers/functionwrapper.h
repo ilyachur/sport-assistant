@@ -10,6 +10,10 @@ class FunctionWrapper: public QObject
 public:
     FunctionWrapper(int id): QObject(), index(id) {}
 
+    inline void changeIndex(int id) {
+        index = id;
+    }
+
 private:
     int index;
 

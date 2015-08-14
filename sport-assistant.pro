@@ -48,7 +48,6 @@ SOURCES += src/main.cpp\
     src/algorithms/timeanalysis.cpp \
     src/algorithms/spectrumanalysis.cpp \
     src/forms/addactivity.cpp \
-    src/forms/addmarkdialog.cpp \
     src/widgets/qrangeslider.cpp \
     src/widgets/qvspinboxrangeslider.cpp \
     src/widgets/qspinboxrangeslider.cpp \
@@ -198,7 +197,6 @@ HEADERS  += src/forms/mainwindow.h \
     src/algorithms/timeanalysis.h \
     src/algorithms/spectrumanalysis.h \
     src/forms/addactivity.h \
-    src/forms/addmarkdialog.h \
     src/widgets/qrangeslider.h \
     src/widgets/qvspinboxrangeslider.h \
     src/widgets/qspinboxrangeslider.h \
@@ -213,8 +211,7 @@ FORMS    += src/forms/mainwindow.ui \
     src/forms/addparametersdialog.ui \
     src/forms/predictdialog.ui \
     src/forms/resultdialog.ui \
-    src/forms/addactivity.ui \
-    src/forms/addmarkdialog.ui
+    src/forms/addactivity.ui
 
 RESOURCES += \
     mainresources.qrc

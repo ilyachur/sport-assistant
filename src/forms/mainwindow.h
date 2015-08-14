@@ -94,6 +94,7 @@ public slots:
     void chooseDataDirectory();
 
     void trainingAnalyserFinished(int trID);
+    void updateTableSlot();
 
 signals:
     void updateMainProdressBarStatus(QString text);

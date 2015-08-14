@@ -115,7 +115,9 @@ QMap<QString, bool> AnalyseSettingsDialog::getSettings() {
 
 void AnalyseSettingsDialog::markClicked() {
     MarkTrainingDialog markDialog(activityID, dataBaseName);
+    QObject::connect(&markDialog, SIGNAL(updateTable()), this, SLOT(updateTableSlot()));
     markDialog.exec();
+    QObject::disconnect(&markDialog, SIGNAL(updateTable()), this, SLOT(updateTableSlot()));
 }
 
 void AnalyseSettingsDialog::addInfo() {
@@ -126,4 +128,8 @@ void AnalyseSettingsDialog::addInfo() {
 void AnalyseSettingsDialog::regressionClicked() {
     PredictDialog predictDialog("RUN");
     predictDialog.exec();
+}
+
+void AnalyseSettingsDialog::updateTableSlot() {
+    emit updateTable();
 }

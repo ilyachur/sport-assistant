@@ -69,6 +69,11 @@ public slots:
      * @brief Slot for checking type of analysis and enable/disable some buttons
      */
     void checkAnalysisType();
+
+    void updateTableSlot();
+
+signals:
+    void updateTable();
 };
 
 #endif // ANALYSESETTINGSDIALOG_H

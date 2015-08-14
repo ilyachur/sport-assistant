@@ -351,7 +351,9 @@ void MainWindow::clickTable(int row, int col) {
         QString activityName = activityList.at(0).at(3);
 
         AnalyseSettingsDialog settingsDialog(activityID, databaseName);
+        QObject::connect(&settingsDialog, SIGNAL(updateTable()), this, SLOT(updateTableSlot()));
         settingsDialog.exec();
+        QObject::disconnect(&settingsDialog, SIGNAL(updateTable()), this, SLOT(updateTableSlot()));
 
         QMap<QString, bool> settings;
         settings = settingsDialog.getSettings();
@@ -399,4 +401,36 @@ void MainWindow::clickTable(int row, int col) {
 
 void MainWindow::updateAnalyseProgress(int value) {
     emit updateMainProdressBar(value);
+}
+
+void MainWindow::updateTableSlot() {
+    if (tableLevel != 1) return;
+
+    QMap<QString, QString> findMap;
+    findMap.insert("athlete_id", QString::number(athleteID));
+    QVector<QStringList> trainings = athleteDB.findTraining(findMap);
+    if (trainings.length() < 1) {
+        emit updateMainProdressBarStatus("Trainings were not found");
+        return;
+    }
+
+    QVector<QStringList> ret;
+    for (QStringList trainingInfo : trainings) {
+        QMap<QString, QString> findMapActivity;
+        findMapActivity.insert("training_id", QString::number(trainingInfo.at(0).toInt()));
+        QVector<QStringList> activities = athleteDB.findActivity(findMapActivity);
+        if (activities.length() < 1) {
+            emit updateMainProdressBarStatus("Activities were not found");
+            return;
+        }
+        for (QStringList activityInfo : activities) {
+            QStringList athLine;
+
+            athLine << QDateTime::fromMSecsSinceEpoch(activityInfo.at(2).toULongLong()).toString(
+                          "dd.MM.yyyy hh:mm:ss") << activityInfo.at(0) << activityInfo.at(3) << trainingInfo.at(3) << trainingInfo.at(0);
+            ret.push_back(athLine);
+        }
+    }
+
+    updateTable(ret, QString("Date,Activity ID,Activity name,File type,Training ID").split(","));
 }
