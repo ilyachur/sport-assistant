@@ -36,6 +36,8 @@ private:
     void setParams(int row);
     QStringList getParams(int col);
 
+    void clearTable();
+
 public slots:
     void submit();
     void createScheme();

@@ -47,10 +47,7 @@ AddParametersDialog::AddParametersDialog(int activityID, QString dbName, QWidget
 
 AddParametersDialog::~AddParametersDialog()
 {
-    for(auto i(0); i < tablesItems.size(); i++) {
-        delete tablesItems.at(i);
-    }
-    tablesItems.clear();
+    clearTable();
     delete ui;
 }
 
@@ -188,6 +185,8 @@ void AddParametersDialog::setParams(int row) {
         return;
     }
 
+    clearTable();
+
     QStringList parameters = activityTypes.at(row).at(1).split(",");
     QStringList commands;
     commands.append("SELECT * FROM " + currentScheme + " WHERE activityID = " + QString::number(activityID));
@@ -225,6 +224,8 @@ void AddParametersDialog::changeScheme() {
 }
 
 void AddParametersDialog::setActivityTypes(QString newActivity) {
+    if (newActivity == "" && ui->comboBox->count() > 0)
+        return;
     ui->comboBox->clear();
     activityTypes = athleteDB.getActivityTypes();
     for(auto i(0); i < activityTypes.size(); i++) {
@@ -236,5 +237,14 @@ void AddParametersDialog::setActivityTypes(QString newActivity) {
         ui->comboBox->addItem(newActivity);
         currentScheme = newActivity;
         ui->comboBox->setCurrentIndex(index);
+        clearTable();
     }
+}
+
+void AddParametersDialog::clearTable() {
+    for(auto i(0); i < tablesItems.size(); i++) {
+        delete tablesItems.at(i);
+    }
+    tablesItems.clear();
+    ui->tableWidget->setRowCount(0);
 }
