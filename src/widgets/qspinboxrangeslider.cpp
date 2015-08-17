@@ -1,6 +1,7 @@
 #include "qspinboxrangeslider.h"
 
 #include <QSizePolicy>
+#include <math.h>
 
 QSpinBoxRangeSlider::QSpinBoxRangeSlider(QWidget *parent): QWidget(parent) {
     minVal = 0;

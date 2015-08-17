@@ -382,6 +382,8 @@ void AthleteDB::addTrainingTemplates() {
     // Run configuration
     QString runParams = "lf_before,hf_before,tp_before,lfhf_before,lf_during,hf_during,tp_during,"
                         "lfhf_during,lf_after,hf_after,tp_after,lfhf_after";
-    qDebug()<< db.exec("INSERT INTO activityTypes (activityType, paramsList) VALUES (\"Run\", \"" + runParams + "\")").lastError();
+    if (!db.exec("SELECT * FROM activityTypes WHERE activityType = \"Run\" and paramsList = \"" + runParams + "\"").next()) {
+        qDebug()<< db.exec("INSERT INTO activityTypes (activityType, paramsList) VALUES (\"Run\", \"" + runParams + "\")").lastError();
+    }
     db.commit();
 }

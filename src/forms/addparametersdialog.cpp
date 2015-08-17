@@ -217,8 +217,10 @@ void AddParametersDialog::setParams(int row) {
 void AddParametersDialog::changeScheme() {
     currentScheme = ui->comboBox->currentText();
     for(auto i(0); i < activityTypes.size(); i++) {
-        if (currentScheme == activityTypes.at(i).at(0))
+        if (currentScheme == activityTypes.at(i).at(0)) {
             setParams(i);
+            break;
+        }
     }
 }
 
