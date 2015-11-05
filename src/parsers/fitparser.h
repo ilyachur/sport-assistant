@@ -28,24 +28,24 @@ public:
      * @param file is a variable with raw data
      * @return PARSER_OK if all is ok, else error code
      */
-    int open(QString file = "");
+    virtual int open(QString file = "") override final ;
     /**
      * @brief parse file
      * @return PARSER_OK if all is ok, else error code
      */
-    int run();
+    virtual int run() override final;
 
     /**
      * @brief getInfo
      * @return Information from file
      */
-    QMap<QString, QMap<QString, QString>> *getInfo();
+    virtual QMap<QString, QMap<QString, QString>> *getInfo() override final;
 
     /**
      * @brief get type of parser
      * @return type of file
      */
-    inline QString fileType() {
+    virtual inline QString fileType() override final {
         return "fit";
     }
 

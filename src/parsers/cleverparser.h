@@ -35,7 +35,7 @@ public:
      * @param file is a variable with raw data
      * @return PARSER_OK if all is ok, else error code
      */
-    int open(QString file = "") {
+    virtual int open(QString file = "") override final {
         if (!file.isEmpty())
             file_name = file;
         removeParser();
@@ -56,7 +56,7 @@ public:
      * @brief parse file
      * @return PARSER_OK if all is ok, else error code
      */
-    int run() {
+    virtual int run() override final {
         if (parser == nullptr) {
             int return_code;
             return_code = open();
@@ -70,7 +70,7 @@ public:
      * @brief getInfo
      * @return Information from file
      */
-    QMap<QString, QMap<QString, QString>> *getInfo() {
+    virtual QMap<QString, QMap<QString, QString>> *getInfo() override final {
         if (parser == nullptr) {
             return nullptr;
         }
@@ -81,7 +81,7 @@ public:
      * @brief get type of parser
      * @return type of file
      */
-    inline QString fileType() {
+    virtual inline QString fileType() override final {
         if (parser == nullptr)
             return QString();
         return parser->fileType();

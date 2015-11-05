@@ -221,4 +221,6 @@ ICON = icons/heart.icns
 
 VERSION = 0.2
 
+QMAKE_MAC_SDK = macosx10.11
+
 CONFIG += c++11
